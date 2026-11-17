@@ -1,75 +1,128 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MNFG - 100 Languages</title>
+<title>বন্ধু অ্যাপস - Bondhu Apps</title>
 <style>
-body{font-family:Arial;text-align:center;background:#f5f5f5;padding:15px}
-body.dark{background:#111;color:white}
-.card{background:white;padding:20px;border-radius:18px;max-width:430px;margin:auto;box-shadow:0 0 12px #ccc}
-body.dark .card{background:#222;color:white}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:15px 0}
-.langBtn{padding:14px;font-size:16px;border:2px solid #ddd;border-radius:12px;background:#f9f9f9;cursor:pointer}
-.langBtn:hover{background:#22c55e;color:white}
-button{padding:12px 18px;background:#22c55e;color:white;border:none;border-radius:10px;font-size:16px;margin:5px}
-.btn2{background:#2563eb}.btn3{background:#f97316}.btnGray{background:#6b7280}
-input{padding:11px;font-size:16px;border-radius:10px;margin:8px;width:90%;border:1px solid #ddd}
-.hidden{display:none}
-.allLang{max-height:300px;overflow-y:auto;text-align:left}
-.allLang button{width:100%;background:#f9f9f9;color:#111;border:1px solid #eee;text-align:left}
+body{font-family:sans-serif; margin:0; background:#f0f2f5; color:#111;}
+.header{background:#00A884; color:white; padding:15px; text-align:center; font-weight:bold; font-size:20px;}
+.box{background:white; margin:12px; padding:15px; border-radius:12px;}
+button{padding:10px 15px; border:none; border-radius:20px; font-weight:bold; cursor:pointer; margin:5px;}
+.lang-btn{background:white; color:#111 !important; border:1px solid #ddd; width:45%;}
+.green{background:#00A884; color:white;}
+.black{background:#111; color:white;}
+.red{background:red; color:white;}
+input{width:95%; padding:10px; margin:5px 0; border-radius:8px; border:1px solid #ccc;}
+.hidden{display:none;}
 </style>
 </head>
 <body>
-<div class="card">
-<div id="langScreen">
-<h2>Choose Your Language</h2>
-<p>🌍 100 Languages Available</p>
-<div class="grid">
-<button class="langBtn" onclick="setLang('en','English')">🇬🇧 English</button>
-<button class="langBtn" onclick="setLang('bn','বাংলা')">🇧🇩 বাংলা</button>
-<button class="langBtn" onclick="setLang('ar','العربية')">🇸🇦 العربية</button>
-<button class="langBtn" onclick="setLang('hi','हिन्दी')">🇮🇳 हिन्दी</button>
-<button class="langBtn" onclick="setLang('zh','中文')">🇨🇳 中文</button>
-<button class="langBtn" onclick="setLang('ja','日本語')">🇯🇵 日本語</button>
-<button class="langBtn" onclick="setLang('fr','Français')">🇫🇷 Français</button>
-<button class="langBtn" onclick="setLang('es','Español')">🇪🇸 Español</button>
+
+<div class="header">👥 বন্ধু অ্যাপস - Bondhu Apps <br><small id="verText"></small></div>
+
+<!-- ১. ভাষা -->
+<div class="box" id="langBox">
+<h3>🌍 ভাষা বাছো / Choose Language</h3>
+<button class="lang-btn" onclick="setLang('bn')">🇧🇩 বাংলা</button>
+<button class="lang-btn" onclick="setLang('en')">🇬🇧 English</button>
+<button class="lang-btn" onclick="setLang('ar')">🇸🇦 العربية</button>
+<button class="lang-btn" onclick="setLang('hi')">🇮🇳 हिन्दी</button>
+<button class="lang-btn" onclick="setLang('zh')">🇨🇳 中文</button>
+<button class="lang-btn" onclick="setLang('ja')">🇯🇵 日本語</button>
+<button class="lang-btn" onclick="setLang('fr')">🇫🇷 Français</button>
+<button class="lang-btn" onclick="setLang('es')">🇪🇸 Español</button>
+<p><button class="green" onclick="showMain()">➡️ Continue / ঢুকো</button></p>
 </div>
-<button class="btnGray" onclick="showAll()">See All 100 Languages 🔽</button>
-<div id="allBox" class="hidden">
-<input type="text" id="searchLang" placeholder="🔍 Search language..." onkeyup="filterLang()">
-<div id="allList" class="allLang"></div>
+
+<!-- ২. মেইন -->
+<div class="box hidden" id="mainBox">
+<h3>👋 স্বাগতম বন্ধু!</h3>
+<p>বন্ধু লিস্ট, আড্ডা, ছবি এখানে আসবে।</p>
+<button class="green" onclick="showBox('settingBox')">⚙️ সেটিং</button>
+<button class="black" onclick="showBox('securityBox')">🔒 সিকিউরিটি</button>
+<button class="green" onclick="checkUpdate()">🔄 আপডেট চেক করো</button>
+<p id="updateText" style="font-weight:bold;"></p>
+<!-- এডমিন বাটন - ৫ বার ট্যাপ করলে খুলবে, সবাই দেখবে না -->
+<p style="font-size:12px; color:#aaa;" onclick="adminTap()">Bondhu Apps v<span id="v2"></span></p>
 </div>
+
+<!-- ৩. সেটিং -->
+<div class="box hidden" id="settingBox">
+<h3>⚙️ সেটিং</h3>
+<p>🌍 ভাষা: <button onclick="showBox('langBox')">বদলাও</button></p>
+<p>🌙 ডার্ক মোড: <button onclick="toggleDark()">অন/অফ</button></p>
+<p>🔔 নোটিফিকেশন: <button>অন / অফ</button></p>
+<button class="black" onclick="showBox('mainBox')">⬅️ Back</button>
 </div>
-<div id="mainApp" class="hidden">
-<h1>MNFG</h1>
-<h2 id="welcome">Welcome to MNFG App</h2>
-<p id="curLang">Language: English</p>
-<p id="version">Version: 1.1</p>
-<button onclick="showSettings()">⚙️ Settings</button>
-<button class="btn2" onclick="showAdmin()">🔐 Admin</button>
-<button onclick="backLang()">🌍 Language</button>
-<div id="settings" class="hidden">
-<h3>⚙️ Settings</h3>
-<p>🌙 Dark Mode: <button onclick="toggleDark()">ON / OFF</button></p>
-<p>🔊 Sound: <button onclick="alert('Sound ON/OFF')">ON / OFF</button></p>
-<button onclick="hideAll()">Close</button>
+
+<!-- ৪. সিকিউরিটি -->
+<div class="box hidden" id="securityBox">
+<h3>🔒 সিকিউরিটি</h3>
+<input type="password" id="pinInput" placeholder="৪ সংখ্যার পিন দাও">
+<button class="green" onclick="setPin()">পিন সেট করো</button>
+<p>🔐 ফিঙ্গারপ্রিন্ট লক: <button>অন করো</button></p>
+<p>🚪 সব ডিভাইস থেকে লগআউট: <button class="red">লগআউট</button></p>
+<button class="black" onclick="showBox('mainBox')">⬅️ Back</button>
 </div>
-<div id="adminBox" class="hidden">
-<h3>🔐 Admin Login</h3>
-<input type="password" id="pass" placeholder="Enter Admin Password">
-<br><button class="btn3" onclick="checkPass()">Login</button>
-<p id="adminMsg"></p>
-<div id="adminPanel" class="hidden"><p>✅ Welcome Admin!</p><button onclick="alert('Admin Panel Working')">Manage App</button></div>
+
+<!-- ৫. এডমিন প্যানেল - শুধু তুমি -->
+<div class="box hidden" id="adminBox" style="border:2px solid red;">
+<h3>👑 এডমিন সিকিউরিটি প্যানেল</h3>
+<input type="password" id="adminPin" placeholder="এডমিন পিন দাও">
+<button class="red" onclick="checkAdmin()">এডমিন ঢুকো</button>
+<div id="adminContent" class="hidden">
+<p>✅ তুমি এডমিন</p>
+<button onclick="alert('সবাইকে নোটিশ পাঠানো হলো')">📢 সবাইকে নোটিশ পাঠাও</button>
+<button onclick="alert('মেইনটেন্যান্স মোড অন')">🛠️ মেইনটেন্যান্স মোড</button>
+<button onclick="alert('ইউজার ব্লক করা হলো')">🚫 ইউজার ব্লক</button>
+<button onclick="alert('নতুন আপডেট পুশ করা হলো')">🔄 আপডেট পুশ করো</button>
 </div>
-<p id="desc">You are on latest version ✅</p>
-<button id="btn" onclick="checkUpdate()">Check Update</button>
-<p id="msg"></p>
+<button class="black" onclick="showBox('mainBox')">⬅️ Back</button>
 </div>
-</div>
+
 <script>
-const langs=["English","বাংলা","العربية","हिन्दी","中文","日本語","Français","Español","Русский","한국어","Deutsch","Italiano","Português","Türkçe","اردو","فارسی","ไทย","Tiếng Việt","Indonesia","Nederlands","Polski","Українська","Română","Magyar","Čeština","Svenska","Dansk","Suomi","Norsk","Ελληνικά","עברית","ਪੰਜਾਬੀ","తెలుగు","தமிழ்","मराठी","ગુજરાતી","ಕನ್ನಡ","മലയാളം","ଓଡ଼ିଆ","অসমীয়া","नेपाली","සිංහල","မြန်မာ","ខ្មែរ","ລາວ","Монгол","Қазақша","Ўзбекча","Тоҷикӣ","Кыргызча","Türkmençe","Azərbaycan","Հայերեն","ქართული","አማርኛ","Somali","Swahili","Yoruba","Igbo","Hausa","Zulu","Afrikaans","Malti","Gaeilge","Cymraeg","Euskara","Català","Galego","Latviešu","Lietuvių","Eesti","Slovenščina","Hrvatski","Srpski","Bosanski","Македонски","Български","Shqip","Kreyòl","Hawaiian","Māori","Samoan","Fijian","Tahitian","Esperanto","Latin","Sundanese","Javanese","Tagalog","Cebuano","Hmong","Burmese","Kurdish","Pashto","Sindhi","Uyghur","Tibetan","Dzongkha","Tetum","Chichewa","Sesotho","Shona","Xhosa","Kinyarwanda","Oromo","Tigrinya","Yiddish","Luxembourgish"];
-const t={
-en:{welcome:"Welcome to MNFG App",version:"Version: 1.1",desc:"You are on latest version ✅",btn:"Check Update"},
-bn:{welcome:"MNFG অ্যাপে স্বাগতম",version:"ভার্সন: ১.১",desc:"তুমি লেটেস্ট ভার্সনে আছো ✅",btn:"আপডেট চেক করো"},
-hi:{welcome:"MNFG ऐप में स्वागत है",version:"संस्करण: 1.
+// ===== মাস্টার স্ক্রিপ্ট - ভার্সন + আপডেট সিস্টেম =====
+let MY_VERSION = "1.0";
+let ADMIN_PIN = "1234"; // তুমি চাইলে এটা বদলাও
+let tapCount = 0;
+document.getElementById('verText').innerText = "Version " + MY_VERSION;
+document.getElementById('v2').innerText = MY_VERSION;
+
+function showBox(id){
+  ['langBox','mainBox','settingBox','securityBox','adminBox'].forEach(x=>{
+    document.getElementById(x).classList.add('hidden');
+  });
+  document.getElementById(id).classList.remove('hidden');
+}
+function setLang(l){ localStorage.setItem('lang', l); alert('ভাষা সেট: '+l); }
+function showMain(){ showBox('mainBox'); }
+function toggleDark(){ document.body.style.background = document.body.style.background=='black' ? '#f0f2f5' : 'black'; document.body.style.color='white'; }
+function setPin(){ alert('পিন সেট হয়ে গেছে: '+document.getElementById('pinInput').value); }
+
+// ===== আপডেট সিস্টেম =====
+function checkUpdate(){
+  document.getElementById('updateText').innerText = "আপডেট চেক করা হচ্ছে...";
+  setTimeout(()=>{
+    // GitHub থেকে নতুন ভার্সন আসলে এইখানে রিলোড হবে
+    fetch(window.location.href, {cache:"no-cache"}).then(()=>{
+      document.getElementById('updateText').innerText = "✅ তুমি লেটেস্ট ভার্সন "+MY_VERSION+" এ আছো। নতুন আপডেট আসলে আবার চেক করো।";
+      // যদি নতুন ভার্সন থাকে তাহলে অটো রিলোড:
+      // location.reload(true);
+    });
+  },1000);
+}
+
+// ===== এডমিন সিকিউরিটি বাটন - গোপন =====
+function adminTap(){
+  tapCount++;
+  if(tapCount>=5){ showBox('adminBox'); tapCount=0; }
+}
+function checkAdmin(){
+  if(document.getElementById('adminPin').value==ADMIN_PIN){
+    document.getElementById('adminContent').classList.remove('hidden');
+  } else { alert('ভুল পিন!'); }
+}
+</script>
+</body>
+</html>
