@@ -82,6 +82,79 @@ input{width:95%; padding:10px; margin:5px 0; border-radius:8px; border:1px solid
 </div>
 
 <script>
+// ===== BONDHU LOCKER SECURITY SYSTEM =====
+
+// ডেমোর PIN — পরে নিরাপদ Backend থেকে যাচাই হবে
+const BONDHU_REAL_PIN = "2468";
+const BONDHU_FAKE_PIN = "1111";
+
+let bondhuWrongAttempts = 0;
+let bondhuLockUntil = 0;
+let bondhuAutoLockTimer = null;
+
+// PIN যাচাই
+function bondhuVerifyPIN(pin) {
+
+  // এক ঘণ্টার Lock পরীক্ষা
+  if (Date.now() < bondhuLockUntil) {
+    alert("৩ বার ভুল PIN দেওয়া হয়েছে। ১ ঘণ্টা পরে চেষ্টা করুন।");
+    return;
+  }
+
+  // আসল লকার
+  if (pin === BONDHU_REAL_PIN) {
+    bondhuWrongAttempts = 0;
+    alert("সঠিক PIN। বন্ধু লকারে স্বাগতম।");
+    showScreen("vault");
+    bondhuStartAutoLock();
+    return;
+  }
+
+  // Fake PIN — নকল লকার
+  if (pin === BONDHU_FAKE_PIN) {
+    alert("লকার খোলা হয়েছে।");
+    showScreen("vault");
+    return;
+  }
+
+  // ভুল PIN
+  bondhuWrongAttempts++;
+
+  if (bondhuWrongAttempts >= 3) {
+    bondhuLockUntil = Date.now() + (60 * 60 * 1000);
+    alert("৩ বার ভুল PIN। লকার ১ ঘণ্টার জন্য বন্ধ।");
+  } else {
+    alert("ভুল PIN। বাকি চেষ্টা: " +
+      (3 - bondhuWrongAttempts));
+  }
+}
+
+// ৩০ সেকেন্ড Auto-Lock
+function bondhuStartAutoLock() {
+  clearTimeout(bondhuAutoLockTimer);
+
+  bondhuAutoLockTimer = setTimeout(function () {
+    bondhuLock();
+  }, 30000);
+}
+
+// লকার Lock
+function bondhuLock() {
+  clearTimeout(bondhuAutoLockTimer);
+  showScreen("pin");
+  alert("বন্ধু লকার নিরাপত্তার জন্য Lock হয়েছে।");
+}
+
+// ব্যবহার করলে Auto-Lock সময় নতুন করে শুরু
+["click", "keydown", "touchstart"].forEach(function(eventName) {
+  document.addEventListener(eventName, function() {
+    if (document.getElementById("vault") &&
+        document.getElementById("vault").style.display !== "none") {
+      bondhuStartAutoLock();
+    }
+  });
+});
+  
 // ===== মাস্টার স্ক্রিপ্ট - ভার্সন + আপডেট সিস্টেম =====
 let MY_VERSION = "1.0";
 let ADMIN_PIN = "1234"; // তুমি চাইলে এটা বদলাও
