@@ -26,5 +26,26 @@ button:active{transform:scale(.98)}
 <button onclick="alert('এইটা তোমার MNFG অ্যাপ')">আরো দেখো ✨</button>
 </div>
 <p style="font-size:12px;opacity:.6">Made by mridham944-hue</p>
+  <div style="background:#1c1c1c;padding:15px;border-radius:15px;margin:15px;text-align:center;color:white">
+<p>ভার্সন: <b id="myVer" style="color:#00e676">1.0</b></p>
+<button onclick="checkUpdate()" style="background:#00e676;border:none;padding:12px;border-radius:10px;font-weight:bold;width:100%">আপডেট চেক করো</button>
+<div id="updateBox" style="display:none;background:#ffca28;color:black;padding:12px;border-radius:10px;margin-top:10px">
+<b>নতুন আপডেট আসছে! v1.1</b><br><br>
+<button onclick="doUpdate()" style="background:black;color:white;padding:10px;border-radius:8px;width:100%">আপডেট দাও</button>
+</div>
+<p id="msg"></p>
+</div>
+<script>
+let latestVersion="1.1"; let myVersion="1.0";
+function checkUpdate(){
+if(myVersion!==latestVersion){document.getElementById('updateBox').style.display='block';}
+else{document.getElementById('msg').innerText='তুমি লেটেস্ট ভার্সনে আছো ✅';}
+}
+function doUpdate(){
+document.getElementById('myVer').innerText=latestVersion; myVersion=latestVersion;
+document.getElementById('updateBox').style.display='none';
+document.getElementById('msg').innerText='আপডেট ডান! 🔥';
+}
+  </script>
 </body>
 </html>
