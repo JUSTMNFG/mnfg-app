@@ -2,112 +2,82 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bondhu Apps - Open Social</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Bondhu Apps - Your Friend, With You</title>
+<!-- এই ফন্টটাই ছবির মতন -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box} body{margin:0;font-family:system-ui;background:#f0f2f5}
-.header{background:linear-gradient(135deg,#7c3aed,#ec4899);color:#fff;padding:14px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0}
-.logo{font-weight:900;font-size:22px} .logo span{background:#fff;color:#7c3aed;padding:2px 8px;border-radius:8px}
-select{padding:8px;border-radius:8px;border:none;font-weight:700}
-.wrap{max-width:520px;margin:auto;padding:12px}
-.card{background:#fff;border-radius:14px;padding:14px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
-input,textarea{width:100%;padding:11px;border:1px solid #ddd;border-radius:10px;margin:6px 0}
-.btn{background:linear-gradient(135deg,#7c3aed,#ec4899);color:#fff;border:none;padding:12px;border-radius:10px;width:100%;font-weight:800;cursor:pointer}
-.ad{background:#fffbe6;border:1px dashed #f59e0b;border-radius:12px;padding:12px;text-align:center;margin-bottom:12px;font-size:13px;color:#92400e}
-.post{border-top:1px solid #eee;padding-top:10px;margin-top:10px}
-.small{font-size:12px;color:#666} .vip{background:#fef3c7;padding:6px 10px;border-radius:20px;font-size:12px;font-weight:800}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+body{background:#1a002e;display:flex;justify-content:center;min-height:100vh}
+.phone{width:100%;max-width:420px;min-height:100vh;background:linear-gradient(180deg,#4b0082 0%,#7b1fa2 35%,#d946a8 75%,#ff6eb4 100%);padding:45px 22px 20px;text-align:center;position:relative;overflow:hidden}
+.logo{width:145px;height:145px;margin:10px auto 10px;background:radial-gradient(circle at 30% 30%,#ff7ad9,#7b1fa2 65%,#4b0082);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 15px 35px rgba(0,0,0,.35)}
+.logo b{font-family:'Baloo 2',cursive;font-size:105px;color:#fff;font-style:italic;line-height:1;text-shadow:0 5px 0 rgba(0,0,0,.2);transform:translateY(-5px)}
+h1{color:#fff;font-size:36px;font-weight:800;letter-spacing:.5px}
+p.tag{color:#fff;font-size:16px;margin-bottom:22px;opacity:.95}
+.card{background:#fff;border-radius:22px;padding:22px 16px 20px;box-shadow:0 15px 30px rgba(0,0,0,.25)}
+.input{width:100%;height:52px;border:1.5px solid #e8e8e8;border-radius:12px;padding:0 12px;font-size:16px;outline:none;margin-bottom:14px;background:#fff}
+.input:focus{border-color:#9c27b0}
+.row{display:flex;align-items:center;gap:8px}
+.row span{font-size:18px}
+.btn-login{width:100%;height:58px;border:none;border-radius:12px;background:linear-gradient(90deg,#4b0082,#e040a8);color:#fff;font-size:26px;font-weight:700;cursor:pointer}
+.btn-create{width:100%;height:50px;border:none;border-radius:12px;background:#d1d1d1;color:#333;font-size:17px;font-weight:600;margin-top:14px;cursor:pointer}
+.version{color:#5a2a5a;font-size:13px;margin-top:22px;font-weight:600}
+#updateBox{display:none;background:#fff;color:#222;border-radius:14px;padding:14px;margin-bottom:14px;text-align:left}
+#updateBox b{color:#d81b60}
+#updateBox button{width:100%;height:44px;border:none;border-radius:10px;background:#25D366;color:#fff;font-weight:700;margin-top:10px}
 </style>
 </head>
 <body>
-<div class="header">
-  <div class="logo"><span>B</span> Bondhu Apps</div>
-  <select id="lang" onchange="setLang(this.value)"></select>
-</div>
+<div class="phone">
+  <div class="logo"><b>B</b></div>
+  <h1>Bondhu Apps</h1>
+  <p class="tag">Your Friend, With You</p>
 
-<div class="wrap">
-  <!-- OPEN SIGNUP - NO APPROVAL - AUTO -->
-  <div class="card" id="signupBox">
-    <h3 data-i18n="join">Join - Free, Open For Everyone</h3>
-    <p class="small" data-i18n="no_approval">No approval needed. Auto login.</p>
-    <input id="name" placeholder="Your Name / তোমার নাম">
-    <input id="phone" placeholder="Phone Number">
-    <input id="pass" type="password" placeholder="Password">
-    <button class="btn" onclick="signup()" data-i18n="create">Create Account - Auto Join</button>
-    <p class="small" data-i18n="agree">By joining you agree to community rules. Auto Report + Auto Block ON.</p>
+  <!-- আপডেট সিস্টেম -->
+  <div id="updateBox">
+    <b>🎉 নতুন আপডেট আসছে!</b><br>
+    <span id="updateText">Version 1.2 পাওয়া গেছে। আপডেট দিলে নতুন ফিচার পাবা।</span>
+    <button onclick="doUpdate()">এখন আপডেট করো</button>
   </div>
-
-  <div class="card" id="appBox" style="display:none">
-    <b id="welcome">Welcome</b> <span class="vip">FREE</span> <button onclick="becomeVip()" style="float:right">Go VIP ⭐</button>
-    <textarea id="postText" placeholder="What's on your mind?"></textarea>
-    <button class="btn" onclick="addPost()" data-i18n="post">Post - Auto Publish</button>
-    <div id="feed"></div>
-  </div>
-
-  <!-- AD SLOT - INCOME -->
-  <div class="ad">📢 AD SPACE - YOUR INCOME HERE<br><span class="small">Google AdMob / Facebook Ads - Auto Show</span></div>
 
   <div class="card">
-    <h3 data-i18n="vip_title">💰 Earn & VIP</h3>
-    <p class="small" data-i18n="vip_desc">Free for all. VIP gets Verified Badge, More Video, Special Stickers. Monthly: 100 / 200 Tk.</p>
-    <button class="btn" onclick="becomeVip()" data-i18n="vip_btn">Become VIP</button>
+    <div class="row" style="border:1.5px solid #e8e8e8;border-radius:12px;padding:0 10px;margin-bottom:14px">
+      <span>📞</span><span>+880</span>
+      <input id="phone" class="input" style="border:none;margin:0;padding-left:2px" placeholder="1XXXXXXXXX" type="tel">
+    </div>
+    <div class="row" style="border:1.5px solid #e8e8e8;border-radius:12px;padding:0 10px;margin-bottom:16px">
+      <span>🔒</span>
+      <input id="pass" class="input" style="border:none;margin:0" placeholder="••••••••" type="password">
+      <span onclick="showPass()" style="cursor:pointer">👁️</span>
+    </div>
+    <button class="btn-login" onclick="login()">Login</button>
+    <button class="btn-create" onclick="createAcc()">Create New Account</button>
   </div>
+  <div class="version" id="verText">Version 1.1 Trial</div>
 </div>
 
 <script>
-// 100 LANGUAGES LIST
-const langs = ["English","বাংলা","हिन्दी","اردو","العربية","Español","Français","Deutsch","Italiano","Português","Русский","日本語","한국어","中文","தமிழ்","తెలుగు","मराठी","ਪੰਜਾਬੀ","ગુજરાતી","ಕನ್ನಡ","മലയാളം","ଓଡ଼ିଆ","অসমীয়া","नेपाली","සිංහල","မြန်မာ","ไทย","Tiếng Việt","Bahasa Indonesia","Bahasa Melayu","Filipino","Khmer","Lao","Mongolian","Tibetan","Uyghur","Kazakh","Uzbek","Kyrgyz","Tajik","Turkmen","Azerbaijani","Georgian","Armenian","Persian","Pashto","Kurdish","Hebrew","Yiddish","Amharic","Somali","Swahili","Yoruba","Igbo","Hausa","Zulu","Xhosa","Afrikaans","Dutch","Svenska","Norsk","Dansk","Suomi","Polski","Čeština","Slovenčina","Magyar","Română","Български","Українська","Беларуская","Српски","Hrvatski","Bosanski","Slovenščina","Македонски","Shqip","Ελληνικά","Türkçe","Català","Galego","Euskara","Gaeilge","Cymraeg","Latviešu","Lietuvių","Eesti","Malti","Esperanto","Hawaiian","Māori","Samoan","Tongan","Fijian","Chichewa","Sesotho","Shona","Kinyarwanda","Kirundi","Lingala","Tigrinya","Oromo","Haitian Creole","Javanese","Sundanese","Balinese","Burmese","Dzongkha"];
-const sel=document.getElementById('lang');
-langs.forEach((l,i)=>{let o=document.createElement('option');o.value=l;o.textContent=l;if(l==='বাংলা')o.selected=true;sel.appendChild(o)});
+// ===== আপডেট সিস্টেম =====
+let CURRENT_VERSION = "1.1";
+let LATEST_VERSION = "1.2"; // নতুন ভার্সন আসলে এখানে শুধু 1.3, 1.4 লিখবা
+let UPDATE_LINK_ANDROID = "https://play.google.com/store"; // Android লিংক
+let UPDATE_LINK_IPHONE = "https://apps.apple.com"; // iPhone লিংক
 
-// SIMPLE TRANSLATION FOR MAIN BUTTONS - ALL 100 LANGUAGES USE SAME UI STRUCTURE
-const dict = {
-  "English":{join:"Join - Free, Open For Everyone",no_approval:"No approval needed. Auto login.",create:"Create Account - Auto Join",post:"Post - Auto Publish",vip_title:"💰 Earn & VIP",vip_desc:"Free for all. VIP gets Verified Badge.",vip_btn:"Become VIP"},
-  "বাংলা":{join:"যোগ দাও - ফ্রি, সবার জন্য খোলা",no_approval:"কোনো অনুমতি লাগবো না। অটো লগইন।",create:"অ্যাকাউন্ট খুলো - অটো জয়েন",post:"পোস্ট করো - অটো পাবলিশ",vip_title:"💰 ইনকাম ও VIP",vip_desc:"সবার জন্য ফ্রি। VIP পাইবো ভেরিফাইড ব্যাজ।",vip_btn:"VIP হও"},
-  "हिन्दी":{join:"जुड़ें - फ्री, सबके लिए खुला",no_approval:"कोई अप्रूवल नहीं। ऑटो लॉगिन।",create:"अकाउंट बनाएं - ऑटो जॉइन",post:"पोस्ट करें",vip_title:"💰 कमाई और VIP",vip_desc:"सबके लिए फ्री। VIP को वेरिफाइड बैज।",vip_btn:"VIP बनें"}
-};
-function setLang(l){
-  const t = dict[l] || dict["English"];
-  document.querySelectorAll('[data-i18n]').forEach(el=>{
-    const k=el.getAttribute('data-i18n');
-    if(t[k]) el.textContent=t[k];
-  });
-  // For other 98 languages, UI stays in English structure so anyone can use it
-  localStorage.setItem('bondhu_lang',l);
+if(LATEST_VERSION !== CURRENT_VERSION){
+  document.getElementById('updateBox').style.display='block';
+  document.getElementById('updateText').innerText = "Version "+LATEST_VERSION+" পাওয়া গেছে। তুমি এখন "+CURRENT_VERSION+" ব্যবহার করতেছো।";
 }
-// OPEN SYSTEM - NO BUSINESS ACCOUNT - AUTO
-function signup(){
-  const n=document.getElementById('name').value||'Bondhu User';
-  const p=document.getElementById('phone').value||'Auto User';
-  localStorage.setItem('bondhu_user',JSON.stringify({name:n,phone:p,vip:false}));
-  // Auto save to cloud-ready storage - when you add Firebase, this goes to cloud
-  document.getElementById('signupBox').style.display='none';
-  document.getElementById('appBox').style.display='block';
-  document.getElementById('welcome').textContent='Welcome, '+n+' - Open Account ✅ No Approval';
-  loadFeed();
+function doUpdate(){
+  let isIphone = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  if(isIphone){ window.open(UPDATE_LINK_IPHONE,'_blank'); }
+  else { window.open(UPDATE_LINK_ANDROID,'_blank'); }
 }
-function becomeVip(){
-  alert('VIP System: Monthly 100/200 Tk - Bkash / Nagad / Card - Auto Activate (Connect Payment Later)');
-  localStorage.setItem('bondhu_vip','1');
+function showPass(){
+  let p=document.getElementById('pass');
+  p.type = p.type==='password'?'text':'password';
 }
-let posts = JSON.parse(localStorage.getItem('bondhu_posts')||'[]');
-function addPost(){
-  const txt=document.getElementById('postText').value;
-  if(!txt) return;
-  const user=JSON.parse(localStorage.getItem('bondhu_user')||'{"name":"User"}');
-  posts.unshift({name:user.name,text:txt,time:new Date().toLocaleString(),likes:0});
-  localStorage.setItem('bondhu_posts',JSON.stringify(posts));
-  document.getElementById('postText').value='';
-  loadFeed();
-}
-function loadFeed(){
-  const f=document.getElementById('feed');
-  f.innerHTML=posts.map((p,i)=>`<div class="post"><b>${p.name}</b> <span class="small">${p.time}</span><p>${p.text}</p><button onclick="like(${i})">❤️ ${p.likes} Like</button> <button>💬 Comment</button> <button>↗️ Share</button></div>`).join('')||'<p class="small">No posts yet. Be first to post!</p>';
-}
-function like(i){posts[i].likes++;localStorage.setItem('bondhu_posts',JSON.stringify(posts));loadFeed()}
-// Auto login if already joined
-const saved=localStorage.getItem('bondhu_user');
-if(saved){document.getElementById('signupBox').style.display='none';document.getElementById('appBox').style.display='block';document.getElementById('welcome').textContent='Welcome Back, '+JSON.parse(saved).name;loadFeed();}
-setLang('বাংলা');
+function login(){ alert("Login: +880 "+document.getElementById('phone').value); }
+function createAcc(){ alert("Create New Account পেজে যাইতেছে..."); }
 </script>
 </body>
 </html>
