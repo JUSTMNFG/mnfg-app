@@ -35,5 +35,11 @@ body{background:#e8c8e8;display:flex;justify-content:center;min-height:100vh}
 <div class="logout" onclick="location.href='index.html'">Logout</div>
 <div class="ver">Version 1.1 • Trial</div>
 </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = "https://ujhjloihskutkazhaydc.supabase.co"
+  const SUPABASE_KEY = "sb_publishable_EqE3D3fqYSf5C13Ds0wNyQ_ZeDHoJfH"
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+</script>
 </body>
 </html>
