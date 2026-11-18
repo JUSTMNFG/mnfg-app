@@ -5,25 +5,28 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>বন্ধু অ্যাপস - Bondhu Apps</title>
 <style>
-body{font-family:sans-serif; margin:0; background:#f0f2f5; color:#111;}
+body{font-family:sans-serif; margin:0; background:#f0f2f5; color:#111; transition:0.3s;}
+body.dark{background:#111; color:white;}
+body.dark .box{background:#222; color:white;}
+body.dark .lang-btn{background:#333; color:white !important; border-color:#444;}
 .header{background:#00A884; color:white; padding:15px; text-align:center; font-weight:bold; font-size:20px;}
 .box{background:white; margin:12px; padding:15px; border-radius:12px;}
 button{padding:10px 15px; border:none; border-radius:20px; font-weight:bold; cursor:pointer; margin:5px;}
 .lang-btn{background:white; color:#111 !important; border:1px solid #ddd; width:45%;}
+.lang-btn.active{border:2px solid #00A884; background:#e6fffa;}
 .green{background:#00A884; color:white;}
 .black{background:#111; color:white;}
+body.dark .black{background:white; color:#111;}
 .red{background:red; color:white;}
 input{width:95%; padding:10px; margin:5px 0; border-radius:8px; border:1px solid #ccc;}
 .hidden{display:none;}
 </style>
 </head>
 <body>
-
 <div class="header">👥 বন্ধু অ্যাপস - Bondhu Apps <br><small id="verText"></small></div>
 
-<!-- ১. ভাষা -->
 <div class="box" id="langBox">
-<h3>🌍 ভাষা বাছো / Choose Language</h3>
+<h3 data-t="chooseLang">🌍 ভাষা বাছো / Choose Language</h3>
 <button class="lang-btn" onclick="setLang('bn')">🇧🇩 বাংলা</button>
 <button class="lang-btn" onclick="setLang('en')">🇬🇧 English</button>
 <button class="lang-btn" onclick="setLang('ar')">🇸🇦 العربية</button>
@@ -32,41 +35,37 @@ input{width:95%; padding:10px; margin:5px 0; border-radius:8px; border:1px solid
 <button class="lang-btn" onclick="setLang('ja')">🇯🇵 日本語</button>
 <button class="lang-btn" onclick="setLang('fr')">🇫🇷 Français</button>
 <button class="lang-btn" onclick="setLang('es')">🇪🇸 Español</button>
-<p><button class="green" onclick="showMain()">➡️ Continue / ঢুকো</button></p>
+<p><button class="green" onclick="showMain()" data-t="enter">➡️ Continue / ঢুকো</button></p>
 </div>
 
-<!-- ২. মেইন -->
 <div class="box hidden" id="mainBox">
-<h3>👋 স্বাগতম বন্ধু!</h3>
-<p>বন্ধু লিস্ট, আড্ডা, ছবি এখানে আসবে।</p>
-<button class="green" onclick="showBox('settingBox')">⚙️ সেটিং</button>
-<button class="black" onclick="showBox('securityBox')">🔒 সিকিউরিটি</button>
-<button class="green" onclick="checkUpdate()">🔄 আপডেট চেক করো</button>
+<h3 data-t="welcome">👋 স্বাগতম বন্ধু!</h3>
+<p data-t="desc">বন্ধু লিস্ট, আড্ডা, ছবি এখানে আসবে।</p>
+<button class="green" onclick="showBox('settingBox')" data-t="setting">⚙️ সেটিং</button>
+<button class="black" onclick="showBox('securityBox')" data-t="security">🔒 সিকিউরিটি</button>
+<button class="green" onclick="checkUpdate()" data-t="checkUpdate">🔄 আপডেট চেক করো</button>
 <p id="updateText" style="font-weight:bold;"></p>
-<!-- এডমিন বাটন - ৫ বার ট্যাপ করলে খুলবে, সবাই দেখবে না -->
 <p style="font-size:12px; color:#aaa;" onclick="adminTap()">Bondhu Apps v<span id="v2"></span></p>
 </div>
 
-<!-- ৩. সেটিং -->
 <div class="box hidden" id="settingBox">
-<h3>⚙️ সেটিং</h3>
-<p>🌍 ভাষা: <button onclick="showBox('langBox')">বদলাও</button></p>
-<p>🌙 ডার্ক মোড: <button onclick="toggleDark()">অন/অফ</button></p>
-<p>🔔 নোটিফিকেশন: <button>অন / অফ</button></p>
-<button class="black" onclick="showBox('mainBox')">⬅️ Back</button>
+<h3 data-t="setting">⚙️ সেটিং</h3>
+<p><span data-t="langLabel">🌍 ভাষা:</span> <button onclick="showBox('langBox')" data-t="change">বদলাও</button></p>
+<p><span data-t="darkLabel">🌙 ডার্ক মোড:</span> <button onclick="toggleDark()" id="darkBtn">অফ</button></p>
+<p><span data-t="notiLabel">🔔 নোটিফিকেশন:</span> <button onclick="toggleNoti()" id="notiBtn">অফ</button></p>
+<button class="black" onclick="showBox('mainBox')" data-t="back">⬅️ Back</button>
 </div>
 
-<!-- ৪. সিকিউরিটি -->
 <div class="box hidden" id="securityBox">
-<h3>🔒 সিকিউরিটি</h3>
-<input type="password" id="pinInput" placeholder="৪ সংখ্যার পিন দাও">
-<button class="green" onclick="setPin()">পিন সেট করো</button>
-<p>🔐 ফিঙ্গারপ্রিন্ট লক: <button>অন করো</button></p>
-<p>🚪 সব ডিভাইস থেকে লগআউট: <button class="red">লগআউট</button></p>
-<button class="black" onclick="showBox('mainBox')">⬅️ Back</button>
+<h3 data-t="security">🔒 সিকিউরিটি</h3>
+<input type="password" id="pinInput" placeholder="৪ সংখ্যার পিন দাও" maxlength="4">
+<button class="green" onclick="setPin()" data-t="setPin">পিন সেট করো</button>
+<p id="pinStatus"></p>
+<p><span data-t="finger">🔐 ফিঙ্গারপ্রিন্ট লক:</span> <button onclick="toggleFinger()" id="fingerBtn">অফ</button></p>
+<p><span data-t="logoutLabel">🚪 সব ডিভাইস থেকে লগআউট:</span> <button class="red" onclick="logoutAll()" data-t="logout">লগআউট</button></p>
+<button class="black" onclick="showBox('mainBox')" data-t="back2">⬅️ Back</button>
 </div>
 
-<!-- ৫. এডমিন প্যানেল - শুধু তুমি -->
 <div class="box hidden" id="adminBox" style="border:2px solid red;">
 <h3>👑 এডমিন সিকিউরিটি প্যানেল</h3>
 <input type="password" id="adminPin" placeholder="এডমিন পিন দাও">
@@ -82,111 +81,93 @@ input{width:95%; padding:10px; margin:5px 0; border-radius:8px; border:1px solid
 </div>
 
 <script>
-// ===== BONDHU LOCKER SECURITY SYSTEM =====
-
-// ডেমোর PIN — পরে নিরাপদ Backend থেকে যাচাই হবে
-const BONDHU_REAL_PIN = "2468";
-const BONDHU_FAKE_PIN = "1111";
-
-let bondhuWrongAttempts = 0;
-let bondhuLockUntil = 0;
-let bondhuAutoLockTimer = null;
-
-// PIN যাচাই
-function bondhuVerifyPIN(pin) {
-
-  // এক ঘণ্টার Lock পরীক্ষা
-  if (Date.now() < bondhuLockUntil) {
-    alert("৩ বার ভুল PIN দেওয়া হয়েছে। ১ ঘণ্টা পরে চেষ্টা করুন।");
-    return;
-  }
-
-  // আসল লকার
-  if (pin === BONDHU_REAL_PIN) {
-    bondhuWrongAttempts = 0;
-    alert("সঠিক PIN। বন্ধু লকারে স্বাগতম।");
-    showScreen("vault");
-    bondhuStartAutoLock();
-    return;
-  }
-
-  // Fake PIN — নকল লকার
-  if (pin === BONDHU_FAKE_PIN) {
-    alert("লকার খোলা হয়েছে।");
-    showScreen("vault");
-    return;
-  }
-
-  // ভুল PIN
-  bondhuWrongAttempts++;
-
-  if (bondhuWrongAttempts >= 3) {
-    bondhuLockUntil = Date.now() + (60 * 60 * 1000);
-    alert("৩ বার ভুল PIN। লকার ১ ঘণ্টার জন্য বন্ধ।");
-  } else {
-    alert("ভুল PIN। বাকি চেষ্টা: " +
-      (3 - bondhuWrongAttempts));
-  }
-}
-
-// ৩০ সেকেন্ড Auto-Lock
-function bondhuStartAutoLock() {
-  clearTimeout(bondhuAutoLockTimer);
-
-  bondhuAutoLockTimer = setTimeout(function () {
-    bondhuLock();
-  }, 30000);
-}
-
-// লকার Lock
-function bondhuLock() {
-  clearTimeout(bondhuAutoLockTimer);
-  showScreen("pin");
-  alert("বন্ধু লকার নিরাপত্তার জন্য Lock হয়েছে।");
-}
-
-// ব্যবহার করলে Auto-Lock সময় নতুন করে শুরু
-["click", "keydown", "touchstart"].forEach(function(eventName) {
-  document.addEventListener(eventName, function() {
-    if (document.getElementById("vault") &&
-        document.getElementById("vault").style.display !== "none") {
-      bondhuStartAutoLock();
-    }
-  });
-});
-  
-// ===== মাস্টার স্ক্রিপ্ট - ভার্সন + আপডেট সিস্টেম =====
-let MY_VERSION = "1.0";
-let ADMIN_PIN = "1234"; // তুমি চাইলে এটা বদলাও
+let MY_VERSION = "1.1";
+let ADMIN_PIN = "1234";
 let tapCount = 0;
 document.getElementById('verText').innerText = "Version " + MY_VERSION;
 document.getElementById('v2').innerText = MY_VERSION;
 
+const LANGS = {
+bn:{chooseLang:"🌍 ভাষা বাছো",enter:"➡️ ঢুকো",welcome:"👋 স্বাগতম বন্ধু!",desc:"বন্ধু লিস্ট, আড্ডা, ছবি এখানে আসবে।",setting:"⚙️ সেটিং",security:"🔒 সিকিউরিটি",checkUpdate:"🔄 আপডেট চেক করো",langLabel:"🌍 ভাষা:",change:"বদলাও",darkLabel:"🌙 ডার্ক মোড:",notiLabel:"🔔 নোটিফিকেশন:",back:"⬅️ Back",back2:"⬅️ Back",setPin:"পিন সেট করো",finger:"🔐 ফিঙ্গারপ্রিন্ট লক:",logoutLabel:"🚪 সব ডিভাইস থেকে লগআউট:",logout:"লগআউট"},
+en:{chooseLang:"🌍 Choose Language",enter:"➡️ Enter",welcome:"👋 Welcome Friend!",desc:"Friend list, chat, photos will come here.",setting:"⚙️ Setting",security:"🔒 Security",checkUpdate:"🔄 Check Update",langLabel:"🌍 Language:",change:"Change",darkLabel:"🌙 Dark Mode:",notiLabel:"🔔 Notification:",back:"⬅️ Back",back2:"⬅️ Back",setPin:"Set PIN",finger:"🔐 Fingerprint Lock:",logoutLabel:"🚪 Logout from all devices:",logout:"Logout"},
+ar:{chooseLang:"🌍 اختر اللغة",enter:"➡️ دخول",welcome:"👋 أهلا صديقي!",desc:"قائمة الأصدقاء والدردشة والصور ستأتي هنا.",setting:"⚙️ الإعدادات",security:"🔒 الأمان",checkUpdate:"🔄 تحقق من التحديث",langLabel:"🌍 اللغة:",change:"تغيير",darkLabel:"🌙 الوضع الليلي:",notiLabel:"🔔 الإشعارات:",back:"⬅️ رجوع",back2:"⬅️ رجوع",setPin:"تعيين PIN",finger:"🔐 قفل بصمة:",logoutLabel:"🚪 تسجيل خروج من كل الأجهزة:",logout:"خروج"},
+hi:{chooseLang:"🌍 भाषा चुनें",enter:"➡️ अंदर जाओ",welcome:"👋 स्वागत दोस्त!",desc:"दोस्त लिस्ट, चैट, फोटो यहाँ आएगा।",setting:"⚙️ सेटिंग",security:"🔒 सुरक्षा",checkUpdate:"🔄 अपडेट चेक करो",langLabel:"🌍 भाषा:",change:"बदलो",darkLabel:"🌙 डार्क मोड:",notiLabel:"🔔 नोटिफिकेशन:",back:"⬅️ पीछे",back2:"⬅️ पीछे",setPin:"पिन सेट करो",finger:"🔐 फिंगरप्रिंट लॉक:",logoutLabel:"🚪 सभी डिवाइस से लॉगआउट:",logout:"लॉगआउट"},
+zh:{chooseLang:"🌍 选择语言",enter:"➡️ 进入",welcome:"👋 欢迎朋友!",desc:"好友列表、聊天、照片将在这里。",setting:"⚙️ 设置",security:"🔒 安全",checkUpdate:"🔄 检查更新",langLabel:"🌍 语言:",change:"更改",darkLabel:"🌙 深色模式:",notiLabel:"🔔 通知:",back:"⬅️ 返回",back2:"⬅️ 返回",setPin:"设置 PIN",finger:"🔐 指纹锁:",logoutLabel:"🚪 从所有设备注销:",logout:"注销"},
+ja:{chooseLang:"🌍 言語を選ぶ",enter:"➡️ 入る",welcome:"👋 ようこそ友達!",desc:"友達リスト、チャット、写真がここに来ます。",setting:"⚙️ 設定",security:"🔒 セキュリティ",checkUpdate:"🔄 アップデート確認",langLabel:"🌍 言語:",change:"変更",darkLabel:"🌙 ダークモード:",notiLabel:"🔔 通知:",back:"⬅️ 戻る",back2:"⬅️ 戻る",setPin:"PINを設定",finger:"🔐 指紋ロック:",logoutLabel:"🚪 全デバイスからログアウト:",logout:"ログアウト"},
+fr:{chooseLang:"🌍 Choisir la langue",enter:"➡️ Entrer",welcome:"👋 Bienvenue ami!",desc:"Liste d'amis, chat, photos viendront ici.",setting:"⚙️ Paramètres",security:"🔒 Sécurité",checkUpdate:"🔄 Vérifier mise à jour",langLabel:"🌍 Langue:",change:"Changer",darkLabel:"🌙 Mode sombre:",notiLabel:"🔔 Notification:",back:"⬅️ Retour",back2:"⬅️ Retour",setPin:"Définir PIN",finger:"🔐 Verrou empreinte:",logoutLabel:"🚪 Déconnexion de tous appareils:",logout:"Déconnexion"},
+es:{chooseLang:"🌍 Elige idioma",enter:"➡️ Entrar",welcome:"👋 ¡Bienvenido amigo!",desc:"Lista de amigos, chat, fotos vendrán aquí.",setting:"⚙️ Ajustes",security:"🔒 Seguridad",checkUpdate:"🔄 Buscar actualización",langLabel:"🌍 Idioma:",change:"Cambiar",darkLabel:"🌙 Modo oscuro:",notiLabel:"🔔 Notificación:",back:"⬅️ Atrás",back2:"⬅️ Atrás",setPin:"Poner PIN",finger:"🔐 Bloqueo huella:",logoutLabel:"🚪 Cerrar sesión en todos:",logout:"Cerrar sesión"}
+};
+
+function applyLang(l){
+  let t = LANGS[l] || LANGS['bn'];
+  document.querySelectorAll('[data-t]').forEach(el=>{
+    let k = el.getAttribute('data-t');
+    if(t[k]) el.innerText = t[k];
+  });
+  document.documentElement.lang = l;
+  document.body.style.direction = (l==='ar') ? 'rtl' : 'ltr';
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
+}
+function setLang(l){
+  localStorage.setItem('lang', l);
+  applyLang(l);
+  alert('ভাষা সেট: '+l);
+  showBox('langBox');
+}
 function showBox(id){
   ['langBox','mainBox','settingBox','securityBox','adminBox'].forEach(x=>{
     document.getElementById(x).classList.add('hidden');
   });
   document.getElementById(id).classList.remove('hidden');
 }
-function setLang(l){ localStorage.setItem('lang', l); alert('ভাষা সেট: '+l); }
 function showMain(){ showBox('mainBox'); }
-function toggleDark(){ document.body.style.background = document.body.style.background=='black' ? '#f0f2f5' : 'black'; document.body.style.color='white'; }
-function setPin(){ alert('পিন সেট হয়ে গেছে: '+document.getElementById('pinInput').value); }
 
-// ===== আপডেট সিস্টেম =====
+function toggleDark(){
+  let isDark = document.body.classList.toggle('dark');
+  localStorage.setItem('dark', isDark ? '1' : '0');
+  document.getElementById('darkBtn').innerText = isDark ? 'অন' : 'অফ';
+}
+function toggleNoti(){
+  let cur = localStorage.getItem('noti')==='1';
+  let next = !cur;
+  localStorage.setItem('noti', next ? '1' : '0');
+  document.getElementById('notiBtn').innerText = next ? 'অন' : 'অফ';
+  if(next && 'Notification' in window){
+    Notification.requestPermission().then(p=>{
+      if(p==='granted') new Notification('Bondhu Apps', {body:'নোটিফিকেশন অন হয়ে গেছে!'});
+    });
+  } else {
+    alert(next ? 'নোটিফিকেশন অন' : 'নোটিফিকেশন অফ');
+  }
+}
+function toggleFinger(){
+  let cur = localStorage.getItem('finger')==='1';
+  let next = !cur;
+  localStorage.setItem('finger', next ? '1' : '0');
+  document.getElementById('fingerBtn').innerText = next ? 'অন' : 'অফ';
+  alert(next ? 'ফিঙ্গারপ্রিন্ট লক অন' : 'ফিঙ্গারপ্রিন্ট লক অফ');
+}
+function setPin(){
+  let v = document.getElementById('pinInput').value.trim();
+  if(v.length!==4 || isNaN(v)){ alert('৪ সংখ্যার পিন দাও ভাই!'); return; }
+  localStorage.setItem('userPin', v);
+  document.getElementById('pinStatus').innerText = '✅ পিন সেট হয়ে গেছে: '+v;
+  alert('পিন সেট হয়ে গেছে!');
+  document.getElementById('pinInput').value='';
+}
+function logoutAll(){
+  if(confirm('সত্যি সব ডিভাইস থেকে লগআউট করবা?')){
+    localStorage.clear();
+    alert('সব ডিভাইস থেকে লগআউট হয়ে গেছে!');
+    showBox('langBox');
+  }
+}
 function checkUpdate(){
   document.getElementById('updateText').innerText = "আপডেট চেক করা হচ্ছে...";
   setTimeout(()=>{
-    // GitHub থেকে নতুন ভার্সন আসলে এইখানে রিলোড হবে
-    fetch(window.location.href, {cache:"no-cache"}).then(()=>{
-      document.getElementById('updateText').innerText = "✅ তুমি লেটেস্ট ভার্সন "+MY_VERSION+" এ আছো। নতুন আপডেট আসলে আবার চেক করো।";
-      // যদি নতুন ভার্সন থাকে তাহলে অটো রিলোড:
-      // location.reload(true);
-    });
+    document.getElementById('updateText').innerText = "✅ তুমি লেটেস্ট ভার্সন "+MY_VERSION+" এ আছো।";
   },1000);
 }
-
-// ===== এডমিন সিকিউরিটি বাটন - গোপন =====
 function adminTap(){
   tapCount++;
   if(tapCount>=5){ showBox('adminBox'); tapCount=0; }
@@ -196,6 +177,16 @@ function checkAdmin(){
     document.getElementById('adminContent').classList.remove('hidden');
   } else { alert('ভুল পিন!'); }
 }
+// লোড হলে আগের সেটিং ফিরিয়ে আনা
+(function init(){
+  let l = localStorage.getItem('lang') || 'bn';
+  applyLang(l);
+  if(localStorage.getItem('dark')==='1'){ document.body.classList.add('dark'); document.getElementById('darkBtn').innerText='অন'; }
+  if(localStorage.getItem('noti')==='1'){ document.getElementById('notiBtn').innerText='অন'; }
+  if(localStorage.getItem('finger')==='1'){ document.getElementById('fingerBtn').innerText='অন'; }
+  if(localStorage.getItem('userPin')){ document.getElementById('pinStatus').innerText='✅ পিন সেট করা আছে'; }
+  showBox('langBox');
+})();
 </script>
 </body>
 </html>
