@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Settings - Bondhu Apps</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif}
+body{background:#e8c8e8;display:flex;justify-content:center}
+.phone{width:100%;max-width:400px;background:linear-gradient(180deg,#2d0a5e 0%,#7b2a9e 40%,#c94b8a 70%,#f07ba8 100%);padding:25px 18px;min-height:100vh}
+.top{display:flex;align-items:center;gap:12px;color:white;margin-bottom:20px}
+.top a{color:white;text-decoration:none;font-size:30px}
+.top h1{font-size:28px;flex:1}
+.logo{width:55px;height:55px;background:#f0e0ff;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:38px;font-weight:900;color:#d78bff}
+.menu{background:white;border-radius:14px;padding:16px;display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;background:#e8d5ff}
+.menu b{font-size:18px;flex:1}
+.menu span{color:#999}
+.switch{width:50px;height:28px;background:#e8a0c8;border-radius:20px;position:relative}
+.switch:after{content:'';position:absolute;right:3px;top:3px;width:22px;height:22px;background:#ffc8ec;border-radius:50%}
+.switch.off{background:#999}
+.switch.off:after{left:3px;right:auto;background:white}
+.ver{text-align:center;color:rgba(0,0,0,0.4);font-size:13px;margin-top:25px}
+.back{background:white;text-align:center;padding:14px;border-radius:12px;font-weight:bold;margin-top:15px}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="top"><a href="home.html">‹</a><h1>Settings</h1><div class="logo">B</div></div>
+<div class="menu"><div class="icon">🌐</div><b>Language</b><span>বাংলা • English • Hindi ›</span></div>
+<div class="menu"><div class="icon">🔔</div><b>Notifications</b><div class="switch"></div></div>
+<div class="menu"><div class="icon">🌙</div><b>Dark Mode</b><div class="switch off"></div></div>
+<div class="menu"><div class="icon">🛡️</div><b>Privacy</b><span>›</span></div>
+<div class="menu"><div class="icon">ⓘ</div><b>About</b><span>›</span></div>
+<div class="back" onclick="location.href='home.html'">Back to Home</div>
+<div class="ver">Version 1.1 • Trial</div>
+</div>
+</body>
+</html>
