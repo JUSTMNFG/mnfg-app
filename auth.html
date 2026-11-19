@@ -26,20 +26,21 @@ button{width:100%;padding:13px;margin-top:16px;border:0;border-radius:12px;backg
 <div class="link" id="toggle" onclick="toggleMode()">নতুন? একাউন্ট খুলো</div>
 <div id="msg"></div>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL = "https://ujhjloihskutkazhaydc.supabase.co";
-const SUPABASE_KEY = "sb_publishable_EqE3D3fqYSf5C13Ds0wNyQ_ZeDHoJfH";
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 let isSignup = false;
-
 function toggleMode(){
   isSignup = !isSignup;
   document.getElementById('title').innerText = isSignup ? 'Signup' : 'Login';
   document.getElementById('mainBtn').innerText = isSignup ? 'একাউন্ট খুলো' : 'Login';
   document.getElementById('toggle').innerText = isSignup ? 'আগে একাউন্ট আছে? Login করো' : 'নতুন? একাউন্ট খুলো';
 }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://ujhjloihskutkazhaydc.supabase.co";
+const SUPABASE_KEY = "sb_publishable_EqE3D3fqYSf5C13Ds0wNyQ_ZeDHoJfH";
+let supabaseClient = null;
+try{ supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY); }catch(e){}
 async function doAuth(){
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
@@ -47,18 +48,10 @@ async function doAuth(){
   if(!email || !password){ msg.innerText = "ইমেইল আর পাসওয়ার্ড দাও"; return; }
   msg.innerText = "একটু দাঁড়াও...";
   let res;
-  if(isSignup){
-    res = await supabase.auth.signUp({email, password});
-  } else {
-    res = await supabase.auth.signInWithPassword({email, password});
-  }
+  if(isSignup){ res = await supabaseClient.auth.signUp({email, password}); }
+  else { res = await supabaseClient.auth.signInWithPassword({email, password}); }
   if(res.error){ msg.innerText = res.error.message; }
-  else {
-    msg.style.color = "green";
-    msg.innerText = isSignup ? "একাউন্ট হইছে! এখন Login করো" : "Login হইছে!";
-    if(!isSignup) setTimeout(()=> location.href="home.html", 800);
-    if(isSignup) toggleMode();
-  }
+  else { msg.style.color="green"; msg.innerText = isSignup ? "একাউন্ট হইছে! এখন Login করো" : "Login হইছে!"; if(!isSignup) setTimeout(()=> location.href="home.html", 800); if(isSignup) toggleMode(); }
 }
 </script>
 </body>
