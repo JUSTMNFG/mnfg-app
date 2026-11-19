@@ -11,6 +11,7 @@ body{font-family:sans-serif;background:#f2f2f2;display:flex;justify-content:cent
 h2{text-align:center}
 input{width:100%;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:10px;box-sizing:border-box;font-size:16px}
 button{width:100%;padding:12px;background:black;color:white;border:none;border-radius:10px;font-size:16px;cursor:pointer;margin-top:10px}
+button.signup{background:#007bff}
 .link{text-align:center;color:blue;margin-top:15px;cursor:pointer;font-size:14px}
 #msg{text-align:center;margin-top:10px;font-size:14px;min-height:20px}
 #otpBox{display:none}
@@ -18,13 +19,13 @@ button{width:100%;padding:12px;background:black;color:white;border:none;border-r
 </head>
 <body>
 <div class="box">
-<h2 id="title">Login</h2>
+<h2>MNfG Login</h2>
 
 <div id="authBox">
 <input type="email" id="email" placeholder="ইমেইল দাও">
 <input type="password" id="password" placeholder="পাসওয়ার্ড দাও (৬+ অক্ষর)">
-<button id="mainBtn" onclick="handleAuth()">Login করো</button>
-<div class="link" onclick="toggleMode()" id="toggleText">নতুন? একাউন্ট খুলো</div>
+<button onclick="doLogin()">Login করো</button>
+<button class="signup" onclick="doSignup()">নতুন একাউন্ট খুলো</button>
 </div>
 
 <div id="otpBox">
@@ -38,57 +39,48 @@ button{width:100%;padding:12px;background:black;color:white;border:none;border-r
 </div>
 
 <script>
-// *** তোমার আগের Supabase URL আর KEY এখানে বসাও ***
 const supabaseUrl = "https://ujhjloihskutkazhaydc.supabase.co";
 const supabaseKey = "sb_publishable_EqE3D3fqYSf5C13Ds0wNyQ_ZeDHoJfH";
-const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+let supabaseClient = null;
+try{ supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey); }catch(e){}
 
-let isSignup = false;
-
-function toggleMode(){
-  isSignup = !isSignup;
-  document.getElementById('title').innerText = isSignup ? 'Signup' : 'Login';
-  document.getElementById('mainBtn').innerText = isSignup ? 'একাউন্ট খুলো' : 'Login করো';
-  document.getElementById('toggleText').innerText = isSignup ? 'আগে একাউন্ট আছে? Login করো' : 'নতুন? একাউন্ট খুলো';
-  document.getElementById('msg').innerText = '';
-}
-
-async function handleAuth(){
+async function doSignup(){
   const email = document.getElementById('email').value.trim();
   const password = document.getElementById('password').value;
   const msg = document.getElementById('msg');
   if(!email.includes('@')){ msg.innerText='সঠিক ইমেইল দাও'; msg.style.color='red'; return; }
   if(password.length < 6){ msg.innerText='পাসওয়ার্ড কমপক্ষে ৬ অক্ষর দাও'; msg.style.color='red'; return; }
-
-  msg.innerText='একটু অপেক্ষা করো...'; msg.style.color='black';
-
-  if(isSignup){
-    const { error } = await supabase.auth.signUp({ email, password });
-    if(error){ msg.innerText = error.message; msg.style.color='red'; }
-    else{
-      msg.innerText='OTP পাঠানো হইছে!'; msg.style.color='green';
-      document.getElementById('authBox').style.display='none';
-      document.getElementById('otpBox').style.display='block';
-    }
-  } else {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if(error){ msg.innerText='Login হয় নাই! আগে OTP দিয়া কনফার্ম করছো?'; msg.style.color='red'; }
-    else{ window.location.href='index.html'; }
+  msg.innerText='OTP পাঠাইতেছি...'; msg.style.color='black';
+  const { error } = await supabaseClient.auth.signUp({ email, password });
+  if(error){ msg.innerText = error.message; msg.style.color='red'; }
+  else{
+    msg.innerText='OTP পাঠানো হইছে! ইমেইল চেক করো'; msg.style.color='green';
+    document.getElementById('authBox').style.display='none';
+    document.getElementById('otpBox').style.display='block';
   }
+}
+
+async function doLogin(){
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const msg = document.getElementById('msg');
+  if(!email.includes('@') || password.length < 6){ msg.innerText='ইমেইল আর পাসওয়ার্ড ঠিক কইরা দাও'; msg.style.color='red'; return; }
+  msg.innerText='Login হইতেছে...';
+  const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+  if(error){ msg.innerText='Login হয় নাই! আগে OTP দিয়া কনফার্ম করছো?'; msg.style.color='red'; }
+  else{ window.location.href='index.html'; }
 }
 
 async function verifyOtp(){
   const email = document.getElementById('email').value.trim();
   const token = document.getElementById('otp').value.trim();
   const msg = document.getElementById('msg');
-  if(token.length < 6){ msg.innerText='৬ সংখ্যার OTP দাও'; return; }
-  const { error } = await supabase.auth.verifyOtp({ email, token, type:'signup' });
+  if(token.length < 6){ msg.innerText='৬ সংখ্যার OTP দাও'; msg.style.color='red'; return; }
+  const { error } = await supabaseClient.auth.verifyOtp({ email, token, type:'signup' });
   if(error){ msg.innerText='OTP ভুল! আবার চেক করো'; msg.style.color='red'; }
   else{
     msg.innerText='হইছে! এখন Login করো'; msg.style.color='green';
     backToLogin();
-    isSignup = false;
-    toggleMode(); toggleMode();
   }
 }
 
