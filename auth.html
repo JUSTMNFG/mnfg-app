@@ -3,55 +3,98 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bondhu Apps - Login</title>
+<title>Login - MNfG</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-*{box-sizing:border-box;font-family:sans-serif}
-body{margin:0;background:#f2f2f2;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:16px}
-.card{background:#fff;width:100%;max-width:380px;padding:24px;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.1)}
-h2{text-align:center;margin:0 0 5px}
-p{text-align:center;color:#777;font-size:14px}
-input{width:100%;padding:13px;margin-top:12px;border:1px solid #ddd;border-radius:12px;font-size:15px;outline:none}
-button{width:100%;padding:13px;margin-top:16px;border:0;border-radius:12px;background:#000;color:#fff;font-size:16px;font-weight:bold}
-.link{text-align:center;margin-top:14px;color:#007bff;cursor:pointer;font-size:14px}
-#msg{text-align:center;color:red;font-size:13px;margin-top:10px}
+body{font-family:sans-serif;background:#f2f2f2;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;padding:15px}
+.box{background:white;padding:25px;border-radius:15px;width:100%;max-width:350px;box-shadow:0 5px 20px rgba(0,0,0,0.1)}
+h2{text-align:center}
+input{width:100%;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:10px;box-sizing:border-box;font-size:16px}
+button{width:100%;padding:12px;background:black;color:white;border:none;border-radius:10px;font-size:16px;cursor:pointer;margin-top:10px}
+.link{text-align:center;color:blue;margin-top:15px;cursor:pointer;font-size:14px}
+#msg{text-align:center;margin-top:10px;font-size:14px;min-height:20px}
+#otpBox{display:none}
 </style>
 </head>
 <body>
-<div class="card">
+<div class="box">
 <h2 id="title">Login</h2>
-<p>Bondhu Apps এ স্বাগতম</p>
-<input id="email" type="email" placeholder="ইমেইল লেখো">
-<input id="password" type="password" placeholder="পাসওয়ার্ড লেখো">
-<button id="mainBtn" onclick="doAuth()">Login</button>
-<div class="link" id="toggle" onclick="toggleMode()">নতুন? একাউন্ট খুলো</div>
+
+<div id="authBox">
+<input type="email" id="email" placeholder="ইমেইল দাও">
+<input type="password" id="password" placeholder="পাসওয়ার্ড দাও (৬+ অক্ষর)">
+<button id="mainBtn" onclick="handleAuth()">Login করো</button>
+<div class="link" onclick="toggleMode()" id="toggleText">নতুন? একাউন্ট খুলো</div>
+</div>
+
+<div id="otpBox">
+<p style="text-align:center">তোমার ইমেইলে ৬ সংখ্যার OTP গেছে, ঐটা দাও</p>
+<input type="text" id="otp" placeholder="OTP কোড দাও" maxlength="6" inputmode="numeric">
+<button onclick="verifyOtp()">OTP দিয়া কনফার্ম করো</button>
+<div class="link" onclick="backToLogin()">পিছনে যাও</div>
+</div>
+
 <div id="msg"></div>
 </div>
+
 <script>
+// *** তোমার আগের Supabase URL আর KEY এখানে বসাও ***
+const supabaseUrl = "https://ujhjloihskutkazhaydc.supabase.co";
+const supabaseKey = "sb_publishable_EqE3D3fqYSf5C13Ds0wNyQ_ZeDHoJfH";
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
 let isSignup = false;
+
 function toggleMode(){
   isSignup = !isSignup;
   document.getElementById('title').innerText = isSignup ? 'Signup' : 'Login';
-  document.getElementById('mainBtn').innerText = isSignup ? 'একাউন্ট খুলো' : 'Login';
-  document.getElementById('toggle').innerText = isSignup ? 'আগে একাউন্ট আছে? Login করো' : 'নতুন? একাউন্ট খুলো';
+  document.getElementById('mainBtn').innerText = isSignup ? 'একাউন্ট খুলো' : 'Login করো';
+  document.getElementById('toggleText').innerText = isSignup ? 'আগে একাউন্ট আছে? Login করো' : 'নতুন? একাউন্ট খুলো';
+  document.getElementById('msg').innerText = '';
 }
-</script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-const SUPABASE_URL = "https://ujhjloihskutkazhaydc.supabase.co";
-const SUPABASE_KEY = "sb_publishable_EqE3D3fqYSf5C13Ds0wNyQ_ZeDHoJfH";
-let supabaseClient = null;
-try{ supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY); }catch(e){}
-async function doAuth(){
-  const email = document.getElementById('email').value;
+
+async function handleAuth(){
+  const email = document.getElementById('email').value.trim();
   const password = document.getElementById('password').value;
   const msg = document.getElementById('msg');
-  if(!email || !password){ msg.innerText = "ইমেইল আর পাসওয়ার্ড দাও"; return; }
-  msg.innerText = "একটু দাঁড়াও...";
-  let res;
-  if(isSignup){ res = await supabaseClient.auth.signUp({email, password}); }
-  else { res = await supabaseClient.auth.signInWithPassword({email, password}); }
-  if(res.error){ msg.innerText = res.error.message; }
-  else { msg.style.color="green"; msg.innerText = isSignup ? "একাউন্ট হইছে! এখন Login করো" : "Login হইছে!"; if(!isSignup) setTimeout(()=> location.href="home.html", 800); if(isSignup) toggleMode(); }
+  if(!email.includes('@')){ msg.innerText='সঠিক ইমেইল দাও'; msg.style.color='red'; return; }
+  if(password.length < 6){ msg.innerText='পাসওয়ার্ড কমপক্ষে ৬ অক্ষর দাও'; msg.style.color='red'; return; }
+
+  msg.innerText='একটু অপেক্ষা করো...'; msg.style.color='black';
+
+  if(isSignup){
+    const { error } = await supabase.auth.signUp({ email, password });
+    if(error){ msg.innerText = error.message; msg.style.color='red'; }
+    else{
+      msg.innerText='OTP পাঠানো হইছে!'; msg.style.color='green';
+      document.getElementById('authBox').style.display='none';
+      document.getElementById('otpBox').style.display='block';
+    }
+  } else {
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if(error){ msg.innerText='Login হয় নাই! আগে OTP দিয়া কনফার্ম করছো?'; msg.style.color='red'; }
+    else{ window.location.href='index.html'; }
+  }
+}
+
+async function verifyOtp(){
+  const email = document.getElementById('email').value.trim();
+  const token = document.getElementById('otp').value.trim();
+  const msg = document.getElementById('msg');
+  if(token.length < 6){ msg.innerText='৬ সংখ্যার OTP দাও'; return; }
+  const { error } = await supabase.auth.verifyOtp({ email, token, type:'signup' });
+  if(error){ msg.innerText='OTP ভুল! আবার চেক করো'; msg.style.color='red'; }
+  else{
+    msg.innerText='হইছে! এখন Login করো'; msg.style.color='green';
+    backToLogin();
+    isSignup = false;
+    toggleMode(); toggleMode();
+  }
+}
+
+function backToLogin(){
+  document.getElementById('otpBox').style.display='none';
+  document.getElementById('authBox').style.display='block';
 }
 </script>
 </body>
