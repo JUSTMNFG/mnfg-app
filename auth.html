@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bondhu Apps - Login</title>
+<style>
+*{box-sizing:border-box;font-family:sans-serif}
+body{margin:0;background:#f2f2f2;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:16px}
+.card{background:#fff;width:100%;max-width:380px;padding:24px;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.1)}
+h2{text-align:center;margin:0 0 5px}
+p{text-align:center;color:#777;font-size:14px}
+input{width:100%;padding:13px;margin-top:12px;border:1px solid #ddd;border-radius:12px;font-size:15px;outline:none}
+button{width:100%;padding:13px;margin-top:16px;border:0;border-radius:12px;background:#000;color:#fff;font-size:16px;font-weight:bold}
+.link{text-align:center;margin-top:14px;color:#007bff;cursor:pointer;font-size:14px}
+#msg{text-align:center;color:red;font-size:13px;margin-top:10px}
+</style>
+</head>
+<body>
+<div class="card">
+<h2 id="title">Login</h2>
+<p>Bondhu Apps এ স্বাগতম</p>
+<input id="email" type="email" placeholder="ইমেইল লেখো">
+<input id="password" type="password" placeholder="পাসওয়ার্ড লেখো">
+<button id="mainBtn" onclick="doAuth()">Login</button>
+<div class="link" id="toggle" onclick="toggleMode()">নতুন? একাউন্ট খুলো</div>
+<div id="msg"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://ujhjloihskutkazhaydc.supabase.co";
+const SUPABASE_KEY = "sb_publishable_EqE3D3fqYSf5C13Ds0wNyQ_ZeDHoJfH";
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+let isSignup = false;
+
+function toggleMode(){
+  isSignup = !isSignup;
+  document.getElementById('title').innerText = isSignup ? 'Signup' : 'Login';
+  document.getElementById('mainBtn').innerText = isSignup ? 'একাউন্ট খুলো' : 'Login';
+  document.getElementById('toggle').innerText = isSignup ? 'আগে একাউন্ট আছে? Login করো' : 'নতুন? একাউন্ট খুলো';
+}
+async function doAuth(){
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  const msg = document.getElementById('msg');
+  if(!email || !password){ msg.innerText = "ইমেইল আর পাসওয়ার্ড দাও"; return; }
+  msg.innerText = "একটু দাঁড়াও...";
+  let res;
+  if(isSignup){
+    res = await supabase.auth.signUp({email, password});
+  } else {
+    res = await supabase.auth.signInWithPassword({email, password});
+  }
+  if(res.error){ msg.innerText = res.error.message; }
+  else {
+    msg.style.color = "green";
+    msg.innerText = isSignup ? "একাউন্ট হইছে! এখন Login করো" : "Login হইছে!";
+    if(!isSignup) setTimeout(()=> location.href="home.html", 800);
+    if(isSignup) toggleMode();
+  }
+}
+</script>
+</body>
+</html>
