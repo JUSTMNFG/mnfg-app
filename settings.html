@@ -3,13 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Settings - Bondhu Apps (MNfG)</title>
+<title>Settings - Bondhu Apps</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif}
 body{background:#e8c8e8;display:flex;justify-content:center;min-height:100vh}
 .phone{width:100%;max-width:400px;background:linear-gradient(180deg,#2d0a5e 0%,#7b2a9e 40%,#c94b8a 70%,#f07ba8 100%);padding:25px 18px;min-height:100vh;position:relative;transition:filter 0.25s}
 .phone.dark-mode{filter:brightness(0.85) contrast(1.05)}
-.parent-tag{display:inline-block;background:rgba(255,255,255,0.18);color:#fff;padding:4px 12px;border-radius:14px;font-size:12px;font-weight:bold;margin-bottom:10px}
 .top{display:flex;align-items:center;gap:12px;color:white;margin-bottom:20px}
 .top a{color:white;text-decoration:none;font-size:30px;padding:0 6px}
 .top h1{font-size:28px;flex:1}
@@ -39,7 +38,6 @@ body{background:#e8c8e8;display:flex;justify-content:center;min-height:100vh}
 </head>
 <body>
 <div class="phone" id="phoneFrame">
-  <div class="parent-tag">MNfG • Bondhu Apps</div>
   <div class="top">
     <a href="home.html">‹</a>
     <h1>Settings</h1>
@@ -70,14 +68,14 @@ body{background:#e8c8e8;display:flex;justify-content:center;min-height:100vh}
     <span>›</span>
   </div>
 
-  <div class="menu" onclick="showInfo('ⓘ About Bondhu Apps', 'Bondhu Apps (MNfG-এর অধীনে) একটি সহজ ও দ্রুত মোবাইল ওয়েব অ্যাপ।<br><b>Version:</b> 1.1 (Trial)')">
+  <div class="menu" onclick="showInfo('ⓘ About Bondhu Apps', 'Bondhu Apps একটি সহজ ও দ্রুত মোবাইল ওয়েব অ্যাপ।<br><b>Version:</b> 1.1 (Trial)')">
     <div class="icon">ⓘ</div>
     <b>About</b>
     <span>›</span>
   </div>
 
   <div class="back" onclick="location.href='home.html'">Back to Home</div>
-  <div class="ver">MNfG • Bondhu Apps • Version 1.1 Trial</div>
+  <div class="ver">Bondhu Apps • Version 1.1 Trial</div>
 </div>
 
 <div class="modal-overlay" id="modalOverlay">
@@ -175,4 +173,5 @@ body{background:#e8c8e8;display:flex;justify-content:center;min-height:100vh}
   loadSavedSettings();
 </script>
 </body>
-</html>
+  </html>
+  
