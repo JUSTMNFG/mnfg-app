@@ -2,98 +2,600 @@
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Bondhu Apps</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Home - Bondhu Apps</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif}
-body{background:#e8c8e8;display:flex;justify-content:center;min-height:100vh}
-.phone{width:100%;max-width:400px;background:linear-gradient(180deg,#2d0a5e 0%,#7b2a9e 40%,#c94b8a 70%,#f07ba8 100%);padding:25px 18px;min-height:100vh;position:relative}
-.top{display:flex;align-items:center;gap:12px;color:white;margin-bottom:18px}
-.logo{width:55px;height:55px;background:linear-gradient(135deg,#d78bff,#7b2a9e);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:38px;font-weight:900;font-style:italic;box-shadow:0 4px 15px rgba(0,0,0,0.3)}
-.top h1{font-size:28px}
-.trial{text-align:right;margin-top:-6px;margin-bottom:12px}
-.trial span{background:#f8c8dc;color:#333;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:bold}
-.card{background:white;border-radius:18px;padding:22px;margin-bottom:14px}
-.card h2{font-size:24px;color:#1a0a2e;word-break:break-word}
-.card p{color:#444;margin-top:4px;font-size:14px}
-.menu{background:white;border-radius:16px;padding:16px 18px;display:flex;align-items:center;gap:14px;margin-bottom:12px;cursor:pointer;transition:transform 0.15s,background 0.15s}
-.menu:active{transform:scale(0.98);background:#f7f2fa}
-.icon{width:45px;height:45px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px}
-.i1{background:#e8d5ff}.i2{background:#d5c8ff}.i3{background:#ffc8ec}
-.menu b{font-size:20px;flex:1;color:#1a0a2e}
-.menu span{color:#999;font-size:20px}
-.logout{background:#e51e3a;color:white;text-align:center;padding:16px;border-radius:12px;font-size:22px;font-weight:bold;margin-top:18px;cursor:pointer;transition:opacity 0.2s}
-.logout:active{opacity:0.85}
-.ver{text-align:center;color:rgba(255,255,255,0.8);font-size:12px;margin-top:20px}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+body{
+  background:#1a002e;
+  display:flex;
+  justify-content:center;
+  min-height:100vh;
+  transition:background 0.25s ease;
+}
+body.dark-body{background:#090312}
+
+.phone{
+  width:100%;
+  max-width:420px;
+  min-height:100vh;
+  background:linear-gradient(180deg,#4b0082 0%,#7b1fa2 38%,#d946a8 76%,#ff6eb4 100%);
+  padding:18px 16px 32px;
+  color:#fff;
+  transition:background 0.25s ease;
+}
+.phone.dark-mode{
+  background:linear-gradient(180deg,#0c041a 0%,#1a0936 45%,#28104a 100%);
+}
+
+.topbar{
+  background:rgba(255,255,255,0.18);
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,0.25);
+  border-radius:20px;
+  padding:12px 14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:14px;
+}
+.phone.dark-mode .topbar{
+  background:rgba(27,17,43,0.88);
+  border-color:rgba(255,255,255,0.1);
+}
+
+.brand{display:flex;align-items:center;gap:10px}
+.logo{
+  width:46px;height:46px;border-radius:14px;
+  background:radial-gradient(circle at 30% 30%,#ff7ad9,#7b1fa2 65%,#4b0082);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 16px rgba(0,0,0,0.3);
+}
+.logo b{
+  font-family:'Baloo 2',cursive;font-size:32px;color:#fff;font-style:italic;line-height:1;
+}
+.brand-title{font-size:20px;font-weight:800;color:#fff}
+
+.top-actions{display:flex;gap:8px}
+.icon-btn{
+  width:38px;height:38px;border-radius:12px;border:none;
+  background:rgba(255,255,255,0.22);color:#fff;font-size:17px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+}
+.phone.dark-mode .icon-btn{background:#2a1945}
+
+.nav-tabs{
+  display:flex;gap:6px;overflow-x:auto;
+  background:rgba(255,255,255,0.16);
+  padding:6px;border-radius:16px;margin-bottom:14px;
+  scrollbar-width:none;
+}
+.nav-tabs::-webkit-scrollbar{display:none}
+.phone.dark-mode .nav-tabs{background:#190f29}
+
+.tab-btn{
+  flex:1;min-width:64px;padding:8px 6px;border:none;border-radius:12px;
+  background:transparent;color:rgba(255,255,255,0.85);font-size:12px;font-weight:700;
+  cursor:pointer;white-space:nowrap;transition:all 0.2s;
+}
+.tab-btn.active{
+  background:#fff;color:#4b0082;box-shadow:0 4px 12px rgba(0,0,0,0.18);
+}
+.phone.dark-mode .tab-btn.active{
+  background:#8e35c7;color:#fff;
+}
+
+.glass-card{
+  background:rgba(255,255,255,0.92);
+  color:#1c0b30;
+  border-radius:20px;
+  padding:16px;
+  margin-bottom:14px;
+  box-shadow:0 10px 24px rgba(0,0,0,0.18);
+}
+.phone.dark-mode .glass-card{
+  background:#1b112b;
+  color:#f5eeff;
+  border:1px solid rgba(255,255,255,0.09);
+}
+
+.hello-row{display:flex;align-items:center;gap:12px}
+.avatar{
+  width:52px;height:52px;border-radius:50%;
+  background:linear-gradient(135deg,#7b1fa2,#e040a8);
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:22px;font-weight:800;flex-shrink:0;
+}
+.hello-title{font-size:18px;font-weight:800;color:#2d0a5e}
+.phone.dark-mode .hello-title{color:#fff}
+.hello-sub{font-size:12px;color:#555;margin-top:2px}
+.phone.dark-mode .hello-sub{color:#cbbde6}
+
+.post-composer{margin-top:12px}
+.post-textarea{
+  width:100%;min-height:76px;border:1.5px solid #e2d4f0;border-radius:14px;
+  padding:10px 12px;font-size:14px;resize:none;outline:none;
+  background:#fff;color:#1c0b30;
+}
+.phone.dark-mode .post-textarea{
+  background:#281940;color:#fff;border-color:#3f2a61;
+}
+.composer-footer{
+  display:flex;justify-content:space-between;align-items:center;margin-top:10px;gap:10px;
+}
+.post-btn{
+  border:none;border-radius:12px;padding:10px 18px;
+  background:linear-gradient(90deg,#4b0082,#e040a8);
+  color:#fff;font-size:14px;font-weight:700;cursor:pointer;
+}
+.post-btn:disabled{opacity:0.6;cursor:not-allowed}
+
+.feed-card{
+  background:rgba(255,255,255,0.94);
+  color:#1c0b30;
+  border-radius:20px;
+  padding:16px;
+  margin-bottom:12px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.15);
+}
+.phone.dark-mode .feed-card{
+  background:#1b112b;
+  color:#f5eeff;
+  border:1px solid rgba(255,255,255,0.08);
+}
+
+.post-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.small-avatar{
+  width:38px;height:38px;border-radius:50%;
+  background:linear-gradient(135deg,#4b0082,#c94b8a);
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:15px;flex-shrink:0;
+}
+.post-author{font-size:14px;font-weight:700;color:#2d0a5e}
+.phone.dark-mode .post-author{color:#fff}
+.post-meta{font-size:11px;color:#666}
+.phone.dark-mode .post-meta{color:#b9a7d9}
+
+.post-body{font-size:14px;line-height:1.5;margin-bottom:12px;white-space:pre-line;word-break:break-word}
+
+.post-actions{
+  display:flex;justify-content:space-between;
+  border-top:1px solid rgba(0,0,0,0.08);padding-top:10px;gap:6px;
+}
+.phone.dark-mode .post-actions{border-top-color:rgba(255,255,255,0.1)}
+
+.act-btn{
+  flex:1;background:transparent;border:none;border-radius:10px;
+  padding:7px 4px;font-size:12px;font-weight:700;color:#4b0082;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;
+}
+.phone.dark-mode .act-btn{color:#e2c6ff}
+.act-btn.liked{color:#e01e63;background:rgba(224,30,99,0.1)}
+
+.comment-box{margin-top:10px;padding-top:10px;border-top:1px dashed rgba(0,0,0,0.12)}
+.phone.dark-mode .comment-box{border-top-color:rgba(255,255,255,0.14)}
+.comment-item{
+  font-size:12px;padding:6px 10px;border-radius:10px;
+  background:rgba(123,31,162,0.08);margin-bottom:6px;
+}
+.phone.dark-mode .comment-item{background:#291942}
+.comment-row{display:flex;gap:6px;margin-top:6px}
+.comment-input{
+  flex:1;height:36px;border-radius:10px;border:1px solid #d6c5e8;
+  padding:0 10px;font-size:12px;outline:none;background:#fff;color:#1c0b30;
+}
+.phone.dark-mode .comment-input{
+  background:#281940;color:#fff;border-color:#3f2a61;
+}
+.comment-send{
+  border:none;border-radius:10px;padding:0 12px;
+  background:#7b1fa2;color:#fff;font-size:12px;font-weight:700;cursor:pointer;
+}
+
+.section-view{display:none}
+.section-view.active{display:block}
+
+.list-item{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 0;border-bottom:1px solid rgba(0,0,0,0.07);
+}
+.phone.dark-mode .list-item{border-bottom-color:rgba(255,255,255,0.08)}
+.list-item:last-child{border-bottom:none}
+
+.mini-btn{
+  border:none;border-radius:10px;padding:7px 12px;
+  background:#7b1fa2;color:#fff;font-size:12px;font-weight:700;cursor:pointer;
+}
+
+.chat-messages{
+  max-height:240px;overflow-y:auto;margin-bottom:10px;
+  display:flex;flex-direction:column;gap:8px;
+}
+.msg-bubble{
+  padding:9px 12px;border-radius:14px;font-size:13px;max-width:85%;
+  background:#efe3fa;color:#1c0b30;align-self:flex-start;word-break:break-word;
+}
+.phone.dark-mode .msg-bubble{background:#2b1a47;color:#fff}
+.msg-bubble.me{
+  background:linear-gradient(90deg,#4b0082,#c94b8a);
+  color:#fff;align-self:flex-end;
+}
+
+.logout-btn{
+  width:100%;padding:13px;border:none;border-radius:14px;
+  background:#e51e3a;color:#fff;font-size:15px;font-weight:800;
+  cursor:pointer;margin-top:8px;box-shadow:0 6px 16px rgba(229,30,58,0.3);
+}
+
+.toast{
+  position:fixed;bottom:18px;left:50%;transform:translateX(-50%);
+  background:#1c0b30;color:#fff;padding:10px 16px;border-radius:12px;
+  font-size:12px;font-weight:700;display:none;z-index:200;
+  box-shadow:0 8px 20px rgba(0,0,0,0.35);
+}
+
+.footer-ver{
+  text-align:center;color:rgba(255,255,255,0.85);
+  font-size:12px;margin-top:18px;font-weight:600;
+}
 </style>
 </head>
 <body>
 
-<div class="phone">
-  <div class="top"><div class="logo">B</div><h1>Bondhu Apps</h1></div>
-  <div class="trial"><span id="accountBadge">✦ Trial</span></div>
-  
-  <div class="card">
-    <h2 id="welcomeName">Hello Friend!</h2>
-    <p id="userEmail">Welcome to Bondhu Apps</p>
+<div class="phone" id="phoneFrame">
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo"><b>B</b></div>
+      <div class="brand-title">Bondhu Apps</div>
+    </div>
+    <div class="top-actions">
+      <button class="icon-btn" onclick="openSecurityInfo()" title="Security">🔒</button>
+      <button class="icon-btn" onclick="location.href='settings.html'" title="Settings">⚙️</button>
+    </div>
   </div>
 
-  <div class="menu" onclick="openSettings()">
-    <div class="icon i1">⚙️</div><b>Settings</b><span>›</span>
-  </div>
-  
-  <div class="menu" onclick="openSecurity()">
-    <div class="icon i2">🔒</div><b>Security</b><span>›</span>
-  </div>
-  
-  <div class="menu" onclick="checkUpdate()">
-    <div class="icon i3">🔄</div><b>Check Update</b><span>›</span>
+  <div class="nav-tabs">
+    <button class="tab-btn active" id="tabHome" onclick="switchTab('home', this)">Home</button>
+    <button class="tab-btn" id="tabFriends" onclick="switchTab('friends', this)">Friends</button>
+    <button class="tab-btn" id="tabChat" onclick="switchTab('chat', this)">Chat</button>
+    <button class="tab-btn" id="tabVideo" onclick="switchTab('video', this)">Video</button>
+    <button class="tab-btn" id="tabProfile" onclick="location.href='profile.html'">Profile</button>
   </div>
 
-  <div class="logout" id="logoutBtn" onclick="handleLogout()">Logout</div>
-  <div class="ver">Bondhu Apps • Version 1.1 Trial</div>
+  <!-- HOME SECTION -->
+  <div class="section-view active" id="view-home">
+    <div class="glass-card">
+      <div class="hello-row">
+        <div class="avatar" id="userAvatar">B</div>
+        <div>
+          <div class="hello-title" id="welcomeText">Welcome Bondhu Apps</div>
+          <div class="hello-sub" id="userSubText">Loading account...</div>
+        </div>
+      </div>
+
+      <div class="post-composer">
+        <textarea class="post-textarea" id="postInput" placeholder="আজ কী ভাবছেন? বন্ধুদের সাথে শেয়ার করুন..."></textarea>
+        <div class="composer-footer">
+          <span style="font-size:11px;opacity:0.75" id="postHint">লাইভ ফিডে প্রকাশ হবে</span>
+          <button class="post-btn" id="createPostBtn" onclick="addPost()">+ Post</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="feedList"></div>
+  </div>
+
+  <!-- FRIENDS SECTION -->
+  <div class="section-view" id="view-friends">
+    <div class="glass-card">
+      <h3 style="margin-bottom:10px" id="friendsHeading">বন্ধু ও কমিউনিটি</h3>
+      <div id="friendsContainer"></div>
+    </div>
+  </div>
+
+  <!-- CHAT SECTION -->
+  <div class="section-view" id="view-chat">
+    <div class="glass-card">
+      <h3 style="margin-bottom:10px" id="chatHeading">লাইভ চ্যাট</h3>
+      <div class="chat-messages" id="chatMessages"></div>
+      <div class="comment-row">
+        <input type="text" class="comment-input" id="chatInput" placeholder="মেসেজ লিখুন...">
+        <button class="comment-send" id="chatSendBtn" onclick="sendChatMessage()">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIDEO SECTION -->
+  <div class="section-view" id="view-video">
+    <div class="glass-card">
+      <h3 style="margin-bottom:8px" id="videoHeading">ভিডিও ফিড</h3>
+      <p style="font-size:13px;opacity:0.85;margin-bottom:12px" id="videoDesc">কমিউনিটির ভিডিও আপডেট ও ক্লিপসমূহ।</p>
+      <div id="videoList"></div>
+    </div>
+  </div>
+
+  <button class="logout-btn" id="logoutBtn" onclick="logout()">Logout</button>
+  <div class="footer-ver">Bondhu Apps • Version 1.1 Trial</div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<div class="toast" id="toastBox"></div>
+
 <script>
-  const SUPABASE_URL = "https://ujhjloihskutkazhaydc.supabase.co";
-  const SUPABASE_KEY = "sb_publishable_EqE3D3fqYSf5C13Ds0wNyQ_ZeDHoJfH";
-  const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const SUPABASE_URL = "https://ujhjloihskutkazhaydc.supabase.co";
+const SUPABASE_KEY = "sb_publishable_EqE3D3fqYSf5C13Ds0wNyQ_ZeDHoJfH";
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  async function checkAuth() {
-    const { data: { session }, error } = await supabaseClient.auth.getSession();
-    
-    if (error || !session) {
-      window.location.href = 'index.html';
-      return;
-    }
+const STORAGE_POSTS_KEY = "bondhu_live_posts_v1";
+const STORAGE_CHAT_KEY = "bondhu_live_chat_v1";
+const STORAGE_FRIENDS_KEY = "bondhu_live_friends_v1";
 
-    const user = session.user;
-    const displayName = user.user_metadata?.full_name || user.email.split('@')[0];
-    document.getElementById('welcomeName').textContent = `Hello, ${displayName}!`;
-    document.getElementById('userEmail').textContent = user.email;
+let currentUser = null;
+let currentDisplayName = "Bondhu";
+let posts = [];
+let chatMessages = [];
+let friendsList = [];
+
+const i18n = {
+  'বাংলা': {
+    tabHome: 'হোম',
+    tabFriends: 'বন্ধু',
+    tabChat: 'চ্যাট',
+    tabVideo: 'ভিডিও',
+    tabProfile: 'প্রোফাইল',
+    welcome: 'Welcome Bondhu Apps',
+    readySub: 'নতুন বন্ধুদের সাথে যুক্ত হোন ও মুহূর্ত শেয়ার করুন',
+    postPh: 'আজ কী ভাবছেন? বন্ধুদের সাথে শেয়ার করুন...',
+    postHint: 'লাইভ ফিডে প্রকাশ হবে',
+    postBtn: '+ Post',
+    emptyPost: 'দয়া করে পোস্টে কিছু লিখুন।',
+    postPublished: 'পোস্ট প্রকাশ হয়েছে!',
+    like: 'লাইক',
+    comment: 'কমেন্ট',
+    share: 'শেয়ার',
+    commentPh: 'একটি কমেন্ট লিখুন...',
+    send: 'পাঠান',
+    emptyComment: 'কমেন্ট খালি রাখা যাবে না।',
+    copied: 'পোস্ট কপি করা হয়েছে!',
+    friendsHeading: 'বন্ধু ও কমিউনিটি',
+    connected: 'যুক্ত আছেন',
+    connect: 'যুক্ত হোন',
+    chatHeading: 'লাইভ চ্যাট',
+    chatPh: 'মেসেজ লিখুন...',
+    videoHeading: 'ভিডিও ফিড',
+    videoDesc: 'কমিউনিটির ভিডিও আপডেট ও শেয়ারকৃত ক্লিপ।',
+    logout: 'লগআউট',
+    securityMsg: 'আপনার সেশন Supabase অথেনটিকেশন দ্বারা সুরক্ষিত।'
+  },
+  'English': {
+    tabHome: 'Home',
+    tabFriends: 'Friends',
+    tabChat: 'Chat',
+    tabVideo: 'Video',
+    tabProfile: 'Profile',
+    welcome: 'Welcome Bondhu Apps',
+    readySub: 'Connect with friends and share moments today',
+    postPh: "What's on your mind? Share with friends...",
+    postHint: 'Published to live feed',
+    postBtn: '+ Post',
+    emptyPost: 'Please write something to post.',
+    postPublished: 'Post published!',
+    like: 'Like',
+    comment: 'Comment',
+    share: 'Share',
+    commentPh: 'Write a comment...',
+    send: 'Send',
+    emptyComment: 'Comment cannot be empty.',
+    copied: 'Post copied to clipboard!',
+    friendsHeading: 'Friends & Community',
+    connected: 'Connected',
+    connect: 'Connect',
+    chatHeading: 'Live Chat',
+    chatPh: 'Write a message...',
+    videoHeading: 'Video Feed',
+    videoDesc: 'Community video updates and shared clips.',
+    logout: 'Logout',
+    securityMsg: 'Your session is protected by Supabase Authentication.'
+  },
+  'Hindi': {
+    tabHome: 'होम',
+    tabFriends: 'दोस्त',
+    tabChat: 'चैट',
+    tabVideo: 'वीडियो',
+    tabProfile: 'प्रोफ़ाइल',
+    welcome: 'Welcome Bondhu Apps',
+    readySub: 'दोस्तों से जुड़ें और अपने पल साझा करें',
+    postPh: 'आज क्या सोच रहे हैं? दोस्तों के साथ साझा करें...',
+    postHint: 'लाइव फ़ीड में प्रकाशित होगा',
+    postBtn: '+ Post',
+    emptyPost: 'कृपया पोस्ट में कुछ लिखें।',
+    postPublished: 'पोस्ट प्रकाशित हो गई!',
+    like: 'लाइक',
+    comment: 'कमेंट',
+    share: 'शेयर',
+    commentPh: 'कमेंट लिखें...',
+    send: 'भेजें',
+    emptyComment: 'कमेंट खाली नहीं हो सकता।',
+    copied: 'पोस्ट कॉपी हो गई!',
+    friendsHeading: 'दोस्त और कम्युनिटी',
+    connected: 'जुड़े हुए',
+    connect: 'जुड़ें',
+    chatHeading: 'लाइव चैट',
+    chatPh: 'संदेश लिखें...',
+    videoHeading: 'वीडियो फ़ीड',
+    videoDesc: 'कम्युनिटी वीडियो अपडेट और साझा क्लिप्स।',
+    logout: 'लॉगआउट',
+    securityMsg: 'आपका सेशन Supabase ऑथेंटिकेशन से सुरक्षित है।'
+  }
+};
+
+function getLangCode() {
+  const l = localStorage.getItem('bondhu_lang') || 'বাংলা';
+  return i18n[l] ? l : 'বাংলা';
+}
+
+function t() {
+  return i18n[getLangCode()];
+}
+
+function showToast(text) {
+  const box = document.getElementById('toastBox');
+  box.textContent = text;
+  box.style.display = 'block';
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => {
+    box.style.display = 'none';
+  }, 2200);
+}
+
+function applyThemeAndLanguage() {
+  const isDark = localStorage.getItem('bondhu_darkMode') === 'true';
+  document.getElementById('phoneFrame').classList.toggle('dark-mode', isDark);
+  document.body.classList.toggle('dark-body', isDark);
+
+  const pack = t();
+  document.getElementById('tabHome').textContent = pack.tabHome;
+  document.getElementById('tabFriends').textContent = pack.tabFriends;
+  document.getElementById('tabChat').textContent = pack.tabChat;
+  document.getElementById('tabVideo').textContent = pack.tabVideo;
+  document.getElementById('tabProfile').textContent = pack.tabProfile;
+  document.getElementById('welcomeText').textContent = pack.welcome;
+  document.getElementById('postInput').placeholder = pack.postPh;
+  document.getElementById('postHint').textContent = pack.postHint;
+  document.getElementById('createPostBtn').textContent = pack.postBtn;
+  document.getElementById('friendsHeading').textContent = pack.friendsHeading;
+  document.getElementById('chatHeading').textContent = pack.chatHeading;
+  document.getElementById('chatInput').placeholder = pack.chatPh;
+  document.getElementById('chatSendBtn').textContent = pack.send;
+  document.getElementById('videoHeading').textContent = pack.videoHeading;
+  document.getElementById('videoDesc').textContent = pack.videoDesc;
+  document.getElementById('logoutBtn').textContent = pack.logout;
+
+  if (currentUser) {
+    document.getElementById('userSubText').textContent = `${currentDisplayName} • ${pack.readySub}`;
+  }
+}
+
+function loadState() {
+  try {
+    posts = JSON.parse(localStorage.getItem(STORAGE_POSTS_KEY)) || [];
+  } catch { posts = []; }
+
+  try {
+    chatMessages = JSON.parse(localStorage.getItem(STORAGE_CHAT_KEY)) || [];
+  } catch { chatMessages = []; }
+
+  try {
+    friendsList = JSON.parse(localStorage.getItem(STORAGE_FRIENDS_KEY)) || [
+      { id: 'f1', name: 'Nadia Islam', status: 'Online', connected: true },
+      { id: 'f2', name: 'Tanvir Ahmed', status: 'Active recently', connected: true },
+      { id: 'f3', name: 'Sumaiya Akter', status: 'Online', connected: false }
+    ];
+  } catch { friendsList = []; }
+}
+
+function savePosts() {
+  localStorage.setItem(STORAGE_POSTS_KEY, JSON.stringify(posts));
+}
+
+function saveChat() {
+  localStorage.setItem(STORAGE_CHAT_KEY, JSON.stringify(chatMessages));
+}
+
+function saveFriends() {
+  localStorage.setItem(STORAGE_FRIENDS_KEY, JSON.stringify(friendsList));
+}
+
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function renderFeed() {
+  const pack = t();
+  const container = document.getElementById('feedList');
+
+  if (!posts.length) {
+    container.innerHTML = `
+      <div class="glass-card" style="text-align:center">
+        <p style="font-size:14px;opacity:0.8">${pack.postPh}</p>
+      </div>`;
+    return;
   }
 
-  function openSettings() {
-    window.location.href = 'settings.html';
+  container.innerHTML = posts.map(post => {
+    const isLiked = Array.isArray(post.likedBy) && currentUser && post.likedBy.includes(currentUser.id);
+    const commentsHtml = (post.comments || []).map(c =>
+      `<div class="comment-item"><b>${escapeHtml(c.author)}:</b> ${escapeHtml(c.text)}</div>`
+    ).join('');
+
+    return `
+      <div class="feed-card" id="post-${post.id}">
+        <div class="post-head">
+          <div class="small-avatar">${escapeHtml((post.author || 'B').charAt(0).toUpperCase())}</div>
+          <div>
+            <div class="post-author">${escapeHtml(post.author)}</div>
+            <div class="post-meta">${escapeHtml(post.time)}</div>
+          </div>
+        </div>
+        <div class="post-body">${escapeHtml(post.content)}</div>
+        <div class="post-actions">
+          <button class="act-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike('${post.id}')">
+            ♥ ${pack.like} (${(post.likedBy || []).length})
+          </button>
+          <button class="act-btn" onclick="focusComment('${post.id}')">
+            💬 ${pack.comment} (${(post.comments || []).length})
+          </button>
+          <button class="act-btn" onclick="sharePost('${post.id}')">
+            ↗ ${pack.share}
+          </button>
+        </div>
+        <div class="comment-box">
+          ${commentsHtml}
+          <div class="comment-row">
+            <input type="text" class="comment-input" id="cinput-${post.id}" placeholder="${pack.commentPh}">
+            <button class="comment-send" onclick="addComment('${post.id}')">${pack.send}</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function addPost() {
+  const input = document.getElementById('postInput');
+  const text = input.value.trim();
+  if (!text) {
+    showToast(t().emptyPost);
+    return;
   }
 
-  function openSecurity() {
-    window.location.href = 'profile.html';
-  }
+  const nowLabel = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  posts.unshift({
+    id: 'p_' + Date.now(),
+    author: currentDisplayName,
+    time: nowLabel,
+    content: text,
+    likedBy: [],
+    comments: []
+  });
 
-  function checkUpdate() {
-    window.location.href = 'updates.html';
-  }
+  savePosts();
+  input.value = '';
+  renderFeed();
+  showToast(t().postPublished);
+}
 
-  async function handleLogout() {
-    const btn = document.getElementById('logoutBtn');
-    btn.textContent = 'Logging out...';
-    await supabaseClient.auth.signOut();
-    window.location.href = 'index.html';
-  }
+function toggleLike(postId) {
+  if (!currentUser) return;
+  const target = posts.find(p => p.id === postId);
+  if (!target) return;
 
-  checkAuth();
-</script>
-</body>
-</html>
+  target.likedBy = target.likedBy || [];
+  const idx = target.likedBy.indexOf(currentUser.id);
+  if (idx > -1) {
+    target.likedBy.splice(i
