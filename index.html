@@ -175,7 +175,7 @@ button:disabled{opacity:.6;cursor:not-allowed}
 <div class="logo"><b>B</b></div>
 
 <h1>Bondhu Apps</h1>
-<p class="tag">Your Friend, With You</p>
+<p class="tag" id="tagText">Your Friend, With You</p>
 
 <div id="updateBox">
 <b>🎉 নতুন আপডেট আসছে!</b><br>
@@ -186,7 +186,7 @@ button:disabled{opacity:.6;cursor:not-allowed}
 <!-- LOGIN SCREEN -->
 <div class="card" id="authScreen">
 
-<h3 style="margin-bottom:18px;color:#4b0082">Welcome Back</h3>
+<h3 id="welcomeHeading" style="margin-bottom:18px;color:#4b0082">Welcome Back</h3>
 
 <input id="email" class="input"
 type="email" placeholder="তোমার ইমেইল দাও"
@@ -205,16 +205,16 @@ style="position:absolute;right:12px;top:13px;cursor:pointer">👁️</span>
 
 <button class="btn-create" id="signupBtn" onclick="createAcc()">Create New Account</button>
 
-<div class="small-link" onclick="forgotPassword()">পাসওয়ার্ড ভুলে গেছো?</div>
+<div class="small-link" id="forgotLink" onclick="forgotPassword()">পাসওয়ার্ড ভুলে গেছো?</div>
 
 </div>
 
 <!-- OTP SCREEN -->
 <div class="card" id="otpScreen">
 
-<h3 style="color:#4b0082;margin-bottom:15px">Email Verification</h3>
+<h3 id="otpTitle" style="color:#4b0082;margin-bottom:15px">Email Verification</h3>
 
-<p>তোমার ইমেইলে ৬ সংখ্যার OTP পাঠানো হয়েছে। কোডটি এখানে দাও।</p>
+<p id="otpDesc">তোমার ইমেইলে ৬ সংখ্যার OTP পাঠানো হয়েছে। কোডটি এখানে দাও।</p>
 
 <input id="otp" class="input"
 type="text" maxlength="6" inputmode="numeric"
@@ -224,16 +224,16 @@ placeholder="৬ সংখ্যার OTP" autocomplete="one-time-code">
 
 <button class="btn-create" id="resendBtn" onclick="resendOtp()">আবার OTP পাঠাও</button>
 
-<div class="small-link" onclick="backToLogin()">পিছনে যাও</div>
+<div class="small-link" id="backLoginLink" onclick="backToLogin()">পিছনে যাও</div>
 
 </div>
 
 <!-- PASSWORD RESET SCREEN -->
 <div class="card" id="resetScreen">
 
-<h3 style="color:#4b0082;margin-bottom:15px">New Password</h3>
+<h3 id="resetTitle" style="color:#4b0082;margin-bottom:15px">New Password</h3>
 
-<p>তোমার নতুন পাসওয়ার্ড দাও।</p>
+<p id="resetDesc">তোমার নতুন পাসওয়ার্ড দাও।</p>
 
 <input id="newPass" class="input"
 type="password" placeholder="নতুন পাসওয়ার্ড (৬+ অক্ষর)">
@@ -255,6 +255,113 @@ const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const HOME_PAGE = "home.html";
 let currentEmail = "";
+
+const authTexts = {
+  'বাংলা': {
+    tag: 'তোমার বন্ধু, সবসময় পাশে',
+    welcome: 'স্বাগতম',
+    emailPh: 'তোমার ইমেইল দাও',
+    passPh: 'পাসওয়ার্ড (৬+ অক্ষর)',
+    login: 'লগইন',
+    signup: 'নতুন অ্যাকাউন্ট তৈরি করো',
+    forgot: 'পাসওয়ার্ড ভুলে গেছো?',
+    otpTitle: 'ইমেইল যাচাইকরণ',
+    otpDesc: 'তোমার ইমেইলে ৬ সংখ্যার OTP পাঠানো হয়েছে। কোডটি এখানে দাও।',
+    otpPh: '৬ সংখ্যার OTP',
+    verify: 'OTP যাচাই করো',
+    resend: 'আবার OTP পাঠাও',
+    back: 'পিছনে যাও',
+    resetTitle: 'নতুন পাসওয়ার্ড',
+    resetDesc: 'তোমার নতুন পাসওয়ার্ড দাও।',
+    newPassPh: 'নতুন পাসওয়ার্ড (৬+ অক্ষর)',
+    updatePass: 'পাসওয়ার্ড পরিবর্তন করো',
+    invalidEmail: 'সঠিক ইমেইল দাও',
+    shortPass: 'পাসওয়ার্ড কমপক্ষে ৬ অক্ষর দাও',
+    loggingIn: 'লগইন হচ্ছে...',
+    loginSuccess: 'লগইন সফল হয়েছে!',
+    creating: 'অ্যাকাউন্ট তৈরি হচ্ছে...',
+    accountCreated: 'অ্যাকাউন্ট তৈরি হয়েছে!',
+    otpSent: 'OTP পাঠানো হয়েছে। ইমেইল চেক করো।'
+  },
+  'English': {
+    tag: 'Your Friend, With You',
+    welcome: 'Welcome Back',
+    emailPh: 'Enter your email',
+    passPh: 'Password (6+ characters)',
+    login: 'Login',
+    signup: 'Create New Account',
+    forgot: 'Forgot Password?',
+    otpTitle: 'Email Verification',
+    otpDesc: 'A 6-digit OTP has been sent to your email. Enter the code below.',
+    otpPh: '6-digit OTP',
+    verify: 'Verify OTP',
+    resend: 'Resend OTP',
+    back: 'Go Back',
+    resetTitle: 'New Password',
+    resetDesc: 'Enter your new password.',
+    newPassPh: 'New password (6+ characters)',
+    updatePass: 'Update Password',
+    invalidEmail: 'Enter a valid email',
+    shortPass: 'Password must be at least 6 characters',
+    loggingIn: 'Logging in...',
+    loginSuccess: 'Login successful!',
+    creating: 'Creating account...',
+    accountCreated: 'Account created!',
+    otpSent: 'OTP sent. Check your email.'
+  },
+  'Hindi': {
+    tag: 'आपका दोस्त, हमेशा साथ',
+    welcome: 'स्वागत है',
+    emailPh: 'अपना ईमेल दें',
+    passPh: 'पासवर्ड (6+ अक्षर)',
+    login: 'लॉगिन',
+    signup: 'नया अकाउंट बनाएं',
+    forgot: 'पासवर्ड भूल गए?',
+    otpTitle: 'ईमेल सत्यापन',
+    otpDesc: 'आपके ईमेल पर 6 अंकों का OTP भेजा गया है। कोड यहाँ दर्ज करें।',
+    otpPh: '6 अंकों का OTP',
+    verify: 'OTP सत्यापित करें',
+    resend: 'OTP दोबारा भेजें',
+    back: 'वापस जाएं',
+    resetTitle: 'नया पासवर्ड',
+    resetDesc: 'अपना नया पासवर्ड दें।',
+    newPassPh: 'नया पासवर्ड (6+ अक्षर)',
+    updatePass: 'पासवर्ड बदलें',
+    invalidEmail: 'सही ईमेल दें',
+    shortPass: 'पासवर्ड कम से कम 6 अक्षर का दें',
+    loggingIn: 'लॉगिन हो रहा है...',
+    loginSuccess: 'लॉगिन सफल रहा!',
+    creating: 'अकाउंट बन रहा है...',
+    accountCreated: 'अकाउंट बन गया!',
+    otpSent: 'OTP भेजा गया है। ईमेल देखें।'
+  }
+};
+
+function getAuthLang() {
+  const saved = localStorage.getItem('bondhu_lang');
+  return authTexts[saved] ? authTexts[saved] : authTexts['বাংলা'];
+}
+
+function applyAuthLanguage() {
+  const t = getAuthLang();
+  document.getElementById('tagText').innerText = t.tag;
+  document.getElementById('welcomeHeading').innerText = t.welcome;
+  document.getElementById('email').placeholder = t.emailPh;
+  document.getElementById('pass').placeholder = t.passPh;
+  document.getElementById('loginBtn').innerText = t.login;
+  document.getElementById('signupBtn').innerText = t.signup;
+  document.getElementById('forgotLink').innerText = t.forgot;
+  document.getElementById('otpTitle').innerText = t.otpTitle;
+  document.getElementById('otpDesc').innerText = t.otpDesc;
+  document.getElementById('otp').placeholder = t.otpPh;
+  document.getElementById('verifyBtn').innerText = t.verify;
+  document.getElementById('resendBtn').innerText = t.resend;
+  document.getElementById('backLoginLink').innerText = t.back;
+  document.getElementById('resetTitle').innerText = t.resetTitle;
+  document.getElementById('resetDesc').innerText = t.resetDesc;
+  document.getElementById('newPass').placeholder = t.newPassPh;
+  document.getElementById('updatePassBtn').innerText = t.updatePass;
+}
 
 // UPDATE SYSTEM
 const CURRENT_VERSION = "1.1";
@@ -287,7 +394,7 @@ function loading(id, on, t) {
     b.disabled = true;
   } else {
     b.disabled = false;
-    b.innerText = b.dataset.old || b.innerText;
+    if (b.dataset.old) b.innerText = b.dataset.old;
   }
 }
 
@@ -314,20 +421,21 @@ function backToLogin() {
 
 // LOGIN
 async function login() {
+  const t = getAuthLang();
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("pass").value;
 
   if (!validEmail(email)) {
-    message("সঠিক ইমেইল দাও", "#ffe082");
+    message(t.invalidEmail, "#ffe082");
     return;
   }
 
   if (password.length < 6) {
-    message("সঠিক পাসওয়ার্ড দাও", "#ffe082");
+    message(t.shortPass, "#ffe082");
     return;
   }
 
-  loading("loginBtn", true, "Login হচ্ছে...");
+  loading("loginBtn", true, t.loggingIn);
 
   try {
     const { data, error } = await supabaseClient.auth.signInWithPassword({
@@ -337,51 +445,58 @@ async function login() {
     if (error) throw error;
 
     if (data.session) {
-      message("Login সফল হয়েছে!", "#a5d6a7");
+      message(t.loginSuccess, "#a5d6a7");
       window.location.replace(HOME_PAGE);
     }
   } catch (e) {
-    message("Login হয়নি: " + e.message, "#ff8a80");
+    message("Login error: " + e.message, "#ff8a80");
   } finally {
     loading("loginBtn", false);
   }
 }
 
-// SIGNUP
+// CREATE NEW ACCOUNT
 async function createAcc() {
+  const t = getAuthLang();
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("pass").value;
 
   if (!validEmail(email)) {
-    message("সঠিক ইমেইল দাও", "#ffe082");
+    message(t.invalidEmail, "#ffe082");
     return;
   }
 
   if (password.length < 6) {
-    message("পাসওয়ার্ড কমপক্ষে ৬ অক্ষর দাও", "#ffe082");
+    message(t.shortPass, "#ffe082");
     return;
   }
 
   currentEmail = email;
-  loading("signupBtn", true, "Account তৈরি হচ্ছে...");
+  loading("signupBtn", true, t.creating);
 
   try {
     const { data, error } = await supabaseClient.auth.signUp({
-      email, password
+      email,
+      password,
+      options: {
+        emailRedirectTo: window.location.origin + window.location.pathname
+      }
     });
 
     if (error) throw error;
 
+    // Supabase-এ Confirm email বন্ধ থাকলে সরাসরি session তৈরি হয়
     if (data.session) {
-      message("Account তৈরি হয়েছে!", "#a5d6a7");
+      message(t.accountCreated, "#a5d6a7");
       window.location.replace(HOME_PAGE);
       return;
     }
 
+    // Confirm email চালু থাকলে OTP স্ক্রিনে নিয়ে যাবে
     showScreen("otpScreen");
-    message("OTP পাঠানো হয়েছে। ইমেইল চেক করো।", "#a5d6a7");
+    message(t.otpSent, "#a5d6a7");
   } catch (e) {
-    message("Account তৈরি হয়নি: " + e.message, "#ff8a80");
+    message("Signup error: " + e.message, "#ff8a80");
   } finally {
     loading("signupBtn", false);
   }
@@ -392,16 +507,16 @@ async function verifyOtp() {
   const token = document.getElementById("otp").value.trim();
 
   if (!currentEmail) {
-    message("ইমেইল পাওয়া যায়নি। আবার Signup করো।", "#ff8a80");
+    message("Email not found. Try signing up again.", "#ff8a80");
     return;
   }
 
   if (!/^\d{6}$/.test(token)) {
-    message("৬ সংখ্যার OTP দাও", "#ffe082");
+    message("Enter a 6-digit OTP", "#ffe082");
     return;
   }
 
-  loading("verifyBtn", true, "যাচাই হচ্ছে...");
+  loading("verifyBtn", true, "Verifying...");
 
   try {
     const { data, error } = await supabaseClient.auth.verifyOtp({
@@ -413,14 +528,14 @@ async function verifyOtp() {
     if (error) throw error;
 
     if (data.session) {
-      message("Verification সফল হয়েছে!", "#a5d6a7");
+      message("Verification successful!", "#a5d6a7");
       window.location.replace(HOME_PAGE);
     } else {
       backToLogin();
-      message("Verification সফল। এখন Login করো।", "#a5d6a7");
+      message("Verified! Please login now.", "#a5d6a7");
     }
   } catch (e) {
-    message("OTP যাচাই হয়নি: " + e.message, "#ff8a80");
+    message("OTP error: " + e.message, "#ff8a80");
   } finally {
     loading("verifyBtn", false);
   }
@@ -429,11 +544,11 @@ async function verifyOtp() {
 // RESEND OTP
 async function resendOtp() {
   if (!currentEmail) {
-    message("ইমেইল পাওয়া যায়নি", "#ff8a80");
+    message("Email not found", "#ff8a80");
     return;
   }
 
-  loading("resendBtn", true, "OTP পাঠানো হচ্ছে...");
+  loading("resendBtn", true, "Sending OTP...");
 
   try {
     const { error } = await supabaseClient.auth.resend({
@@ -443,9 +558,9 @@ async function resendOtp() {
 
     if (error) throw error;
 
-    message("নতুন OTP পাঠানো হয়েছে!", "#a5d6a7");
+    message("New OTP sent!", "#a5d6a7");
   } catch (e) {
-    message("OTP পাঠানো যায়নি: " + e.message, "#ff8a80");
+    message("Resend error: " + e.message, "#ff8a80");
   } finally {
     loading("resendBtn", false);
   }
@@ -456,11 +571,11 @@ async function forgotPassword() {
   const email = document.getElementById("email").value.trim();
 
   if (!validEmail(email)) {
-    message("প্রথমে সঠিক ইমেইল দাও", "#ffe082");
+    message(getAuthLang().invalidEmail, "#ffe082");
     return;
   }
 
-  message("Reset Link পাঠানো হচ্ছে...");
+  message("Sending reset link...");
 
   try {
     const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
@@ -469,7 +584,7 @@ async function forgotPassword() {
 
     if (error) throw error;
 
-    message("যদি Account থাকে, Reset Link পাঠানো হয়েছে।", "#a5d6a7");
+    message("If the account exists, a reset link has been sent.", "#a5d6a7");
   } catch (e) {
     message(e.message, "#ff8a80");
   }
@@ -480,17 +595,17 @@ async function updatePassword() {
   const password = document.getElementById("newPass").value;
 
   if (password.length < 6) {
-    message("পাসওয়ার্ড কমপক্ষে ৬ অক্ষর দাও", "#ffe082");
+    message(getAuthLang().shortPass, "#ffe082");
     return;
   }
 
-  loading("updatePassBtn", true, "পরিবর্তন হচ্ছে...");
+  loading("updatePassBtn", true, "Updating...");
 
   try {
     const { error } = await supabaseClient.auth.updateUser({ password });
     if (error) throw error;
 
-    message("পাসওয়ার্ড পরিবর্তন সফল হয়েছে!", "#a5d6a7");
+    message("Password updated!", "#a5d6a7");
     window.location.replace(HOME_PAGE);
   } catch (e) {
     message(e.message, "#ff8a80");
@@ -503,7 +618,7 @@ async function updatePassword() {
 supabaseClient.auth.onAuthStateChange((event) => {
   if (event === "PASSWORD_RECOVERY") {
     showScreen("resetScreen");
-    message("নতুন পাসওয়ার্ড সেট করো।", "#a5d6a7");
+    message("Set your new password.", "#a5d6a7");
   }
 });
 
@@ -519,6 +634,7 @@ async function checkSession() {
   }
 }
 
+applyAuthLanguage();
 checkSession();
 </script>
 </body>
