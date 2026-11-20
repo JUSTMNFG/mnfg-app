@@ -19,7 +19,7 @@ body.dark-body{background:#090312}
   width:100%;
   max-width:400px;
   background:linear-gradient(180deg,#2d0a5e 0%,#7b2a9e 40%,#c94b8a 70%,#f07ba8 100%);
-  padding:25px 18px;
+  padding:20px 18px 28px;
   min-height:100vh;
   position:relative;
   transition:background 0.25s ease;
@@ -29,12 +29,12 @@ body.dark-body{background:#090312}
 }
 
 .top{display:flex;align-items:center;gap:12px;color:white;margin-bottom:20px}
-.top a{color:white;text-decoration:none;font-size:30px;padding:0 6px}
-.top h1{font-size:26px;flex:1}
+.top a{color:white;text-decoration:none;font-size:30px;padding:0 6px;line-height:1}
+.top h1{font-size:25px;flex:1}
 .logo{
-  width:50px;height:50px;background:#f0e0ff;border-radius:15px;
+  width:48px;height:48px;background:#f0e0ff;border-radius:14px;
   display:flex;align-items:center;justify-content:center;
-  font-size:34px;font-weight:900;color:#7b2a9e;
+  font-size:32px;font-weight:900;color:#7b2a9e;flex-shrink:0;
 }
 .phone.dark-mode .logo{background:#24143d;color:#e2b6ff}
 
@@ -85,6 +85,10 @@ body.dark-body{background:#090312}
 .btn:disabled{opacity:0.6;cursor:not-allowed}
 
 .msg{font-size:13px;margin-top:8px;font-weight:bold;min-height:18px;word-break:break-word}
+.msg-ok{color:#1b8a3e}
+.msg-err{color:#d92638}
+.phone.dark-mode .msg-ok{color:#69f094}
+.phone.dark-mode .msg-err{color:#ff8a95}
 
 .back{
   background:white;color:#1a0a2e;text-align:center;padding:14px;
@@ -141,9 +145,16 @@ body.dark-body{background:#090312}
       nameTitle: '✏️ নাম পরিবর্তন করুন',
       namePlaceholder: 'আপনার নতুন নাম লিখুন',
       nameBtn: 'নাম সেভ করুন',
+      emptyName: 'দয়া করে একটি নাম লিখুন।',
+      savingName: 'সেভ হচ্ছে...',
+      nameSaved: 'নাম সফলভাবে আপডেট হয়েছে!',
       passTitle: '🔒 পাসওয়ার্ড পরিবর্তন করুন',
       passPlaceholder: 'নতুন পাসওয়ার্ড (কমপক্ষে ৬ অক্ষর)',
       passBtn: 'পাসওয়ার্ড আপডেট করুন',
+      shortPass: 'পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।',
+      savingPass: 'পাসওয়ার্ড পরিবর্তন হচ্ছে...',
+      passSaved: 'পাসওয়ার্ড সফলভাবে পরিবর্তিত হয়েছে!',
+      errorPrefix: 'ত্রুটি: ',
       back: 'হোমে ফিরে যান'
     },
     'English': {
@@ -151,9 +162,16 @@ body.dark-body{background:#090312}
       nameTitle: '✏️ Change Name',
       namePlaceholder: 'Enter your new name',
       nameBtn: 'Save Name',
+      emptyName: 'Please enter a name.',
+      savingName: 'Saving...',
+      nameSaved: 'Name updated successfully!',
       passTitle: '🔒 Change Password',
       passPlaceholder: 'New password (6+ characters)',
       passBtn: 'Update Password',
+      shortPass: 'Password must be at least 6 characters.',
+      savingPass: 'Updating password...',
+      passSaved: 'Password updated successfully!',
+      errorPrefix: 'Error: ',
       back: 'Back to Home'
     },
     'Hindi': {
@@ -161,20 +179,36 @@ body.dark-body{background:#090312}
       nameTitle: '✏️ नाम बदलें',
       namePlaceholder: 'अपना नया नाम लिखें',
       nameBtn: 'नाम सेव करें',
+      emptyName: 'कृपया एक नाम लिखें।',
+      savingName: 'सेव हो रहा है...',
+      nameSaved: 'नाम सफलतापूर्वक अपडेट हो गया!',
       passTitle: '🔒 पासवर्ड बदलें',
       passPlaceholder: 'नया पासवर्ड (कम से कम 6 अक्षर)',
       passBtn: 'पासवर्ड अपडेट करें',
+      shortPass: 'पासवर्ड कम से कम 6 अक्षरों का होना चाहिए।',
+      savingPass: 'पासवर्ड बदला जा रहा है...',
+      passSaved: 'पासवर्ड सफलतापूर्वक बदल गया!',
+      errorPrefix: 'त्रुटि: ',
       back: 'होम पर वापस जाएं'
     }
   };
+
+  function getLangPack() {
+    const lang = localStorage.getItem('bondhu_lang') || 'বাংলা';
+    return profileTexts[lang] || profileTexts['বাংলা'];
+  }
+
+  function setMsg(el, text, type) {
+    el.className = 'msg ' + (type === 'ok' ? 'msg-ok' : type === 'err' ? 'msg-err' : '');
+    el.textContent = text;
+  }
 
   function applyProfilePreferences() {
     const isDark = localStorage.getItem('bondhu_darkMode') === 'true';
     document.getElementById('phoneFrame').classList.toggle('dark-mode', isDark);
     document.body.classList.toggle('dark-body', isDark);
 
-    const lang = localStorage.getItem('bondhu_lang') || 'বাংলা';
-    const t = profileTexts[lang] || profileTexts['বাংলা'];
+    const t = getLangPack();
     document.getElementById('pTitle').textContent = t.title;
     document.getElementById('nameBoxTitle').textContent = t.nameTitle;
     document.getElementById('nameInput').placeholder = t.namePlaceholder;
@@ -203,25 +237,23 @@ body.dark-body{background:#090312}
       }
       renderUser(session.user);
     } catch (err) {
-      document.getElementById('nameMsg').style.color = '#e51e3a';
-      document.getElementById('nameMsg').textContent = 'সেশন লোড করতে সমস্যা হয়েছে: ' + err.message;
+      setMsg(document.getElementById('nameMsg'), getLangPack().errorPrefix + err.message, 'err');
     }
   }
 
   async function saveName() {
+    const t = getLangPack();
     const newName = document.getElementById('nameInput').value.trim();
     const msgEl = document.getElementById('nameMsg');
     const btn = document.getElementById('nameBtn');
 
     if (!newName) {
-      msgEl.style.color = '#e51e3a';
-      msgEl.textContent = 'দয়া করে একটি নাম লিখুন।';
+      setMsg(msgEl, t.emptyName, 'err');
       return;
     }
 
     btn.disabled = true;
-    msgEl.style.color = '#7b2a9e';
-    msgEl.textContent = 'সেভ হচ্ছে...';
+    setMsg(msgEl, t.savingName, '');
 
     try {
       const { data, error } = await supabaseClient.auth.updateUser({
@@ -230,30 +262,27 @@ body.dark-body{background:#090312}
       if (error) throw error;
 
       renderUser(data.user);
-      msgEl.style.color = 'green';
-      msgEl.textContent = 'নাম সফলভাবে আপডেট হয়েছে!';
+      setMsg(msgEl, t.nameSaved, 'ok');
     } catch (err) {
-      msgEl.style.color = '#e51e3a';
-      msgEl.textContent = 'ত্রুটি: ' + err.message;
+      setMsg(msgEl, t.errorPrefix + err.message, 'err');
     } finally {
       btn.disabled = false;
     }
   }
 
   async function savePassword() {
+    const t = getLangPack();
     const newPass = document.getElementById('passInput').value;
     const msgEl = document.getElementById('passMsg');
     const btn = document.getElementById('passBtn');
 
     if (newPass.length < 6) {
-      msgEl.style.color = '#e51e3a';
-      msgEl.textContent = 'পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।';
+      setMsg(msgEl, t.shortPass, 'err');
       return;
     }
 
     btn.disabled = true;
-    msgEl.style.color = '#7b2a9e';
-    msgEl.textContent = 'পাসওয়ার্ড পরিবর্তন হচ্ছে...';
+    setMsg(msgEl, t.savingPass, '');
 
     try {
       const { error } = await supabaseClient.auth.updateUser({
@@ -262,11 +291,9 @@ body.dark-body{background:#090312}
       if (error) throw error;
 
       document.getElementById('passInput').value = '';
-      msgEl.style.color = 'green';
-      msgEl.textContent = 'পাসওয়ার্ড সফলভাবে পরিবর্তিত হয়েছে!';
+      setMsg(msgEl, t.passSaved, 'ok');
     } catch (err) {
-      msgEl.style.color = '#e51e3a';
-      msgEl.textContent = 'ত্রুটি: ' + err.message;
+      setMsg(msgEl, t.errorPrefix + err.message, 'err');
     } finally {
       btn.disabled = false;
     }
