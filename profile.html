@@ -53,17 +53,62 @@ body.dark-body{background:#090312}
   border:1px solid rgba(255,255,255,0.08);
 }
 
-.avatar{
-  width:64px;height:64px;border-radius:50%;
-  background:linear-gradient(135deg,#7b2a9e,#e040a8);
-  color:white;display:flex;align-items:center;justify-content:center;
-  font-size:28px;font-weight:bold;margin-bottom:12px;
+.avatar-wrap{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-bottom:12px;
 }
-.profile-card h2{color:#1a0a2e;font-size:22px;word-break:break-word}
-.phone.dark-mode .profile-card h2{color:#ffffff}
 
-.profile-card p{color:#555;font-size:14px;margin-top:4px;word-break:break-word}
-.phone.dark-mode .profile-card p{color:#cbbde6}
+.avatar{
+  width:72px;
+  height:72px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#7b2a9e,#e040a8);
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:30px;
+  font-weight:bold;
+  overflow:hidden;
+  flex-shrink:0;
+  border:2px solid rgba(123,42,158,0.25);
+}
+.avatar img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+
+.photo-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.small-btn{
+  border:none;
+  border-radius:10px;
+  padding:8px 12px;
+  font-size:12px;
+  font-weight:bold;
+  cursor:pointer;
+  background:#efe2ff;
+  color:#3b0d69;
+}
+.phone.dark-mode .small-btn{
+  background:#2d1c47;
+  color:#f0e2ff;
+}
+
+.profile-card h2{
+  color:#1a0a2e;
+  font-size:22px;
+  word-break:break-word;
+}
+.phone.dark-mode .profile-card h2{color:#ffffff}
 
 .box h3{color:#1a0a2e;font-size:18px;margin-bottom:10px}
 .phone.dark-mode .box h3{color:#ffffff}
@@ -80,9 +125,27 @@ body.dark-body{background:#090312}
 .btn{
   width:100%;padding:12px;border:none;border-radius:12px;
   background:linear-gradient(90deg,#4b0082,#c94b8a);
-  color:white;font-size:16px;font-weight:bold;cursor:pointer;
+  color:white;font-size:15px;font-weight:bold;cursor:pointer;
+  margin-bottom:8px;
 }
+.btn:last-child{margin-bottom:0}
 .btn:disabled{opacity:0.6;cursor:not-allowed}
+
+.btn-secondary{
+  width:100%;padding:11px;border:1.5px solid #7b2a9e;border-radius:12px;
+  background:transparent;color:#4b0082;font-size:14px;font-weight:bold;cursor:pointer;
+  margin-bottom:8px;
+}
+.phone.dark-mode .btn-secondary{
+  color:#e5c8ff;border-color:#9e5ce0;
+}
+
+.otp-step{
+  display:none;
+  margin-top:8px;
+  padding-top:10px;
+  border-top:1px dashed rgba(123,42,158,0.25);
+}
 
 .msg{font-size:13px;margin-top:8px;font-weight:bold;min-height:18px;word-break:break-word}
 .msg-ok{color:#1b8a3e}
@@ -110,22 +173,35 @@ body.dark-body{background:#090312}
   </div>
 
   <div class="profile-card">
-    <div class="avatar" id="avatarLetter">B</div>
+    <div class="avatar-wrap">
+      <div class="avatar" id="avatarCircle">M</div>
+      <div class="photo-actions">
+        <button type="button" class="small-btn" id="uploadPhotoBtn" onclick="document.getElementById('photoInput').click()">📷 Profile Picture</button>
+        <button type="button" class="small-btn" id="resetPhotoBtn" onclick="clearCustomPhoto()">M</button>
+        <input type="file" id="photoInput" accept="image/*" style="display:none" onchange="handlePhotoUpload(event)">
+      </div>
+    </div>
     <h2 id="profileName">Loading...</h2>
-    <p id="profileEmail">...</p>
+    <div class="msg" id="photoMsg"></div>
   </div>
 
   <div class="box">
-    <h3 id="nameBoxTitle">✏️ নাম পরিবর্তন করুন</h3>
-    <input type="text" id="nameInput" placeholder="আপনার নতুন নাম লিখুন">
-    <button class="btn" id="nameBtn" onclick="saveName()">নাম সেভ করুন</button>
+    <h3 id="nameBoxTitle">✏️ Change Name</h3>
+    <input type="text" id="nameInput" placeholder="Enter your new name">
+    <button class="btn" id="nameBtn" onclick="saveName()">Save Name</button>
     <div class="msg" id="nameMsg"></div>
   </div>
 
   <div class="box">
-    <h3 id="passBoxTitle">🔒 পাসওয়ার্ড পরিবর্তন করুন</h3>
-    <input type="password" id="passInput" placeholder="নতুন পাসওয়ার্ড (কমপক্ষে ৬ অক্ষর)">
-    <button class="btn" id="passBtn" onclick="savePassword()">পাসওয়ার্ড আপডেট করুন</button>
+    <h3 id="resetBoxTitle">🔐 Reset Password (OTP)</h3>
+    <button class="btn-secondary" id="sendOtpBtn" onclick="sendResetOtp()">Send Reset OTP</button>
+
+    <div class="otp-step" id="otpResetSection">
+      <input type="text" id="resetOtpInput" maxlength="6" inputmode="numeric" placeholder="6-digit OTP">
+      <input type="password" id="newPassInput" placeholder="New password (6+ characters)">
+      <button class="btn" id="confirmResetBtn" onclick="verifyOtpAndResetPassword()">Verify OTP & Reset Password</button>
+    </div>
+
     <div class="msg" id="passMsg"></div>
   </div>
 
@@ -139,63 +215,90 @@ body.dark-body{background:#090312}
   const SUPABASE_KEY = "sb_publishable_EqE3D3fqYSf5C13Ds0wNyQ_ZeDHoJfH";
   const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  const profileTexts = {
+  const PHOTO_STORAGE_PREFIX = "bondhu_profile_photo_";
+  let activeUser = null;
+
+  const texts = {
     'বাংলা': {
       title: 'প্রোফাইল',
+      uploadPhoto: '📷 প্রোফাইল ছবি',
       nameTitle: '✏️ নাম পরিবর্তন করুন',
-      namePlaceholder: 'আপনার নতুন নাম লিখুন',
+      namePh: 'আপনার নতুন নাম লিখুন',
       nameBtn: 'নাম সেভ করুন',
       emptyName: 'দয়া করে একটি নাম লিখুন।',
       savingName: 'সেভ হচ্ছে...',
-      nameSaved: 'নাম সফলভাবে আপডেট হয়েছে!',
-      passTitle: '🔒 পাসওয়ার্ড পরিবর্তন করুন',
-      passPlaceholder: 'নতুন পাসওয়ার্ড (কমপক্ষে ৬ অক্ষর)',
-      passBtn: 'পাসওয়ার্ড আপডেট করুন',
+      nameSaved: 'নাম সফলভাবে সেভ হয়েছে!',
+      resetTitle: '🔐 পাসওয়ার্ড রিসেট (OTP)',
+      sendOtp: 'রিসেট OTP পাঠান',
+      otpPh: '৬ সংখ্যার OTP',
+      newPassPh: 'নতুন পাসওয়ার্ড (কমপক্ষে ৬ অক্ষর)',
+      confirmReset: 'OTP যাচাই ও পাসওয়ার্ড রিসেট করুন',
+      sendingOtp: 'OTP পাঠানো হচ্ছে...',
+      otpSent: 'আপনার ইমেইলে রিসেট OTP পাঠানো হয়েছে।',
+      invalidOtp: 'সঠিক ৬ সংখ্যার OTP দিন।',
       shortPass: 'পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।',
-      savingPass: 'পাসওয়ার্ড পরিবর্তন হচ্ছে...',
-      passSaved: 'পাসওয়ার্ড সফলভাবে পরিবর্তিত হয়েছে!',
-      errorPrefix: 'ত্রুটি: ',
-      back: 'হোমে ফিরে যান'
+      resettingPass: 'পাসওয়ার্ড রিসেট হচ্ছে...',
+      passResetOk: 'OTP যাচাই হয়ে পাসওয়ার্ড রিসেট হয়েছে!',
+      photoSaved: 'প্রোফাইল ছবি সেভ হয়েছে!',
+      photoCleared: 'ডিফল্ট অক্ষর (M) ফিরিয়ে আনা হয়েছে।',
+      back: 'হোমে ফিরে যান',
+      errPrefix: 'ত্রুটি: '
     },
     'English': {
       title: 'Profile',
+      uploadPhoto: '📷 Profile Picture',
       nameTitle: '✏️ Change Name',
-      namePlaceholder: 'Enter your new name',
+      namePh: 'Enter your new name',
       nameBtn: 'Save Name',
       emptyName: 'Please enter a name.',
       savingName: 'Saving...',
-      nameSaved: 'Name updated successfully!',
-      passTitle: '🔒 Change Password',
-      passPlaceholder: 'New password (6+ characters)',
-      passBtn: 'Update Password',
+      nameSaved: 'Name saved successfully!',
+      resetTitle: '🔐 Reset Password (OTP)',
+      sendOtp: 'Send Reset OTP',
+      otpPh: '6-digit OTP',
+      newPassPh: 'New password (6+ characters)',
+      confirmReset: 'Verify OTP & Reset Password',
+      sendingOtp: 'Sending OTP...',
+      otpSent: 'Reset OTP has been sent to your email.',
+      invalidOtp: 'Enter a valid 6-digit OTP.',
       shortPass: 'Password must be at least 6 characters.',
-      savingPass: 'Updating password...',
-      passSaved: 'Password updated successfully!',
-      errorPrefix: 'Error: ',
-      back: 'Back to Home'
+      resettingPass: 'Resetting password...',
+      passResetOk: 'OTP verified & password reset successfully!',
+      photoSaved: 'Profile picture saved!',
+      photoCleared: 'Default letter avatar restored.',
+      back: 'Back to Home',
+      errPrefix: 'Error: '
     },
     'Hindi': {
       title: 'प्रोफ़ाइल',
+      uploadPhoto: '📷 प्रोफ़ाइल फ़ोटो',
       nameTitle: '✏️ नाम बदलें',
-      namePlaceholder: 'अपना नया नाम लिखें',
+      namePh: 'अपना नया नाम लिखें',
       nameBtn: 'नाम सेव करें',
       emptyName: 'कृपया एक नाम लिखें।',
       savingName: 'सेव हो रहा है...',
-      nameSaved: 'नाम सफलतापूर्वक अपडेट हो गया!',
-      passTitle: '🔒 पासवर्ड बदलें',
-      passPlaceholder: 'नया पासवर्ड (कम से कम 6 अक्षर)',
-      passBtn: 'पासवर्ड अपडेट करें',
+      nameSaved: 'नाम सफलतापूर्वक सेव हो गया!',
+      resetTitle: '🔐 पासवर्ड रीसेट (OTP)',
+      sendOtp: 'रीसेट OTP भेजें',
+      otpPh: '6 अंकों का OTP',
+      newPassPh: 'नया पासवर्ड (कम से कम 6 अक्षर)',
+      confirmReset: 'OTP सत्यापित करें और पासवर्ड रीसेट करें',
+      sendingOtp: 'OTP भेजा जा रहा है...',
+      otpSent: 'आपके ईमेल पर रीसेट OTP भेजा गया है।',
+      invalidOtp: 'सही 6 अंकों का OTP दर्ज करें।',
       shortPass: 'पासवर्ड कम से कम 6 अक्षरों का होना चाहिए।',
-      savingPass: 'पासवर्ड बदला जा रहा है...',
-      passSaved: 'पासवर्ड सफलतापूर्वक बदल गया!',
-      errorPrefix: 'त्रुटि: ',
-      back: 'होम पर वापस जाएं'
+      resettingPass: 'पासवर्ड रीसेट हो रहा है...',
+      passResetOk: 'OTP सत्यापित हुआ और पासवर्ड रीसेट हो गया!',
+      photoSaved: 'प्रोफ़ाइल फ़ोटो सेव हो गई!',
+      photoCleared: 'डिफ़ॉल्ट अक्षर अवतार बहाल किया गया।',
+      back: 'होम पर वापस जाएं',
+      errPrefix: 'त्रुटि: '
     }
   };
 
   function getLangPack() {
     const lang = localStorage.getItem('bondhu_lang') || 'বাংলা';
-    return profileTexts[lang] || profileTexts['বাংলা'];
+    return texts[lang] || texts['বাংলা'];
   }
 
   function setMsg(el, text, type) {
@@ -203,41 +306,84 @@ body.dark-body{background:#090312}
     el.textContent = text;
   }
 
-  function applyProfilePreferences() {
+  function getPhotoStorageKey(user) {
+    return PHOTO_STORAGE_PREFIX + (user?.id || 'default');
+  }
+
+  function renderAvatar(name) {
+    const circle = document.getElementById('avatarCircle');
+    const savedPhoto = activeUser ? localStorage.getItem(getPhotoStorageKey(activeUser)) : null;
+
+    if (savedPhoto) {
+      circle.innerHTML = `<img src="${savedPhoto}" alt="Profile">`;
+    } else {
+      const initial = (name || 'M').trim().charAt(0).toUpperCase() || 'M';
+      circle.textContent = initial;
+    }
+  }
+
+  function handlePhotoUpload(event) {
+    const file = event.target.files?.[0];
+    if (!file || !activeUser) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        localStorage.setItem(getPhotoStorageKey(activeUser), reader.result);
+        renderAvatar(document.getElementById('profileName').textContent);
+        setMsg(document.getElementById('photoMsg'), getLangPack().photoSaved, 'ok');
+      } catch (e) {
+        setMsg(document.getElementById('photoMsg'), getLangPack().errPrefix + e.message, 'err');
+      }
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function clearCustomPhoto() {
+    if (!activeUser) return;
+    localStorage.removeItem(getPhotoStorageKey(activeUser));
+    renderAvatar(document.getElementById('profileName').textContent);
+    setMsg(document.getElementById('photoMsg'), getLangPack().photoCleared, 'ok');
+  }
+
+  function applyPreferences() {
     const isDark = localStorage.getItem('bondhu_darkMode') === 'true';
     document.getElementById('phoneFrame').classList.toggle('dark-mode', isDark);
     document.body.classList.toggle('dark-body', isDark);
 
     const t = getLangPack();
     document.getElementById('pTitle').textContent = t.title;
+    document.getElementById('uploadPhotoBtn').textContent = t.uploadPhoto;
     document.getElementById('nameBoxTitle').textContent = t.nameTitle;
-    document.getElementById('nameInput').placeholder = t.namePlaceholder;
+    document.getElementById('nameInput').placeholder = t.namePh;
     document.getElementById('nameBtn').textContent = t.nameBtn;
-    document.getElementById('passBoxTitle').textContent = t.passTitle;
-    document.getElementById('passInput').placeholder = t.passPlaceholder;
-    document.getElementById('passBtn').textContent = t.passBtn;
+    document.getElementById('resetBoxTitle').textContent = t.resetTitle;
+    document.getElementById('sendOtpBtn').textContent = t.sendOtp;
+    document.getElementById('resetOtpInput').placeholder = t.otpPh;
+    document.getElementById('newPassInput').placeholder = t.newPassPh;
+    document.getElementById('confirmResetBtn').textContent = t.confirmReset;
     document.getElementById('backHomeBtn').textContent = t.back;
   }
 
   function renderUser(user) {
     const name = user.user_metadata?.full_name || user.email.split('@')[0];
     document.getElementById('profileName').textContent = name;
-    document.getElementById('profileEmail').textContent = user.email;
     document.getElementById('nameInput').value = user.user_metadata?.full_name || '';
-    document.getElementById('avatarLetter').textContent = name.trim().charAt(0).toUpperCase() || 'B';
+    renderAvatar(name);
   }
 
   async function initProfile() {
-    applyProfilePreferences();
+    applyPreferences();
     try {
       const { data: { session }, error } = await supabaseClient.auth.getSession();
       if (error || !session) {
         window.location.href = 'index.html';
         return;
       }
-      renderUser(session.user);
+      activeUser = session.user;
+      renderUser(activeUser);
     } catch (err) {
-      setMsg(document.getElementById('nameMsg'), getLangPack().errorPrefix + err.message, 'err');
+      setMsg(document.getElementById('nameMsg'), getLangPack().errPrefix + err.message, 'err');
     }
   }
 
@@ -261,20 +407,50 @@ body.dark-body{background:#090312}
       });
       if (error) throw error;
 
-      renderUser(data.user);
+      activeUser = data.user;
+      renderUser(activeUser);
       setMsg(msgEl, t.nameSaved, 'ok');
     } catch (err) {
-      setMsg(msgEl, t.errorPrefix + err.message, 'err');
+      setMsg(msgEl, t.errPrefix + err.message, 'err');
     } finally {
       btn.disabled = false;
     }
   }
 
-  async function savePassword() {
+  async function sendResetOtp() {
     const t = getLangPack();
-    const newPass = document.getElementById('passInput').value;
     const msgEl = document.getElementById('passMsg');
-    const btn = document.getElementById('passBtn');
+    const btn = document.getElementById('sendOtpBtn');
+
+    if (!activeUser?.email) return;
+
+    btn.disabled = true;
+    setMsg(msgEl, t.sendingOtp, '');
+
+    try {
+      const { error } = await supabaseClient.auth.resetPasswordForEmail(activeUser.email);
+      if (error) throw error;
+
+      document.getElementById('otpResetSection').style.display = 'block';
+      setMsg(msgEl, t.otpSent, 'ok');
+    } catch (err) {
+      setMsg(msgEl, t.errPrefix + err.message, 'err');
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  async function verifyOtpAndResetPassword() {
+    const t = getLangPack();
+    const otpCode = document.getElementById('resetOtpInput').value.trim();
+    const newPass = document.getElementById('newPassInput').value;
+    const msgEl = document.getElementById('passMsg');
+    const btn = document.getElementById('confirmResetBtn');
+
+    if (!/^\d{6}$/.test(otpCode)) {
+      setMsg(msgEl, t.invalidOtp, 'err');
+      return;
+    }
 
     if (newPass.length < 6) {
       setMsg(msgEl, t.shortPass, 'err');
@@ -282,18 +458,27 @@ body.dark-body{background:#090312}
     }
 
     btn.disabled = true;
-    setMsg(msgEl, t.savingPass, '');
+    setMsg(msgEl, t.resettingPass, '');
 
     try {
-      const { error } = await supabaseClient.auth.updateUser({
+      const { error: otpError } = await supabaseClient.auth.verifyOtp({
+        email: activeUser.email,
+        token: otpCode,
+        type: 'recovery'
+      });
+      if (otpError) throw otpError;
+
+      const { error: passError } = await supabaseClient.auth.updateUser({
         password: newPass
       });
-      if (error) throw error;
+      if (passError) throw passError;
 
-      document.getElementById('passInput').value = '';
-      setMsg(msgEl, t.passSaved, 'ok');
+      document.getElementById('resetOtpInput').value = '';
+      document.getElementById('newPassInput').value = '';
+      document.getElementById('otpResetSection').style.display = 'none';
+      setMsg(msgEl, t.passResetOk, 'ok');
     } catch (err) {
-      setMsg(msgEl, t.errorPrefix + err.message, 'err');
+      setMsg(msgEl, t.errPrefix + err.message, 'err');
     } finally {
       btn.disabled = false;
     }
