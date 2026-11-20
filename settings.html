@@ -6,75 +6,207 @@
 <title>Settings - Bondhu Apps</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif}
-body{background:#e8c8e8;display:flex;justify-content:center;min-height:100vh}
-.phone{width:100%;max-width:400px;background:linear-gradient(180deg,#2d0a5e 0%,#7b2a9e 40%,#c94b8a 70%,#f07ba8 100%);padding:25px 18px;min-height:100vh;position:relative;transition:filter 0.25s}
-.phone.dark-mode{filter:brightness(0.85) contrast(1.05)}
+body{
+  background:#e8c8e8;
+  display:flex;
+  justify-content:center;
+  min-height:100vh;
+  transition:background 0.25s ease;
+}
+body.dark-body{
+  background:#090312;
+}
+
+.phone{
+  width:100%;
+  max-width:400px;
+  background:linear-gradient(180deg,#2d0a5e 0%,#7b2a9e 40%,#c94b8a 70%,#f07ba8 100%);
+  padding:25px 18px;
+  min-height:100vh;
+  position:relative;
+  transition:background 0.25s ease,color 0.25s ease;
+}
+
+/* প্রকৃত Dark Mode স্টাইল */
+.phone.dark-mode{
+  background:linear-gradient(180deg,#0c041a 0%,#1a0936 45%,#28104a 100%);
+}
+
 .top{display:flex;align-items:center;gap:12px;color:white;margin-bottom:20px}
 .top a{color:white;text-decoration:none;font-size:30px;padding:0 6px}
 .top h1{font-size:28px;flex:1}
-.logo{width:55px;height:55px;background:#f0e0ff;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:38px;font-weight:900;color:#7b2a9e}
-.menu{background:white;border-radius:14px;padding:16px;display:flex;align-items:center;gap:14px;margin-bottom:12px;cursor:pointer;transition:transform 0.15s,background 0.15s}
+.logo{
+  width:55px;height:55px;background:#f0e0ff;border-radius:16px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:38px;font-weight:900;color:#7b2a9e;
+  transition:background 0.25s ease,color 0.25s ease;
+}
+.phone.dark-mode .logo{
+  background:#24143d;
+  color:#e2b6ff;
+}
+
+.menu{
+  background:white;
+  border-radius:14px;
+  padding:16px;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-bottom:12px;
+  cursor:pointer;
+  transition:transform 0.15s,background 0.2s,color 0.2s;
+}
 .menu:active{transform:scale(0.98);background:#f7f2fa}
-.icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;background:#e8d5ff;flex-shrink:0}
-.menu b{font-size:18px;flex:1;color:#1a0a2e}
-.menu span{color:#666;font-size:14px}
-.switch{width:50px;height:28px;background:#e8a0c8;border-radius:20px;position:relative;transition:background 0.2s;flex-shrink:0}
-.switch:after{content:'';position:absolute;right:3px;top:3px;width:22px;height:22px;background:#ffc8ec;border-radius:50%;transition:all 0.2s}
+
+.phone.dark-mode .menu{
+  background:#1b112b;
+  color:#f3ebff;
+  border:1px solid rgba(255,255,255,0.08);
+}
+.phone.dark-mode .menu:active{
+  background:#26183d;
+}
+
+.icon{
+  width:40px;height:40px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;background:#e8d5ff;flex-shrink:0;
+}
+.phone.dark-mode .icon{
+  background:#2d1c47;
+}
+
+.menu b{font-size:18px;flex:1;color:#1a0a2e;transition:color 0.2s}
+.phone.dark-mode .menu b{color:#ffffff}
+
+.menu span{color:#666;font-size:14px;transition:color 0.2s}
+.phone.dark-mode .menu span{color:#c9b8e6}
+
+.status-banner{
+  background:rgba(255,255,255,0.9);
+  color:#1a0a2e;
+  padding:10px 14px;
+  border-radius:12px;
+  font-size:13px;
+  font-weight:bold;
+  margin-bottom:14px;
+  text-align:center;
+  display:none;
+}
+.phone.dark-mode .status-banner{
+  background:#1b112b;
+  color:#d7b3ff;
+  border:1px solid rgba(255,255,255,0.1);
+}
+
+.switch{
+  width:50px;height:28px;background:#e8a0c8;border-radius:20px;
+  position:relative;transition:background 0.2s;flex-shrink:0;
+}
+.switch:after{
+  content:'';position:absolute;right:3px;top:3px;width:22px;height:22px;
+  background:#ffc8ec;border-radius:50%;transition:all 0.2s;
+}
 .switch.off{background:#999}
 .switch.off:after{left:3px;right:auto;background:white}
+
 .ver{text-align:center;color:rgba(255,255,255,0.8);font-size:13px;margin-top:20px}
-.back{background:white;color:#1a0a2e;text-align:center;padding:14px;border-radius:12px;font-weight:bold;margin-top:15px;cursor:pointer}
+.back{
+  background:white;color:#1a0a2e;text-align:center;padding:14px;
+  border-radius:12px;font-weight:bold;margin-top:15px;cursor:pointer;
+  transition:background 0.2s,color 0.2s;
+}
 .back:active{opacity:0.85}
+.phone.dark-mode .back{
+  background:#24143d;
+  color:#ffffff;
+  border:1px solid rgba(255,255,255,0.12);
+}
 
 /* Modal */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);justify-content:center;align-items:center;padding:20px;z-index:100}
-.modal{background:white;width:100%;max-width:340px;border-radius:18px;padding:20px}
+.modal-overlay{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);
+  justify-content:center;align-items:center;padding:20px;z-index:100;
+}
+.modal{
+  background:white;width:100%;max-width:340px;border-radius:18px;padding:20px;
+  transition:background 0.2s,color 0.2s;
+}
+.phone.dark-mode .modal{
+  background:#1d122e;
+  color:#ffffff;
+  border:1px solid rgba(255,255,255,0.12);
+}
 .modal h3{color:#1a0a2e;margin-bottom:10px;font-size:20px}
+.phone.dark-mode .modal h3{color:#ffffff}
 .modal p{color:#444;font-size:14px;line-height:1.5;margin-bottom:14px}
-.lang-option{display:block;width:100%;text-align:left;padding:10px 14px;margin-bottom:8px;border:1px solid #ddd;border-radius:10px;background:#fafafa;font-size:15px;cursor:pointer}
+.phone.dark-mode .modal p{color:#dcd2ed}
+
+.lang-option{
+  display:block;width:100%;text-align:left;padding:10px 14px;margin-bottom:8px;
+  border:1px solid #ddd;border-radius:10px;background:#fafafa;font-size:15px;cursor:pointer;
+  color:#1a0a2e;
+}
+.phone.dark-mode .lang-option{
+  background:#291942;
+  color:#ffffff;
+  border-color:#3d285e;
+}
 .lang-option.active{border-color:#7b2a9e;background:#f3e5ff;font-weight:bold;color:#2d0a5e}
-.btn-close{padding:10px 16px;border:none;border-radius:10px;background:#7b2a9e;color:white;font-weight:bold;cursor:pointer;float:right}
+.phone.dark-mode .lang-option.active{
+  background:#47227a;
+  color:#ffffff;
+  border-color:#b47cff;
+}
+
+.btn-close{
+  padding:10px 16px;border:none;border-radius:10px;
+  background:#7b2a9e;color:white;font-weight:bold;cursor:pointer;float:right;
+}
 </style>
 </head>
 <body>
 <div class="phone" id="phoneFrame">
   <div class="top">
     <a href="home.html">‹</a>
-    <h1>Settings</h1>
+    <h1 id="pageTitle">Settings</h1>
     <div class="logo">B</div>
   </div>
 
+  <div class="status-banner" id="statusBanner"></div>
+
   <div class="menu" onclick="openLanguageModal()">
     <div class="icon">🌐</div>
-    <b>Language</b>
-    <span id="langLabel">বাংলা • English • Hindi ›</span>
+    <b id="lblLanguage">Language</b>
+    <span id="langLabel">বাংলা ›</span>
   </div>
 
   <div class="menu" onclick="toggleSwitch('notifSwitch', 'notifications')">
     <div class="icon">🔔</div>
-    <b>Notifications</b>
+    <b id="lblNotifications">Notifications</b>
     <div class="switch" id="notifSwitch"></div>
   </div>
 
   <div class="menu" onclick="toggleSwitch('darkSwitch', 'darkMode')">
     <div class="icon">🌙</div>
-    <b>Dark Mode</b>
+    <b id="lblDarkMode">Dark Mode</b>
     <div class="switch off" id="darkSwitch"></div>
   </div>
 
-  <div class="menu" onclick="showInfo('🔒 Privacy', 'আপনার অ্যাকাউন্ট ও সেশন Supabase অথেনটিকেশন দ্বারা সুরক্ষিত। ব্যক্তিগত তথ্য অনুমতি ছাড়া শেয়ার করা হয় না।')">
+  <div class="menu" onclick="openPrivacyModal()">
     <div class="icon">🛡️</div>
-    <b>Privacy</b>
+    <b id="lblPrivacy">Privacy</b>
     <span>›</span>
   </div>
 
-  <div class="menu" onclick="showInfo('ⓘ About Bondhu Apps', 'Bondhu Apps একটি সহজ ও দ্রুত মোবাইল ওয়েব অ্যাপ।<br><b>Version:</b> 1.1 (Trial)')">
+  <div class="menu" onclick="openAboutModal()">
     <div class="icon">ⓘ</div>
-    <b>About</b>
+    <b id="lblAbout">About</b>
     <span>›</span>
   </div>
 
-  <div class="back" onclick="location.href='home.html'">Back to Home</div>
+  <div class="back" id="backBtn" onclick="location.href='home.html'">Back to Home</div>
   <div class="ver">Bondhu Apps • Version 1.1 Trial</div>
 </div>
 
@@ -88,6 +220,118 @@ body{background:#e8c8e8;display:flex;justify-content:center;min-height:100vh}
   const SUPABASE_KEY = "sb_publishable_EqE3D3fqYSf5C13Ds0wNyQ_ZeDHoJfH";
   const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+  const translations = {
+    'বাংলা': {
+      title: 'Settings',
+      language: 'Language',
+      notifications: 'Notifications',
+      darkMode: 'Dark Mode',
+      privacy: 'Privacy',
+      about: 'About',
+      back: 'Back to Home',
+      notifOn: '🔔 নোটিফিকেশন চালু করা হয়েছে',
+      notifOff: '🔕 নোটিফিকেশন বন্ধ করা হয়েছে',
+      darkOn: '🌙 Dark Mode চালু করা হয়েছে',
+      darkOff: '☀️ Light Mode চালু করা হয়েছে',
+      langChanged: '🌐 ভাষা পরিবর্তন হয়েছে: ',
+      selectLangTitle: '🌐 Select Language',
+      selectLangDesc: 'আপনার পছন্দের ভাষা নির্বাচন করুন:',
+      privacyTitle: '🔒 Privacy',
+      privacyDesc: 'আপনার অ্যাকাউন্ট ও সেশন Supabase অথেনটিকেশন দ্বারা সুরক্ষিত। অনুমতি ছাড়া তথ্য শেয়ার করা হয় না।',
+      aboutTitle: 'ⓘ About Bondhu Apps',
+      aboutDesc: 'Bondhu Apps একটি সহজ ও দ্রুত মোবাইল ওয়েব অ্যাপ।<br><b>Version:</b> 1.1 (Trial)'
+    },
+    'English': {
+      title: 'Settings',
+      language: 'Language',
+      notifications: 'Notifications',
+      darkMode: 'Dark Mode',
+      privacy: 'Privacy',
+      about: 'About',
+      back: 'Back to Home',
+      notifOn: '🔔 Notifications Enabled',
+      notifOff: '🔕 Notifications Disabled',
+      darkOn: '🌙 Dark Mode Enabled',
+      darkOff: '☀️ Light Mode Enabled',
+      langChanged: '🌐 Language changed to: ',
+      selectLangTitle: '🌐 Select Language',
+      selectLangDesc: 'Choose your preferred language:',
+      privacyTitle: '🔒 Privacy',
+      privacyDesc: 'Your account and session are protected by Supabase Authentication. Personal data is never shared without permission.',
+      aboutTitle: 'ⓘ About Bondhu Apps',
+      aboutDesc: 'Bondhu Apps is a fast and simple mobile web app.<br><b>Version:</b> 1.1 (Trial)'
+    },
+    'Hindi': {
+      title: 'Settings',
+      language: 'Language',
+      notifications: 'Notifications',
+      darkMode: 'Dark Mode',
+      privacy: 'Privacy',
+      about: 'About',
+      back: 'Back to Home',
+      notifOn: '🔔 नोटिफिकेशन चालू किया गया',
+      notifOff: '🔕 नोटिफिकेशन बंद किया गया',
+      darkOn: '🌙 डार्क मोड चालू किया गया',
+      darkOff: '☀️ लाइट मोड चालू किया गया',
+      langChanged: '🌐 भाषा बदली गई: ',
+      selectLangTitle: '🌐 भाषा चुनें',
+      selectLangDesc: 'अपनी पसंदीदा भाषा चुनें:',
+      privacyTitle: '🔒 प्राइवेसी',
+      privacyDesc: 'आपका अकाउंट और सेशन Supabase ऑथेंटिकेशन से सुरक्षित है। अनुमति के बिना डेटा साझा नहीं किया जाता।',
+      aboutTitle: 'ⓘ Bondhu Apps के बारे में',
+      aboutDesc: 'Bondhu Apps एक सरल और तेज़ मोबाइल वेब ऐप है।<br><b>Version:</b> 1.1 (Trial)'
+    }
+  };
+
+  function getLang() {
+    return localStorage.getItem('bondhu_lang') || 'বাংলা';
+  }
+
+  function showBanner(text) {
+    const banner = document.getElementById('statusBanner');
+    banner.textContent = text;
+    banner.style.display = 'block';
+    clearTimeout(window.bannerTimer);
+    window.bannerTimer = setTimeout(() => {
+      banner.style.display = 'none';
+    }, 2500);
+  }
+
+  function applyLanguage(lang) {
+    const t = translations[lang] || translations['বাংলা'];
+    document.getElementById('pageTitle').textContent = t.title;
+    document.getElementById('lblLanguage').textContent = t.language;
+    document.getElementById('langLabel').textContent = lang + ' ›';
+    document.getElementById('lblNotifications').textContent = t.notifications;
+    document.getElementById('lblDarkMode').textContent = t.darkMode;
+    document.getElementById('lblPrivacy').textContent = t.privacy;
+    document.getElementById('lblAbout').textContent = t.about;
+    document.getElementById('backBtn').textContent = t.back;
+  }
+
+  function applyDarkMode(isDark) {
+    const darkEl = document.getElementById('darkSwitch');
+    const phoneEl = document.getElementById('phoneFrame');
+    if (isDark) {
+      darkEl.classList.remove('off');
+      phoneEl.classList.add('dark-mode');
+      document.body.classList.add('dark-body');
+    } else {
+      darkEl.classList.add('off');
+      phoneEl.classList.remove('dark-mode');
+      document.body.classList.remove('dark-body');
+    }
+  }
+
+  function applyNotifications(isEnabled) {
+    const notifEl = document.getElementById('notifSwitch');
+    if (isEnabled) {
+      notifEl.classList.remove('off');
+    } else {
+      notifEl.classList.add('off');
+    }
+  }
+
   async function checkSession() {
     const { data: { session } } = await supabaseClient.auth.getSession();
     if (!session) {
@@ -96,54 +340,46 @@ body{background:#e8c8e8;display:flex;justify-content:center;min-height:100vh}
   }
 
   function loadSavedSettings() {
-    const savedLang = localStorage.getItem('bondhu_lang');
-    if (savedLang) {
-      document.getElementById('langLabel').textContent = savedLang + ' ›';
-    }
+    const lang = getLang();
+    applyLanguage(lang);
 
-    const notifOn = localStorage.getItem('bondhu_notifications');
-    const notifEl = document.getElementById('notifSwitch');
-    if (notifOn === 'false') {
-      notifEl.classList.add('off');
-    } else {
-      notifEl.classList.remove('off');
-    }
+    const notifSaved = localStorage.getItem('bondhu_notifications');
+    const isNotifOn = notifSaved === null ? true : (notifSaved === 'true');
+    applyNotifications(isNotifOn);
 
-    const darkOn = localStorage.getItem('bondhu_darkMode') === 'true';
-    const darkEl = document.getElementById('darkSwitch');
-    const phoneEl = document.getElementById('phoneFrame');
-    if (darkOn) {
-      darkEl.classList.remove('off');
-      phoneEl.classList.add('dark-mode');
-    } else {
-      darkEl.classList.add('off');
-      phoneEl.classList.remove('dark-mode');
-    }
+    const isDarkOn = localStorage.getItem('bondhu_darkMode') === 'true';
+    applyDarkMode(isDarkOn);
   }
 
   function toggleSwitch(elId, keyName) {
-    const el = document.getElementById(elId);
-    const isNowOff = el.classList.toggle('off');
-    const isOn = !isNowOff;
+    const lang = getLang();
+    const t = translations[lang] || translations['বাংলা'];
 
     if (keyName === 'notifications') {
-      localStorage.setItem('bondhu_notifications', isOn);
+      const current = localStorage.getItem('bondhu_notifications');
+      const isNowOn = current === 'false' ? true : false;
+      localStorage.setItem('bondhu_notifications', String(isNowOn));
+      applyNotifications(isNowOn);
+      showBanner(isNowOn ? t.notifOn : t.notifOff);
     } else if (keyName === 'darkMode') {
-      localStorage.setItem('bondhu_darkMode', isOn);
-      document.getElementById('phoneFrame').classList.toggle('dark-mode', isOn);
+      const isNowDark = localStorage.getItem('bondhu_darkMode') !== 'true';
+      localStorage.setItem('bondhu_darkMode', String(isNowDark));
+      applyDarkMode(isNowDark);
+      showBanner(isNowDark ? t.darkOn : t.darkOff);
     }
   }
 
   function openLanguageModal() {
-    const current = localStorage.getItem('bondhu_lang') || 'বাংলা';
+    const current = getLang();
+    const t = translations[current] || translations['বাংলা'];
     const langs = ['বাংলা', 'English', 'Hindi'];
     const optionsHtml = langs.map(l =>
       `<button class="lang-option ${current === l ? 'active' : ''}" onclick="selectLanguage('${l}')">${l}</button>`
     ).join('');
 
     document.getElementById('modalBox').innerHTML = `
-      <h3>🌐 Select Language</h3>
-      <p>আপনার পছন্দের ভাষা নির্বাচন করুন:</p>
+      <h3>${t.selectLangTitle}</h3>
+      <p>${t.selectLangDesc}</p>
       ${optionsHtml}
       <button class="btn-close" onclick="closeModal()">Close</button>
     `;
@@ -152,8 +388,20 @@ body{background:#e8c8e8;display:flex;justify-content:center;min-height:100vh}
 
   function selectLanguage(lang) {
     localStorage.setItem('bondhu_lang', lang);
-    document.getElementById('langLabel').textContent = lang + ' ›';
+    applyLanguage(lang);
     closeModal();
+    const t = translations[lang] || translations['বাংলা'];
+    showBanner(t.langChanged + lang);
+  }
+
+  function openPrivacyModal() {
+    const t = translations[getLang()] || translations['বাংলা'];
+    showInfo(t.privacyTitle, t.privacyDesc);
+  }
+
+  function openAboutModal() {
+    const t = translations[getLang()] || translations['বাংলা'];
+    showInfo(t.aboutTitle, t.aboutDesc);
   }
 
   function showInfo(title, message) {
@@ -173,5 +421,4 @@ body{background:#e8c8e8;display:flex;justify-content:center;min-height:100vh}
   loadSavedSettings();
 </script>
 </body>
-  </html>
-  
+</html>
