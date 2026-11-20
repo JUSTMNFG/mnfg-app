@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Updates - Bondhu Apps</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif}
+body{background:#e8c8e8;display:flex;justify-content:center;min-height:100vh}
+.phone{width:100%;max-width:400px;background:linear-gradient(180deg,#2d0a5e 0%,#7b2a9e 40%,#c94b8a 70%,#f07ba8 100%);padding:25px 18px;min-height:100vh;position:relative}
+.top{display:flex;align-items:center;gap:12px;color:white;margin-bottom:20px}
+.top a{color:white;text-decoration:none;font-size:30px;padding:0 6px}
+.top h1{font-size:26px;flex:1}
+.logo{width:50px;height:50px;background:#f0e0ff;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:900;color:#7b2a9e}
+
+.card{background:white;border-radius:20px;padding:20px;margin-bottom:14px;box-shadow:0 8px 20px rgba(0,0,0,0.16)}
+.card h2{color:#1a0a2e;font-size:20px;margin-bottom:8px}
+.card p{color:#444;font-size:14px;line-height:1.5;margin-bottom:10px}
+.badge{display:inline-block;background:#e8d5ff;color:#4b0082;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:bold;margin-bottom:10px}
+
+.btn{width:100%;padding:13px;border:none;border-radius:12px;background:#7b2a9e;color:white;font-size:15px;font-weight:bold;cursor:pointer}
+.btn:active{opacity:0.9}
+.status{margin-top:12px;font-size:13px;font-weight:bold;color:#2e7d32}
+
+.back{background:white;color:#1a0a2e;text-align:center;padding:14px;border-radius:12px;font-weight:bold;margin-top:10px;cursor:pointer}
+.ver{text-align:center;color:rgba(255,255,255,0.85);font-size:12px;margin-top:18px}
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="top">
+    <a href="home.html">‹</a>
+    <h1>Updates</h1>
+    <div class="logo">B</div>
+  </div>
+
+  <div class="card">
+    <span class="badge">Current: Version 1.1 (Trial)</span>
+    <h2>Bondhu Apps Status</h2>
+    <p>আপনি বর্তমানে <strong>Bondhu Apps</strong>-এর সর্বশেষ ভার্সন ব্যবহার করছেন। নতুন কোনো বাধ্যতামূলক আপডেট নেই।</p>
+    <button class="btn" onclick="checkNow()">🔄 এখনই আপডেট চেক করুন</button>
+    <div class="status" id="updateStatus"></div>
+  </div>
+
+  <div class="card">
+    <h2>✨ সাম্প্রতিক সুবিধা</h2>
+    <p>• ইমেইল ও পাসওয়ার্ড দিয়ে নিরাপদ লগইন ও সাইনআপ<br>
+       • প্রোফাইল নাম ও পাসওয়ার্ড আপডেট সুবিধা<br>
+       • ভাষা, নোটিফিকেশন ও ডার্ক মোড সেটিংস</p>
+  </div>
+
+  <div class="back" onclick="location.href='home.html'">Back to Home</div>
+  <div class="ver">Bondhu Apps • Version 1.1 Trial</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = "https://ujhjloihskutkazhaydc.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_EqE3D3fqYSf5C13Ds0wNyQ_ZeDHoJfH";
+  const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  async function checkAuth() {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (!session) {
+      window.location.href = 'index.html';
+    }
+  }
+
+  function checkNow() {
+    const el = document.getElementById('updateStatus');
+    el.textContent = '✅ সর্বশেষ ভার্সন (Version 1.1 Trial) ইনস্টল করা আছে।';
+  }
+
+  checkAuth();
+</script>
+</body>
+</html>
