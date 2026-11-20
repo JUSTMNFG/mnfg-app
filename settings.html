@@ -27,7 +27,6 @@ body.dark-body{
   transition:background 0.25s ease,color 0.25s ease;
 }
 
-/* প্রকৃত Dark Mode স্টাইল */
 .phone.dark-mode{
   background:linear-gradient(180deg,#0c041a 0%,#1a0936 45%,#28104a 100%);
 }
@@ -64,9 +63,6 @@ body.dark-body{
   color:#f3ebff;
   border:1px solid rgba(255,255,255,0.08);
 }
-.phone.dark-mode .menu:active{
-  background:#26183d;
-}
 
 .icon{
   width:40px;height:40px;border-radius:10px;
@@ -84,7 +80,7 @@ body.dark-body{
 .phone.dark-mode .menu span{color:#c9b8e6}
 
 .status-banner{
-  background:rgba(255,255,255,0.9);
+  background:rgba(255,255,255,0.92);
   color:#1a0a2e;
   padding:10px 14px;
   border-radius:12px;
@@ -115,7 +111,6 @@ body.dark-body{
 .back{
   background:white;color:#1a0a2e;text-align:center;padding:14px;
   border-radius:12px;font-weight:bold;margin-top:15px;cursor:pointer;
-  transition:background 0.2s,color 0.2s;
 }
 .back:active{opacity:0.85}
 .phone.dark-mode .back{
@@ -124,14 +119,12 @@ body.dark-body{
   border:1px solid rgba(255,255,255,0.12);
 }
 
-/* Modal */
 .modal-overlay{
   display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);
   justify-content:center;align-items:center;padding:20px;z-index:100;
 }
 .modal{
   background:white;width:100%;max-width:340px;border-radius:18px;padding:20px;
-  transition:background 0.2s,color 0.2s;
 }
 .phone.dark-mode .modal{
   background:#1d122e;
@@ -170,7 +163,7 @@ body.dark-body{
 <div class="phone" id="phoneFrame">
   <div class="top">
     <a href="home.html">‹</a>
-    <h1 id="pageTitle">Settings</h1>
+    <h1 id="pageTitle">সেটিংস</h1>
     <div class="logo">B</div>
   </div>
 
@@ -178,35 +171,35 @@ body.dark-body{
 
   <div class="menu" onclick="openLanguageModal()">
     <div class="icon">🌐</div>
-    <b id="lblLanguage">Language</b>
+    <b id="lblLanguage">ভাষা</b>
     <span id="langLabel">বাংলা ›</span>
   </div>
 
   <div class="menu" onclick="toggleSwitch('notifSwitch', 'notifications')">
     <div class="icon">🔔</div>
-    <b id="lblNotifications">Notifications</b>
+    <b id="lblNotifications">নোটিফিকেশন</b>
     <div class="switch" id="notifSwitch"></div>
   </div>
 
   <div class="menu" onclick="toggleSwitch('darkSwitch', 'darkMode')">
     <div class="icon">🌙</div>
-    <b id="lblDarkMode">Dark Mode</b>
+    <b id="lblDarkMode">ডার্ক মোড</b>
     <div class="switch off" id="darkSwitch"></div>
   </div>
 
   <div class="menu" onclick="openPrivacyModal()">
     <div class="icon">🛡️</div>
-    <b id="lblPrivacy">Privacy</b>
+    <b id="lblPrivacy">প্রাইভেসি</b>
     <span>›</span>
   </div>
 
   <div class="menu" onclick="openAboutModal()">
     <div class="icon">ⓘ</div>
-    <b id="lblAbout">About</b>
+    <b id="lblAbout">অ্যাপ সম্পর্কে</b>
     <span>›</span>
   </div>
 
-  <div class="back" id="backBtn" onclick="location.href='home.html'">Back to Home</div>
+  <div class="back" id="backBtn" onclick="location.href='home.html'">হোমে ফিরে যান</div>
   <div class="ver">Bondhu Apps • Version 1.1 Trial</div>
 </div>
 
@@ -222,23 +215,23 @@ body.dark-body{
 
   const translations = {
     'বাংলা': {
-      title: 'Settings',
-      language: 'Language',
-      notifications: 'Notifications',
-      darkMode: 'Dark Mode',
-      privacy: 'Privacy',
-      about: 'About',
-      back: 'Back to Home',
+      title: 'সেটিংস',
+      language: 'ভাষা',
+      notifications: 'নোটিফিকেশন',
+      darkMode: 'ডার্ক মোড',
+      privacy: 'প্রাইভেসি',
+      about: 'অ্যাপ সম্পর্কে',
+      back: 'হোমে ফিরে যান',
       notifOn: '🔔 নোটিফিকেশন চালু করা হয়েছে',
       notifOff: '🔕 নোটিফিকেশন বন্ধ করা হয়েছে',
-      darkOn: '🌙 Dark Mode চালু করা হয়েছে',
-      darkOff: '☀️ Light Mode চালু করা হয়েছে',
+      darkOn: '🌙 ডার্ক মোড চালু করা হয়েছে',
+      darkOff: '☀️ লাইট মোড চালু করা হয়েছে',
       langChanged: '🌐 ভাষা পরিবর্তন হয়েছে: ',
-      selectLangTitle: '🌐 Select Language',
-      selectLangDesc: 'আপনার পছন্দের ভাষা নির্বাচন করুন:',
-      privacyTitle: '🔒 Privacy',
+      selectLangTitle: '🌐 ভাষা নির্বাচন করুন',
+      selectLangDesc: 'আপনার পছন্দের ভাষা বেছে নিন:',
+      privacyTitle: '🔒 প্রাইভেসি',
       privacyDesc: 'আপনার অ্যাকাউন্ট ও সেশন Supabase অথেনটিকেশন দ্বারা সুরক্ষিত। অনুমতি ছাড়া তথ্য শেয়ার করা হয় না।',
-      aboutTitle: 'ⓘ About Bondhu Apps',
+      aboutTitle: 'ⓘ Bondhu Apps সম্পর্কে',
       aboutDesc: 'Bondhu Apps একটি সহজ ও দ্রুত মোবাইল ওয়েব অ্যাপ।<br><b>Version:</b> 1.1 (Trial)'
     },
     'English': {
@@ -262,13 +255,13 @@ body.dark-body{
       aboutDesc: 'Bondhu Apps is a fast and simple mobile web app.<br><b>Version:</b> 1.1 (Trial)'
     },
     'Hindi': {
-      title: 'Settings',
-      language: 'Language',
-      notifications: 'Notifications',
-      darkMode: 'Dark Mode',
-      privacy: 'Privacy',
-      about: 'About',
-      back: 'Back to Home',
+      title: 'सेटिंग्स',
+      language: 'भाषा',
+      notifications: 'नोटिफिकेशन',
+      darkMode: 'डार्क मोड',
+      privacy: 'प्राइवेसी',
+      about: 'ऐप के बारे में',
+      back: 'होम पर वापस जाएं',
       notifOn: '🔔 नोटिफिकेशन चालू किया गया',
       notifOff: '🔕 नोटिफिकेशन बंद किया गया',
       darkOn: '🌙 डार्क मोड चालू किया गया',
