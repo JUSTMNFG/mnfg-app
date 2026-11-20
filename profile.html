@@ -6,36 +6,102 @@
 <title>Profile - Bondhu Apps</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif}
-body{background:#e8c8e8;display:flex;justify-content:center;min-height:100vh}
-.phone{width:100%;max-width:400px;background:linear-gradient(180deg,#2d0a5e 0%,#7b2a9e 40%,#c94b8a 70%,#f07ba8 100%);padding:25px 18px;min-height:100vh;position:relative}
+body{
+  background:#e8c8e8;
+  display:flex;
+  justify-content:center;
+  min-height:100vh;
+  transition:background 0.25s ease;
+}
+body.dark-body{background:#090312}
+
+.phone{
+  width:100%;
+  max-width:400px;
+  background:linear-gradient(180deg,#2d0a5e 0%,#7b2a9e 40%,#c94b8a 70%,#f07ba8 100%);
+  padding:25px 18px;
+  min-height:100vh;
+  position:relative;
+  transition:background 0.25s ease;
+}
+.phone.dark-mode{
+  background:linear-gradient(180deg,#0c041a 0%,#1a0936 45%,#28104a 100%);
+}
+
 .top{display:flex;align-items:center;gap:12px;color:white;margin-bottom:20px}
 .top a{color:white;text-decoration:none;font-size:30px;padding:0 6px}
 .top h1{font-size:26px;flex:1}
-.logo{width:50px;height:50px;background:#f0e0ff;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:900;color:#7b2a9e}
+.logo{
+  width:50px;height:50px;background:#f0e0ff;border-radius:15px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:34px;font-weight:900;color:#7b2a9e;
+}
+.phone.dark-mode .logo{background:#24143d;color:#e2b6ff}
 
-.profile-card{background:white;border-radius:20px;padding:22px 18px;margin-bottom:14px;box-shadow:0 8px 20px rgba(0,0,0,0.18)}
-.avatar{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#7b2a9e,#e040a8);color:white;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:bold;margin-bottom:12px}
+.profile-card,.box{
+  background:white;
+  border-radius:20px;
+  padding:20px 18px;
+  margin-bottom:14px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.16);
+  transition:background 0.2s,color 0.2s;
+}
+.phone.dark-mode .profile-card,
+.phone.dark-mode .box{
+  background:#1b112b;
+  color:#ffffff;
+  border:1px solid rgba(255,255,255,0.08);
+}
+
+.avatar{
+  width:64px;height:64px;border-radius:50%;
+  background:linear-gradient(135deg,#7b2a9e,#e040a8);
+  color:white;display:flex;align-items:center;justify-content:center;
+  font-size:28px;font-weight:bold;margin-bottom:12px;
+}
 .profile-card h2{color:#1a0a2e;font-size:22px;word-break:break-word}
+.phone.dark-mode .profile-card h2{color:#ffffff}
+
 .profile-card p{color:#555;font-size:14px;margin-top:4px;word-break:break-word}
+.phone.dark-mode .profile-card p{color:#cbbde6}
 
-.box{background:white;border-radius:18px;padding:18px;margin-bottom:14px;box-shadow:0 8px 20px rgba(0,0,0,0.15)}
 .box h3{color:#1a0a2e;font-size:18px;margin-bottom:10px}
-.box input{width:100%;padding:12px;border:1.5px solid #ddd;border-radius:12px;font-size:15px;margin-bottom:10px;outline:none}
-.box input:focus{border-color:#7b2a9e}
-.btn{width:100%;padding:12px;border:none;border-radius:12px;background:linear-gradient(90deg,#4b0082,#c94b8a);color:white;font-size:16px;font-weight:bold;cursor:pointer}
-.btn:active{opacity:0.9}
-.msg{font-size:13px;margin-top:8px;font-weight:bold;min-height:18px}
+.phone.dark-mode .box h3{color:#ffffff}
 
-.back{background:white;color:#1a0a2e;text-align:center;padding:14px;border-radius:12px;font-weight:bold;margin-top:10px;cursor:pointer}
+.box input{
+  width:100%;padding:12px;border:1.5px solid #ddd;border-radius:12px;
+  font-size:15px;margin-bottom:10px;outline:none;background:#fff;color:#1a0a2e;
+}
+.phone.dark-mode .box input{
+  background:#281940;color:#ffffff;border-color:#3f2a61;
+}
+.box input:focus{border-color:#7b2a9e}
+
+.btn{
+  width:100%;padding:12px;border:none;border-radius:12px;
+  background:linear-gradient(90deg,#4b0082,#c94b8a);
+  color:white;font-size:16px;font-weight:bold;cursor:pointer;
+}
+.btn:disabled{opacity:0.6;cursor:not-allowed}
+
+.msg{font-size:13px;margin-top:8px;font-weight:bold;min-height:18px;word-break:break-word}
+
+.back{
+  background:white;color:#1a0a2e;text-align:center;padding:14px;
+  border-radius:12px;font-weight:bold;margin-top:10px;cursor:pointer;
+}
+.phone.dark-mode .back{
+  background:#24143d;color:#ffffff;border:1px solid rgba(255,255,255,0.12);
+}
 .ver{text-align:center;color:rgba(255,255,255,0.85);font-size:12px;margin-top:18px}
 </style>
 </head>
 <body>
 
-<div class="phone">
+<div class="phone" id="phoneFrame">
   <div class="top">
     <a href="home.html">‹</a>
-    <h1>Profile</h1>
+    <h1 id="pTitle">Profile</h1>
     <div class="logo">B</div>
   </div>
 
@@ -46,20 +112,20 @@ body{background:#e8c8e8;display:flex;justify-content:center;min-height:100vh}
   </div>
 
   <div class="box">
-    <h3>✏️ নাম পরিবর্তন করুন</h3>
+    <h3 id="nameBoxTitle">✏️ নাম পরিবর্তন করুন</h3>
     <input type="text" id="nameInput" placeholder="আপনার নতুন নাম লিখুন">
-    <button class="btn" onclick="saveName()">নাম সেভ করুন</button>
+    <button class="btn" id="nameBtn" onclick="saveName()">নাম সেভ করুন</button>
     <div class="msg" id="nameMsg"></div>
   </div>
 
   <div class="box">
-    <h3>🔒 পাসওয়ার্ড পরিবর্তন করুন</h3>
+    <h3 id="passBoxTitle">🔒 পাসওয়ার্ড পরিবর্তন করুন</h3>
     <input type="password" id="passInput" placeholder="নতুন পাসওয়ার্ড (কমপক্ষে ৬ অক্ষর)">
-    <button class="btn" onclick="savePassword()">পাসওয়ার্ড আপডেট করুন</button>
+    <button class="btn" id="passBtn" onclick="savePassword()">পাসওয়ার্ড আপডেট করুন</button>
     <div class="msg" id="passMsg"></div>
   </div>
 
-  <div class="back" onclick="location.href='home.html'">Back to Home</div>
+  <div class="back" id="backHomeBtn" onclick="location.href='home.html'">Back to Home</div>
   <div class="ver">Bondhu Apps • Version 1.1 Trial</div>
 </div>
 
@@ -69,77 +135,140 @@ body{background:#e8c8e8;display:flex;justify-content:center;min-height:100vh}
   const SUPABASE_KEY = "sb_publishable_EqE3D3fqYSf5C13Ds0wNyQ_ZeDHoJfH";
   const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  let currentUser = null;
+  const profileTexts = {
+    'বাংলা': {
+      title: 'প্রোফাইল',
+      nameTitle: '✏️ নাম পরিবর্তন করুন',
+      namePlaceholder: 'আপনার নতুন নাম লিখুন',
+      nameBtn: 'নাম সেভ করুন',
+      passTitle: '🔒 পাসওয়ার্ড পরিবর্তন করুন',
+      passPlaceholder: 'নতুন পাসওয়ার্ড (কমপক্ষে ৬ অক্ষর)',
+      passBtn: 'পাসওয়ার্ড আপডেট করুন',
+      back: 'হোমে ফিরে যান'
+    },
+    'English': {
+      title: 'Profile',
+      nameTitle: '✏️ Change Name',
+      namePlaceholder: 'Enter your new name',
+      nameBtn: 'Save Name',
+      passTitle: '🔒 Change Password',
+      passPlaceholder: 'New password (6+ characters)',
+      passBtn: 'Update Password',
+      back: 'Back to Home'
+    },
+    'Hindi': {
+      title: 'प्रोफ़ाइल',
+      nameTitle: '✏️ नाम बदलें',
+      namePlaceholder: 'अपना नया नाम लिखें',
+      nameBtn: 'नाम सेव करें',
+      passTitle: '🔒 पासवर्ड बदलें',
+      passPlaceholder: 'नया पासवर्ड (कम से कम 6 अक्षर)',
+      passBtn: 'पासवर्ड अपडेट करें',
+      back: 'होम पर वापस जाएं'
+    }
+  };
+
+  function applyProfilePreferences() {
+    const isDark = localStorage.getItem('bondhu_darkMode') === 'true';
+    document.getElementById('phoneFrame').classList.toggle('dark-mode', isDark);
+    document.body.classList.toggle('dark-body', isDark);
+
+    const lang = localStorage.getItem('bondhu_lang') || 'বাংলা';
+    const t = profileTexts[lang] || profileTexts['বাংলা'];
+    document.getElementById('pTitle').textContent = t.title;
+    document.getElementById('nameBoxTitle').textContent = t.nameTitle;
+    document.getElementById('nameInput').placeholder = t.namePlaceholder;
+    document.getElementById('nameBtn').textContent = t.nameBtn;
+    document.getElementById('passBoxTitle').textContent = t.passTitle;
+    document.getElementById('passInput').placeholder = t.passPlaceholder;
+    document.getElementById('passBtn').textContent = t.passBtn;
+    document.getElementById('backHomeBtn').textContent = t.back;
+  }
 
   function renderUser(user) {
-    currentUser = user;
     const name = user.user_metadata?.full_name || user.email.split('@')[0];
     document.getElementById('profileName').textContent = name;
     document.getElementById('profileEmail').textContent = user.email;
     document.getElementById('nameInput').value = user.user_metadata?.full_name || '';
-    document.getElementById('avatarLetter').textContent = name.charAt(0).toUpperCase();
+    document.getElementById('avatarLetter').textContent = name.trim().charAt(0).toUpperCase() || 'B';
   }
 
   async function initProfile() {
-    const { data: { session }, error } = await supabaseClient.auth.getSession();
-    if (error || !session) {
-      window.location.href = 'index.html';
-      return;
+    applyProfilePreferences();
+    try {
+      const { data: { session }, error } = await supabaseClient.auth.getSession();
+      if (error || !session) {
+        window.location.href = 'index.html';
+        return;
+      }
+      renderUser(session.user);
+    } catch (err) {
+      document.getElementById('nameMsg').style.color = '#e51e3a';
+      document.getElementById('nameMsg').textContent = 'সেশন লোড করতে সমস্যা হয়েছে: ' + err.message;
     }
-    renderUser(session.user);
   }
 
   async function saveName() {
     const newName = document.getElementById('nameInput').value.trim();
     const msgEl = document.getElementById('nameMsg');
+    const btn = document.getElementById('nameBtn');
 
     if (!newName) {
-      msgEl.style.color = 'red';
+      msgEl.style.color = '#e51e3a';
       msgEl.textContent = 'দয়া করে একটি নাম লিখুন।';
       return;
     }
 
+    btn.disabled = true;
     msgEl.style.color = '#7b2a9e';
     msgEl.textContent = 'সেভ হচ্ছে...';
 
-    const { data, error } = await supabaseClient.auth.updateUser({
-      data: { full_name: newName }
-    });
+    try {
+      const { data, error } = await supabaseClient.auth.updateUser({
+        data: { full_name: newName }
+      });
+      if (error) throw error;
 
-    if (error) {
-      msgEl.style.color = 'red';
-      msgEl.textContent = 'ত্রুটি: ' + error.message;
-    } else {
       renderUser(data.user);
       msgEl.style.color = 'green';
       msgEl.textContent = 'নাম সফলভাবে আপডেট হয়েছে!';
+    } catch (err) {
+      msgEl.style.color = '#e51e3a';
+      msgEl.textContent = 'ত্রুটি: ' + err.message;
+    } finally {
+      btn.disabled = false;
     }
   }
 
   async function savePassword() {
     const newPass = document.getElementById('passInput').value;
     const msgEl = document.getElementById('passMsg');
+    const btn = document.getElementById('passBtn');
 
     if (newPass.length < 6) {
-      msgEl.style.color = 'red';
+      msgEl.style.color = '#e51e3a';
       msgEl.textContent = 'পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।';
       return;
     }
 
+    btn.disabled = true;
     msgEl.style.color = '#7b2a9e';
     msgEl.textContent = 'পাসওয়ার্ড পরিবর্তন হচ্ছে...';
 
-    const { error } = await supabaseClient.auth.updateUser({
-      password: newPass
-    });
+    try {
+      const { error } = await supabaseClient.auth.updateUser({
+        password: newPass
+      });
+      if (error) throw error;
 
-    if (error) {
-      msgEl.style.color = 'red';
-      msgEl.textContent = 'ত্রুটি: ' + error.message;
-    } else {
       document.getElementById('passInput').value = '';
       msgEl.style.color = 'green';
       msgEl.textContent = 'পাসওয়ার্ড সফলভাবে পরিবর্তিত হয়েছে!';
+    } catch (err) {
+      msgEl.style.color = '#e51e3a';
+      msgEl.textContent = 'ত্রুটি: ' + err.message;
+    } finally {
+      btn.disabled = false;
     }
   }
 
@@ -147,4 +276,3 @@ body{background:#e8c8e8;display:flex;justify-content:center;min-height:100vh}
 </script>
 </body>
 </html>
-  
