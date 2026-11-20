@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Bondhu Apps - MNfG</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+
+body{
+ background:#1a002e;
+ display:flex;
+ justify-content:center;
+ min-height:100vh
+}
+
+.phone{
+ width:100%;
+ max-width:420px;
+ min-height:100vh;
+ background:linear-gradient(180deg,#4b0082 0%,#7b1fa2 35%,#d946a8 75%,#ff6eb4 100%);
+ padding:38px 22px 24px;
+ text-align:center;
+ position:relative;
+ overflow:hidden
+}
+
+.parent-brand{
+ display:inline-block;
+ background:rgba(255,255,255,0.18);
+ color:#fff;
+ padding:5px 14px;
+ border-radius:20px;
+ font-size:12px;
+ font-weight:700;
+ letter-spacing:0.6px;
+ margin-bottom:10px
+}
+
+.logo{
+ width:135px;
+ height:135px;
+ margin:8px auto 12px;
+ background:radial-gradient(circle at 30% 30%,#ff7ad9,#7b1fa2 65%,#4b0082);
+ border-radius:50%;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ box-shadow:0 15px 35px rgba(0,0,0,.35)
+}
+
+.logo b{
+ font-family:'Baloo 2',cursive;
+ font-size:98px;
+ color:#fff;
+ font-style:italic;
+ line-height:1;
+ text-shadow:0 5px 0 rgba(0,0,0,.2);
+ transform:translateY(-4px)
+}
+
+h1{color:#fff;font-size:34px;font-weight:800;letter-spacing:.5px}
+
+.tag{color:#fff;font-size:15px;margin-bottom:20px;opacity:.95}
+
+.card{
+ background:#fff;
+ border-radius:22px;
+ padding:22px 16px 20px;
+ box-shadow:0 15px 30px rgba(0,0,0,.25)
+}
+
+.input{
+ width:100%;
+ height:52px;
+ border:1.5px solid #e8e8e8;
+ border-radius:12px;
+ padding:0 12px;
+ font-size:15px;
+ outline:none;
+ margin-bottom:14px;
+ background:#fff
+}
+
+.input:focus{border-color:#9c27b0}
+
+.btn-login{
+ width:100%;
+ height:56px;
+ border:none;
+ border-radius:12px;
+ background:linear-gradient(90deg,#4b0082,#e040a8);
+ color:#fff;
+ font-size:22px;
+ font-weight:700;
+ cursor:pointer
+}
+
+.btn-create{
+ width:100%;
+ height:48px;
+ border:none;
+ border-radius:12px;
+ background:#d1d1d1;
+ color:#333;
+ font-size:16px;
+ font-weight:600;
+ margin-top:12px;
+ cursor:pointer
+}
+
+button:disabled{opacity:.6;cursor:not-allowed}
+
+.version{
+ color:rgba(255,255,255,0.85);
+ font-size:12px;
+ margin-top:20px;
+ font-weight:600
+}
+
+#updateBox{
+ display:none;
+ background:#fff;
+ color:#222;
+ border-radius:14px;
+ padding:14px;
+ margin-bottom:14px;
+ text-align:left
+}
+
+#updateBox b{color:#d81b60}
+
+#updateBox button{
+ width:100%;
+ height:42px;
+ border:none;
+ border-radius:10px;
+ background:#25D366;
+ color:#fff;
+ font-weight:700;
+ margin-top:10px;
+ cursor:pointer
+}
+
+#otpScreen,#resetScreen{display:none}
+
+#msg{
+ font-size:13px;
+ min-height:20px;
+ margin-top:12px;
+ overflow-wrap:anywhere;
+ color:#fff;
+ font-weight:600
+}
+
+.small-link{
+ color:#7b1fa2;
+ font-size:14px;
+ margin-top:14px;
+ cursor:pointer;
+ font-weight:600
+}
+
+#otp{
+ text-align:center;
+ font-size:23px;
+ letter-spacing:8px;
+ font-weight:700
+}
+
+#otpScreen p,#resetScreen p{
+ font-size:14px;
+ margin-bottom:15px;
+ color:#444
+}
+</style>
+</head>
+
+<body>
+
+<div class="phone">
+
+<div class="parent-brand">MNfG • Bondhu Apps</div>
+
+<div class="logo"><b>B</b></div>
+
+<h1>Bondhu Apps</h1>
+<p class="tag">Your Friend, With You</p>
+
+<div id="updateBox">
+<b>🎉 নতুন আপডেট আসছে!</b><br>
+<span id="updateText"></span>
+<button onclick="doUpdate()">এখন আপডেট করো</button>
+</div>
+
+<!-- LOGIN SCREEN -->
+<div class="card" id="authScreen">
+
+<h3 style="margin-bottom:18px;color:#4b0082">Welcome Back</h3>
+
+<input id="email" class="input"
+type="email" placeholder="তোমার ইমেইল দাও"
+autocomplete="email">
+
+<div style="position:relative">
+<input id="pass" class="input"
+type="password" placeholder="পাসওয়ার্ড (৬+ অক্ষর)"
+autocomplete="current-password">
+
+<span onclick="showPass()"
+style="position:absolute;right:12px;top:13px;cursor:pointer">👁️</span>
+</div>
+
+<button class="btn-login" id="loginBtn" onclick="login()">Login</button>
+
+<button class="btn-create" id="signupBtn" onclick="createAcc()">Create New Account</button>
+
+<div class="small-link" onclick="forgotPassword()">পাসওয়ার্ড ভুলে গেছো?</div>
+
+</div>
+
+<!-- OTP SCREEN -->
+<div class="card" id="otpScreen">
+
+<h3 style="color:#4b0082;margin-bottom:15px">Email Verification</h3>
+
+<p>তোমার ইমেইলে ৬ সংখ্যার OTP পাঠানো হয়েছে। কোডটি এখানে দাও।</p>
+
+<input id="otp" class="input"
+type="text" maxlength="6" inputmode="numeric"
+placeholder="৬ সংখ্যার OTP" autocomplete="one-time-code">
+
+<button class="btn-login" id="verifyBtn" onclick="verifyOtp()">Verify OTP</button>
+
+<button class="btn-create" id="resendBtn" onclick="resendOtp()">আবার OTP পাঠাও</button>
+
+<div class="small-link" onclick="backToLogin()">পিছনে যাও</div>
+
+</div>
+
+<!-- PASSWORD RESET SCREEN -->
+<div class="card" id="resetScreen">
+
+<h3 style="color:#4b0082;margin-bottom:15px">New Password</h3>
+
+<p>তোমার নতুন পাসওয়ার্ড দাও।</p>
+
+<input id="newPass" class="input"
+type="password" placeholder="নতুন পাসওয়ার্ড (৬+ অক্ষর)">
+
+<button class="btn-login" id="updatePassBtn" onclick="updatePassword()">পাসওয়ার্ড পরিবর্তন করো</button>
+
+</div>
+
+<div id="msg"></div>
+
+<div class="version">MNfG • Bondhu Apps • Version 1.1 Trial</div>
+
+</div>
+
+<script>
+const SUPABASE_URL = "https://ujhjloihskutkazhaydc.supabase.co";
+const SUPABASE_KEY = "sb_publishable_EqE3D3fqYSf5C13Ds0wNyQ_ZeDHoJfH";
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const HOME_PAGE = "home.html";
+let currentEmail = "";
+
+// UPDATE SYSTEM
+const CURRENT_VERSION = "1.1";
+const LATEST_VERSION = "1.1"; // নতুন আপডেট এলে ১.২ করবেন
+
+const UPDATE_LINK_ANDROID = "https://play.google.com/store";
+const UPDATE_LINK_IPHONE = "https://apps.apple.com";
+
+if (LATEST_VERSION !== CURRENT_VERSION) {
+  document.getElementById("updateBox").style.display = "block";
+  document.getElementById("updateText").innerText = "Version " + LATEST_VERSION + " পাওয়া গেছে।";
+}
+
+function doUpdate() {
+  const iphone = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  window.open(iphone ? UPDATE_LINK_IPHONE : UPDATE_LINK_ANDROID, "_blank");
+}
+
+function message(t, c = "#fff") {
+  const m = document.getElementById("msg");
+  m.innerText = t;
+  m.style.color = c;
+}
+
+function loading(id, on, t) {
+  const b = document.getElementById(id);
+  if (on) {
+    b.dataset.old = b.innerText;
+    b.innerText = t;
+    b.disabled = true;
+  } else {
+    b.disabled = false;
+    b.innerText = b.dataset.old || b.innerText;
+  }
+}
+
+function validEmail(e) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+}
+
+function showScreen(id) {
+  ["authScreen", "otpScreen", "resetScreen"].forEach(x => {
+    document.getElementById(x).style.display = "none";
+  });
+  document.getElementById(id).style.display = "block";
+}
+
+function showPass() {
+  const p = document.getElementById("pass");
+  p.type = p.type === "password" ? "text" : "password";
+}
+
+function backToLogin() {
+  showScreen("authScreen");
+  message("");
+}
+
+// LOGIN
+async function login() {
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("pass").value;
+
+  if (!validEmail(email)) {
+    message("সঠিক ইমেইল দাও", "#ffe082");
+    return;
+  }
+
+  if (password.length < 6) {
+    message("সঠিক পাসওয়ার্ড দাও", "#ffe082");
+    return;
+  }
+
+  loading("loginBtn", true, "Login হচ্ছে...");
+
+  try {
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
+      email, password
+    });
+
+    if (error) throw error;
+
+    if (data.session) {
+      message("Login সফল হয়েছে!", "#a5d6a7");
+      window.location.replace(HOME_PAGE);
+    }
+  } catch (e) {
+    message("Login হয়নি: " + e.message, "#ff8a80");
+  } finally {
+    loading("loginBtn", false);
+  }
+}
+
+// SIGNUP
+async function createAcc() {
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("pass").value;
+
+  if (!validEmail(email)) {
+    message("সঠিক ইমেইল দাও", "#ffe082");
+    return;
+  }
+
+  if (password.length < 6) {
+    message("পাসওয়ার্ড কমপক্ষে ৬ অক্ষর দাও", "#ffe082");
+    return;
+  }
+
+  currentEmail = email;
+  loading("signupBtn", true, "Account তৈরি হচ্ছে...");
+
+  try {
+    const { data, error } = await supabaseClient.auth.signUp({
+      email, password
+    });
+
+    if (error) throw error;
+
+    if (data.session) {
+      message("Account তৈরি হয়েছে!", "#a5d6a7");
+      window.location.replace(HOME_PAGE);
+      return;
+    }
+
+    showScreen("otpScreen");
+    message("OTP পাঠানো হয়েছে। ইমেইল চেক করো।", "#a5d6a7");
+  } catch (e) {
+    message("Account তৈরি হয়নি: " + e.message, "#ff8a80");
+  } finally {
+    loading("signupBtn", false);
+  }
+}
+
+// OTP VERIFY
+async function verifyOtp() {
+  const token = document.getElementById("otp").value.trim();
+
+  if (!currentEmail) {
+    message("ইমেইল পাওয়া যায়নি। আবার Signup করো।", "#ff8a80");
+    return;
+  }
+
+  if (!/^\d{6}$/.test(token)) {
+    message("৬ সংখ্যার OTP দাও", "#ffe082");
+    return;
+  }
+
+  loading("verifyBtn", true, "যাচাই হচ্ছে...");
+
+  try {
+    const { data, error } = await supabaseClient.auth.verifyOtp({
+      email: currentEmail,
+      token,
+      type: "signup"
+    });
+
+    if (error) throw error;
+
+    if (data.session) {
+      message("Verification সফল হয়েছে!", "#a5d6a7");
+      window.location.replace(HOME_PAGE);
+    } else {
+      backToLogin();
+      message("Verification সফল। এখন Login করো।", "#a5d6a7");
+    }
+  } catch (e) {
+    message("OTP যাচাই হয়নি: " + e.message, "#ff8a80");
+  } finally {
+    loading("verifyBtn", false);
+  }
+}
+
+// RESEND OTP
+async function resendOtp() {
+  if (!currentEmail) {
+    message("ইমেইল পাওয়া যায়নি", "#ff8a80");
+    return;
+  }
+
+  loading("resendBtn", true, "OTP পাঠানো হচ্ছে...");
+
+  try {
+    const { error } = await supabaseClient.auth.resend({
+      type: "signup",
+      email: currentEmail
+    });
+
+    if (error) throw error;
+
+    message("নতুন OTP পাঠানো হয়েছে!", "#a5d6a7");
+  } catch (e) {
+    message("OTP পাঠানো যায়নি: " + e.message, "#ff8a80");
+  } finally {
+    loading("resendBtn", false);
+  }
+}
+
+// FORGOT PASSWORD
+async function forgotPassword() {
+  const email = document.getElementById("email").value.trim();
+
+  if (!validEmail(email)) {
+    message("প্রথমে সঠিক ইমেইল দাও", "#ffe082");
+    return;
+  }
+
+  message("Reset Link পাঠানো হচ্ছে...");
+
+  try {
+    const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + window.location.pathname + "?reset=1"
+    });
+
+    if (error) throw error;
+
+    message("যদি Account থাকে, Reset Link পাঠানো হয়েছে।", "#a5d6a7");
+  } catch (e) {
+    message(e.message, "#ff8a80");
+  }
+}
+
+// UPDATE PASSWORD
+async function updatePassword() {
+  const password = document.getElementById("newPass").value;
+
+  if (password.length < 6) {
+    message("পাসওয়ার্ড কমপক্ষে ৬ অক্ষর দাও", "#ffe082");
+    return;
+  }
+
+  loading("updatePassBtn", true, "পরিবর্তন হচ্ছে...");
+
+  try {
+    const { error } = await supabaseClient.auth.updateUser({ password });
+    if (error) throw error;
+
+    message("পাসওয়ার্ড পরিবর্তন সফল হয়েছে!", "#a5d6a7");
+    window.location.replace(HOME_PAGE);
+  } catch (e) {
+    message(e.message, "#ff8a80");
+  } finally {
+    loading("updatePassBtn", false);
+  }
+}
+
+// SESSION & PASSWORD RECOVERY
+supabaseClient.auth.onAuthStateChange((event) => {
+  if (event === "PASSWORD_RECOVERY") {
+    showScreen("resetScreen");
+    message("নতুন পাসওয়ার্ড সেট করো।", "#a5d6a7");
+  }
+});
+
+async function checkSession() {
+  const { data, error } = await supabaseClient.auth.getSession();
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  if (data.session && new URLSearchParams(location.search).get("reset") !== "1") {
+    window.location.replace(HOME_PAGE);
+  }
+}
+
+checkSession();
+</script>
+</body>
+</html>
