@@ -197,7 +197,7 @@ body.dark-body{background:#090312}
     <button class="btn-secondary" id="sendOtpBtn" onclick="sendResetOtp()">Send Reset OTP</button>
 
     <div class="otp-step" id="otpResetSection">
-      <input type="text" id="resetOtpInput" maxlength="6" inputmode="numeric" placeholder="6-digit OTP">
+      <input type="text" id="resetOtpInput" maxlength="8" inputmode="numeric" placeholder="OTP Code">
       <input type="password" id="newPassInput" placeholder="New password (6+ characters)">
       <button class="btn" id="confirmResetBtn" onclick="verifyOtpAndResetPassword()">Verify OTP & Reset Password</button>
     </div>
@@ -230,12 +230,12 @@ body.dark-body{background:#090312}
       nameSaved: 'নাম সফলভাবে সেভ হয়েছে!',
       resetTitle: '🔐 পাসওয়ার্ড রিসেট (OTP)',
       sendOtp: 'রিসেট OTP পাঠান',
-      otpPh: '৬ সংখ্যার OTP',
+      otpPh: 'ইমেইলের OTP কোড দিন',
       newPassPh: 'নতুন পাসওয়ার্ড (কমপক্ষে ৬ অক্ষর)',
       confirmReset: 'OTP যাচাই ও পাসওয়ার্ড রিসেট করুন',
       sendingOtp: 'OTP পাঠানো হচ্ছে...',
-      otpSent: 'আপনার ইমেইলে রিসেট OTP পাঠানো হয়েছে।',
-      invalidOtp: 'সঠিক ৬ সংখ্যার OTP দিন।',
+      otpSent: 'আপনার ইমেইলে OTP পাঠানো হয়েছে। ইনবক্স/স্প্যাম চেক করুন।',
+      invalidOtp: 'সঠিক OTP কোড দিন।',
       shortPass: 'পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।',
       resettingPass: 'পাসওয়ার্ড রিসেট হচ্ছে...',
       passResetOk: 'OTP যাচাই হয়ে পাসওয়ার্ড রিসেট হয়েছে!',
@@ -255,12 +255,12 @@ body.dark-body{background:#090312}
       nameSaved: 'Name saved successfully!',
       resetTitle: '🔐 Reset Password (OTP)',
       sendOtp: 'Send Reset OTP',
-      otpPh: '6-digit OTP',
+      otpPh: 'Enter OTP code from email',
       newPassPh: 'New password (6+ characters)',
       confirmReset: 'Verify OTP & Reset Password',
       sendingOtp: 'Sending OTP...',
-      otpSent: 'Reset OTP has been sent to your email.',
-      invalidOtp: 'Enter a valid 6-digit OTP.',
+      otpSent: 'OTP has been sent to your email. Check Inbox/Spam.',
+      invalidOtp: 'Enter a valid OTP code.',
       shortPass: 'Password must be at least 6 characters.',
       resettingPass: 'Resetting password...',
       passResetOk: 'OTP verified & password reset successfully!',
@@ -280,12 +280,12 @@ body.dark-body{background:#090312}
       nameSaved: 'नाम सफलतापूर्वक सेव हो गया!',
       resetTitle: '🔐 पासवर्ड रीसेट (OTP)',
       sendOtp: 'रीसेट OTP भेजें',
-      otpPh: '6 अंकों का OTP',
+      otpPh: 'ईमेल से मिला OTP कोड दें',
       newPassPh: 'नया पासवर्ड (कम से कम 6 अक्षर)',
       confirmReset: 'OTP सत्यापित करें और पासवर्ड रीसेट करें',
       sendingOtp: 'OTP भेजा जा रहा है...',
-      otpSent: 'आपके ईमेल पर रीसेट OTP भेजा गया है।',
-      invalidOtp: 'सही 6 अंकों का OTP दर्ज करें।',
+      otpSent: 'आपके ईमेल पर OTP भेजा गया है। इनबॉक्स/स्पैम देखें।',
+      invalidOtp: 'सही OTP कोड दर्ज करें।',
       shortPass: 'पासवर्ड कम से कम 6 अक्षरों का होना चाहिए।',
       resettingPass: 'पासवर्ड रीसेट हो रहा है...',
       passResetOk: 'OTP सत्यापित हुआ और पासवर्ड रीसेट हो गया!',
@@ -428,7 +428,10 @@ body.dark-body{background:#090312}
     setMsg(msgEl, t.sendingOtp, '');
 
     try {
-      const { error } = await supabaseClient.auth.resetPasswordForEmail(activeUser.email);
+      const { error } = await supabaseClient.auth.signInWithOtp({
+        email: activeUser.email,
+        options: { shouldCreateUser: false }
+      });
       if (error) throw error;
 
       document.getElementById('otpResetSection').style.display = 'block';
@@ -447,7 +450,7 @@ body.dark-body{background:#090312}
     const msgEl = document.getElementById('passMsg');
     const btn = document.getElementById('confirmResetBtn');
 
-    if (!/^\d{6}$/.test(otpCode)) {
+    if (!/^\d{6,8}$/.test(otpCode)) {
       setMsg(msgEl, t.invalidOtp, 'err');
       return;
     }
@@ -461,12 +464,21 @@ body.dark-body{background:#090312}
     setMsg(msgEl, t.resettingPass, '');
 
     try {
-      const { error: otpError } = await supabaseClient.auth.verifyOtp({
+      let verifyResult = await supabaseClient.auth.verifyOtp({
         email: activeUser.email,
         token: otpCode,
-        type: 'recovery'
+        type: 'email'
       });
-      if (otpError) throw otpError;
+
+      if (verifyResult.error) {
+        verifyResult = await supabaseClient.auth.verifyOtp({
+          email: activeUser.email,
+          token: otpCode,
+          type: 'recovery'
+        });
+      }
+
+      if (verifyResult.error) throw verifyResult.error;
 
       const { error: passError } = await supabaseClient.auth.updateUser({
         password: newPass
@@ -487,4 +499,5 @@ body.dark-body{background:#090312}
   initProfile();
 </script>
 </body>
-</html>
+      </html>
+      
