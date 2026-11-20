@@ -1,0 +1,181 @@
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#100824">
+<title>Bondhu Locker</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial,sans-serif;
+}
+body{
+  min-height:100vh;
+  background:linear-gradient(145deg,#100824,#32105b,#701c78);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:18px;
+  color:white;
+}
+.container{
+  width:100%;
+  max-width:400px;
+  text-align:center;
+}
+.logo{
+  width:90px;
+  height:90px;
+  margin:0 auto 18px;
+  border-radius:25px;
+  background:linear-gradient(135deg,#d9a7ff,#8c42d5);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:45px;
+  box-shadow:0 8px 30px #0005;
+}
+h1{
+  font-size:29px;
+  margin-bottom:8px;
+}
+.subtitle{
+  color:#d8c5ed;
+  font-size:14px;
+  margin-bottom:28px;
+}
+.card{
+  background:#ffffff12;
+  border:1px solid #ffffff25;
+  border-radius:22px;
+  padding:23px 18px;
+  backdrop-filter:blur(12px);
+}
+.label{
+  display:block;
+  text-align:left;
+  margin-bottom:9px;
+  font-size:14px;
+}
+select{
+  width:100%;
+  padding:13px;
+  border-radius:11px;
+  border:1px solid #b78ce0;
+  margin-bottom:22px;
+  font-size:15px;
+  background:#fff;
+  color:#24103c;
+}
+.welcome{
+  font-size:20px;
+  font-weight:bold;
+  margin-bottom:12px;
+}
+.description{
+  font-size:14px;
+  color:#dfd0ee;
+  line-height:1.7;
+}
+.footer{
+  margin-top:24px;
+  color:#c9b5dc;
+  font-size:12px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="logo">🔐</div>
+
+  <h1>BONDHU LOCKER</h1>
+
+  <p class="subtitle">Personal Secure Digital Locker</p>
+
+  <div class="card">
+
+    <label class="label" id="languageLabel">
+      Select Language
+    </label>
+
+    <select id="language">
+      <option value="bn">বাংলা</option>
+      <option value="en">English</option>
+      <option value="hi">हिन्दी</option>
+    </select>
+
+    <div class="welcome" id="welcome">
+      স্বাগতম Bondhu Locker-এ
+    </div>
+
+    <p class="description" id="description">
+      আপনার ব্যক্তিগত তথ্যের নিরাপদ সংরক্ষণের জন্য
+      Bondhu Locker-এ আপনাকে স্বাগতম।
+    </p>
+
+  </div>
+
+  <div class="footer">
+    Bondhu Locker • Secure Digital Vault
+  </div>
+
+</div>
+
+<script>
+const translations = {
+
+bn:{
+ label:"ভাষা নির্বাচন করুন",
+ welcome:"স্বাগতম Bondhu Locker-এ",
+ description:"আপনার ব্যক্তিগত তথ্যের নিরাপদ সংরক্ষণের জন্য Bondhu Locker-এ আপনাকে স্বাগতম।"
+},
+
+en:{
+ label:"Select Language",
+ welcome:"Welcome to Bondhu Locker",
+ description:"Welcome to Bondhu Locker, your secure place for personal information."
+},
+
+hi:{
+ label:"भाषा चुनें",
+ welcome:"Bondhu Locker में आपका स्वागत है",
+ description:"आपकी व्यक्तिगत जानकारी को सुरक्षित रखने के लिए Bondhu Locker में आपका स्वागत है।"
+}
+
+};
+
+const languageSelect=document.getElementById("language");
+
+function changeLanguage(lang){
+
+const t=translations[lang];
+
+document.documentElement.lang=lang;
+
+document.getElementById("languageLabel").textContent=t.label;
+document.getElementById("welcome").textContent=t.welcome;
+document.getElementById("description").textContent=t.description;
+
+localStorage.setItem("bondhu_locker_language",lang);
+}
+
+const savedLanguage=localStorage.getItem("bondhu_locker_language") || "bn";
+
+languageSelect.value=savedLanguage;
+changeLanguage(savedLanguage);
+
+languageSelect.addEventListener("change",function(){
+changeLanguage(this.value);
+});
+</script>
+
+</body>
+</html>
