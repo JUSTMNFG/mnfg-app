@@ -637,5 +637,12 @@ async function checkSession() {
 applyAuthLanguage();
 checkSession();
 </script>
+  <script>
+document.querySelectorAll('nav button').forEach(btn=>{
+  btn.onclick = function(){
+    alert(btn.innerText + ' কাজ করে!');
+  }
+});
+  </script>
 </body>
 </html>
