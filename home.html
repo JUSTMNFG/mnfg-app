@@ -101,6 +101,41 @@ body.dark-body{background:#090312}
   border:1px solid rgba(255,255,255,0.09);
 }
 
+.locker-shortcut{
+  background:linear-gradient(120deg,#2d0a5e 0%,#6f1d96 55%,#c93b94 100%);
+  color:#fff;
+  border-radius:20px;
+  padding:15px 16px;
+  margin-bottom:14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  box-shadow:0 10px 24px rgba(0,0,0,0.25);
+  border:1px solid rgba(255,255,255,0.22);
+}
+.phone.dark-mode .locker-shortcut{
+  background:linear-gradient(120deg,#240b4d 0%,#4e1478 60%,#8c246b 100%);
+  border-color:rgba(255,255,255,0.14);
+}
+.locker-left{display:flex;align-items:center;gap:12px}
+.locker-badge{
+  width:46px;height:46px;border-radius:14px;
+  background:rgba(255,255,255,0.18);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;flex-shrink:0;
+}
+.locker-title{font-size:15px;font-weight:800;line-height:1.25}
+.locker-sub{font-size:11px;color:rgba(255,255,255,0.88);margin-top:3px}
+.locker-go-btn{
+  border:none;border-radius:12px;padding:10px 14px;
+  background:#fff;color:#3b0764;font-size:12px;font-weight:800;
+  cursor:pointer;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,0.2);
+}
+.phone.dark-mode .locker-go-btn{
+  background:#f5e8ff;color:#2a0845;
+}
+
 .hello-row{display:flex;align-items:center;gap:12px}
 .avatar{
   width:52px;height:52px;border-radius:50%;
@@ -283,6 +318,18 @@ body.dark-body{background:#090312}
 
   <!-- HOME SECTION -->
   <div class="section-view active" id="view-home">
+    <!-- BONDHU LOCKER ENTRY (SEPARATE SYSTEM VIA bondhu-locker.html) -->
+    <div class="locker-shortcut">
+      <div class="locker-left">
+        <div class="locker-badge">🔐</div>
+        <div>
+          <div class="locker-title" id="lockerCardTitle">Bondhu Locker</div>
+          <div class="locker-sub" id="lockerCardSub">ব্যক্তিগত ভল্টে প্রবেশ করুন</div>
+        </div>
+      </div>
+      <button type="button" class="locker-go-btn" id="openLockerBtn">খুলুন</button>
+    </div>
+
     <div class="glass-card">
       <div class="hello-row">
         <div class="avatar" id="userAvatar">B</div>
@@ -368,6 +415,7 @@ const STORAGE_POSTS_KEY = "bondhu_live_posts_v1";
 const STORAGE_CHAT_KEY = "bondhu_live_chat_v1";
 const STORAGE_FRIENDS_KEY = "bondhu_live_friends_v1";
 const PHOTO_STORAGE_PREFIX = "bondhu_profile_photo_";
+const LOCKER_PAGE_URL = "bondhu-locker.html";
 
 let currentUser = null;
 let currentDisplayName = "Bondhu";
@@ -382,6 +430,9 @@ const i18n = {
     tabChat: 'চ্যাট',
     tabVideo: 'ভিডিও',
     tabProfile: 'প্রোফাইল',
+    lockerTitle: 'Bondhu Locker',
+    lockerSub: 'ব্যক্তিগত ভল্টে প্রবেশ করুন',
+    lockerBtn: 'খুলুন',
     welcome: 'Welcome Bondhu Apps',
     readySub: 'নতুন বন্ধুদের সাথে যুক্ত হোন ও মুহূর্ত শেয়ার করুন',
     postPh: 'আজ কী ভাবছেন? বন্ধুদের সাথে শেয়ার করুন...',
@@ -415,6 +466,9 @@ const i18n = {
     tabChat: 'Chat',
     tabVideo: 'Video',
     tabProfile: 'Profile',
+    lockerTitle: 'Bondhu Locker',
+    lockerSub: 'Open your private vault',
+    lockerBtn: 'Open',
     welcome: 'Welcome Bondhu Apps',
     readySub: 'Connect with friends and share moments today',
     postPh: "What's on your mind? Share with friends...",
@@ -448,6 +502,9 @@ const i18n = {
     tabChat: 'चैट',
     tabVideo: 'वीडियो',
     tabProfile: 'प्रोफ़ाइल',
+    lockerTitle: 'Bondhu Locker',
+    lockerSub: 'अपने निजी वॉल्ट में जाएं',
+    lockerBtn: 'खोलें',
     welcome: 'Welcome Bondhu Apps',
     readySub: 'दोस्तों से जुड़ें और अपने पल साझा करें',
     postPh: 'आज क्या सोच रहे हैं? दोस्तों के साथ साझा करें...',
@@ -536,57 +593,7 @@ function applyThemeAndLanguage() {
   document.getElementById('tabChat').textContent = pack.tabChat;
   document.getElementById('tabVideo').textContent = pack.tabVideo;
   document.getElementById('tabProfile').textContent = pack.tabProfile;
-  document.getElementById('welcomeText').textContent = pack.welcome;
-  document.getElementById('userSubText').textContent = `${currentDisplayName} • ${pack.readySub}`;
-  document.getElementById('postInput').placeholder = pack.postPh;
-  document.getElementById('postHint').textContent = pack.postHint;
-  document.getElementById('createPostBtn').textContent = pack.postBtn;
-  document.getElementById('friendsHeading').textContent = pack.friendsHeading;
-  document.getElementById('chatHeading').textContent = pack.chatHeading;
-  document.getElementById('chatInput').placeholder = pack.chatPh;
-  document.getElementById('chatSendBtn').textContent = pack.send;
-  document.getElementById('videoHeading').textContent = pack.videoHeading;
-  document.getElementById('videoDesc').textContent = pack.videoDesc;
-  document.getElementById('logoutBtn').textContent = pack.logout;
-  document.getElementById('secModalTitle').textContent = pack.secTitle;
-  document.getElementById('secModalDesc').textContent = pack.secDesc;
-  document.getElementById('secProfileBtn').textContent = pack.secProfile;
-  document.getElementById('secCloseBtn').textContent = pack.close;
-}
-
-function loadState() {
-  try {
-    posts = JSON.parse(localStorage.getItem(STORAGE_POSTS_KEY)) || [];
-  } catch (e) { posts = []; }
-
-  try {
-    chatMessages = JSON.parse(localStorage.getItem(STORAGE_CHAT_KEY)) || [];
-  } catch (e) { chatMessages = []; }
-
-  try {
-    friendsList = JSON.parse(localStorage.getItem(STORAGE_FRIENDS_KEY)) || [
-      { id: 'f1', name: 'Nadia Islam', status: 'Online', connected: true },
-      { id: 'f2', name: 'Tanvir Ahmed', status: 'Active recently', connected: true },
-      { id: 'f3', name: 'Sumaiya Akter', status: 'Online', connected: false }
-    ];
-  } catch (e) { friendsList = []; }
-}
-
-function savePosts() {
-  try { localStorage.setItem(STORAGE_POSTS_KEY, JSON.stringify(posts)); } catch (e) {}
-}
-
-function saveChat() {
-  try { localStorage.setItem(STORAGE_CHAT_KEY, JSON.stringify(chatMessages)); } catch (e) {}
-}
-
-function saveFriends() {
-  try { localStorage.setItem(STORAGE_FRIENDS_KEY, JSON.stringify(friendsList)); } catch (e) {}
-}
-
-function escapeHtml(str) {
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/
+  document.getElementById('lockerCardTitle').textContent = pack.lockerTitle;
+  document.getElementById('lockerCardSub').textContent = pack.lockerSub;
+  document.getElementById('openLockerBtn').textContent = pack.lockerBtn;
+  document.getElementById('welcomeText').textContent = pack.welcome
