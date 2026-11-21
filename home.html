@@ -132,7 +132,6 @@ body.dark-body{background:#090312}
   background:linear-gradient(90deg,#4b0082,#e040a8);
   color:#fff;font-size:14px;font-weight:700;cursor:pointer;
 }
-.post-btn:disabled{opacity:0.6;cursor:not-allowed}
 
 .feed-card{
   background:rgba(255,255,255,0.94);
@@ -269,17 +268,17 @@ body.dark-body{background:#090312}
       <div class="brand-title">Bondhu Apps</div>
     </div>
     <div class="top-actions">
-      <button type="button" class="icon-btn" id="securityBtn" onclick="openSecurityModal()" title="Security">🔒</button>
-      <button type="button" class="icon-btn" id="settingsBtn" onclick="location.href='settings.html'" title="Settings">⚙️</button>
+      <button type="button" class="icon-btn" id="securityBtn" title="Security">🔒</button>
+      <button type="button" class="icon-btn" id="settingsBtn" title="Settings">⚙️</button>
     </div>
   </div>
 
   <div class="nav-tabs">
-    <button type="button" class="tab-btn active" id="tabHome" onclick="switchTab('home', this)">Home</button>
-    <button type="button" class="tab-btn" id="tabFriends" onclick="switchTab('friends', this)">Friends</button>
-    <button type="button" class="tab-btn" id="tabChat" onclick="switchTab('chat', this)">Chat</button>
-    <button type="button" class="tab-btn" id="tabVideo" onclick="switchTab('video', this)">Video</button>
-    <button type="button" class="tab-btn" id="tabProfile" onclick="location.href='profile.html'">Profile</button>
+    <button type="button" class="tab-btn active" id="tabHome" data-tab="home">Home</button>
+    <button type="button" class="tab-btn" id="tabFriends" data-tab="friends">Friends</button>
+    <button type="button" class="tab-btn" id="tabChat" data-tab="chat">Chat</button>
+    <button type="button" class="tab-btn" id="tabVideo" data-tab="video">Video</button>
+    <button type="button" class="tab-btn" id="tabProfile" data-tab="profile">Profile</button>
   </div>
 
   <!-- HOME SECTION -->
@@ -297,7 +296,7 @@ body.dark-body{background:#090312}
         <textarea class="post-textarea" id="postInput" placeholder=""></textarea>
         <div class="composer-footer">
           <span style="font-size:11px;opacity:0.75" id="postHint"></span>
-          <button type="button" class="post-btn" id="createPostBtn" onclick="addPost()">+ Post</button>
+          <button type="button" class="post-btn" id="createPostBtn">+ Post</button>
         </div>
       </div>
     </div>
@@ -320,7 +319,7 @@ body.dark-body{background:#090312}
       <div class="chat-messages" id="chatMessages"></div>
       <div class="comment-row">
         <input type="text" class="comment-input" id="chatInput" placeholder="">
-        <button type="button" class="comment-send" id="chatSendBtn" onclick="sendChatMessage()">Send</button>
+        <button type="button" class="comment-send" id="chatSendBtn">Send</button>
       </div>
     </div>
   </div>
@@ -334,18 +333,18 @@ body.dark-body{background:#090312}
     </div>
   </div>
 
-  <button type="button" class="logout-btn" id="logoutBtn" onclick="logout()">Logout</button>
+  <button type="button" class="logout-btn" id="logoutBtn">Logout</button>
   <div class="footer-ver">Bondhu Apps • Version 1.1 Trial</div>
 </div>
 
 <!-- SECURITY MODAL -->
-<div class="modal-backdrop" id="securityModal" onclick="closeSecurityModal(event)">
-  <div class="modal-box" onclick="event.stopPropagation()">
+<div class="modal-backdrop" id="securityModal">
+  <div class="modal-box" id="securityModalBox">
     <div class="modal-title" id="secModalTitle">🔒 Security</div>
     <div class="modal-text" id="secModalDesc"></div>
     <div class="modal-actions">
-      <button type="button" class="mini-btn" id="secProfileBtn" onclick="location.href='profile.html'">Profile</button>
-      <button type="button" class="mini-btn" id="secCloseBtn" onclick="closeSecurityModal()">Close</button>
+      <button type="button" class="mini-btn" id="secProfileBtn">Profile</button>
+      <button type="button" class="mini-btn" id="secCloseBtn">Close</button>
     </div>
   </div>
 </div>
@@ -355,7 +354,15 @@ body.dark-body{background:#090312}
 <script>
 const SUPABASE_URL = "https://ujhjloihskutkazhaydc.supabase.co";
 const SUPABASE_KEY = "sb_publishable_EqE3D3fqYSf5C13Ds0wNyQ_ZeDHoJfH";
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let supabaseClient = null;
+try {
+  if (window.supabase && typeof window.supabase.createClient === "function") {
+    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  }
+} catch (e) {
+  supabaseClient = null;
+}
 
 const STORAGE_POSTS_KEY = "bondhu_live_posts_v1";
 const STORAGE_CHAT_KEY = "bondhu_live_chat_v1";
@@ -369,7 +376,7 @@ let chatMessages = [];
 let friendsList = [];
 
 const i18n = {
-  'বাংলা': {
+  bn: {
     tabHome: 'হোম',
     tabFriends: 'বন্ধু',
     tabChat: 'চ্যাট',
@@ -402,7 +409,7 @@ const i18n = {
     secProfile: 'প্রোফাইলে যান',
     close: 'বন্ধ করুন'
   },
-  'English': {
+  en: {
     tabHome: 'Home',
     tabFriends: 'Friends',
     tabChat: 'Chat',
@@ -435,7 +442,7 @@ const i18n = {
     secProfile: 'Go to Profile',
     close: 'Close'
   },
-  'Hindi': {
+  hi: {
     tabHome: 'होम',
     tabFriends: 'दोस्त',
     tabChat: 'चैट',
@@ -470,17 +477,25 @@ const i18n = {
   }
 };
 
-function getLangCode() {
-  const l = localStorage.getItem('bondhu_lang') || 'বাংলা';
-  return i18n[l] ? l : 'বাংলা';
+function resolveLangKey() {
+  try {
+    const raw = (localStorage.getItem('bondhu_lang') || localStorage.getItem('lang') || 'বাংলা').toString().trim().toLowerCase();
+    if (raw === 'en' || raw === 'english') return 'en';
+    if (raw === 'hi' || raw === 'hindi') return 'hi';
+    if (raw === 'bn' || raw === 'bengali' || raw === 'বাংলা') return 'bn';
+    return 'bn';
+  } catch (e) {
+    return 'bn';
+  }
 }
 
 function t() {
-  return i18n[getLangCode()];
+  return i18n[resolveLangKey()] || i18n.bn;
 }
 
 function showToast(text) {
   const box = document.getElementById('toastBox');
+  if (!box) return;
   box.textContent = text;
   box.style.display = 'block';
   clearTimeout(window._toastTimer);
@@ -491,7 +506,14 @@ function showToast(text) {
 
 function renderAvatarBadge() {
   const avatarEl = document.getElementById('userAvatar');
-  const savedPhoto = currentUser ? localStorage.getItem(PHOTO_STORAGE_PREFIX + currentUser.id) : null;
+  if (!avatarEl) return;
+  let savedPhoto = null;
+  try {
+    if (currentUser && currentUser.id) {
+      savedPhoto = localStorage.getItem(PHOTO_STORAGE_PREFIX + currentUser.id);
+    }
+  } catch (e) {}
+
   if (savedPhoto) {
     avatarEl.innerHTML = `<img src="${savedPhoto}" alt="Avatar">`;
   } else {
@@ -500,7 +522,11 @@ function renderAvatarBadge() {
 }
 
 function applyThemeAndLanguage() {
-  const isDark = localStorage.getItem('bondhu_darkMode') === 'true';
+  let isDark = false;
+  try {
+    isDark = localStorage.getItem('bondhu_darkMode') === 'true';
+  } catch (e) {}
+
   document.getElementById('phoneFrame').classList.toggle('dark-mode', isDark);
   document.body.classList.toggle('dark-body', isDark);
 
@@ -531,11 +557,11 @@ function applyThemeAndLanguage() {
 function loadState() {
   try {
     posts = JSON.parse(localStorage.getItem(STORAGE_POSTS_KEY)) || [];
-  } catch { posts = []; }
+  } catch (e) { posts = []; }
 
   try {
     chatMessages = JSON.parse(localStorage.getItem(STORAGE_CHAT_KEY)) || [];
-  } catch { chatMessages = []; }
+  } catch (e) { chatMessages = []; }
 
   try {
     friendsList = JSON.parse(localStorage.getItem(STORAGE_FRIENDS_KEY)) || [
@@ -543,19 +569,19 @@ function loadState() {
       { id: 'f2', name: 'Tanvir Ahmed', status: 'Active recently', connected: true },
       { id: 'f3', name: 'Sumaiya Akter', status: 'Online', connected: false }
     ];
-  } catch { friendsList = []; }
+  } catch (e) { friendsList = []; }
 }
 
 function savePosts() {
-  localStorage.setItem(STORAGE_POSTS_KEY, JSON.stringify(posts));
+  try { localStorage.setItem(STORAGE_POSTS_KEY, JSON.stringify(posts)); } catch (e) {}
 }
 
 function saveChat() {
-  localStorage.setItem(STORAGE_CHAT_KEY, JSON.stringify(chatMessages));
+  try { localStorage.setItem(STORAGE_CHAT_KEY, JSON.stringify(chatMessages)); } catch (e) {}
 }
 
 function saveFriends() {
-  localStorage.setItem(STORAGE_FRIENDS_KEY, JSON.stringify(friendsList));
+  try { localStorage.setItem(STORAGE_FRIENDS_KEY, JSON.stringify(friendsList)); } catch (e) {}
 }
 
 function escapeHtml(str) {
@@ -563,14 +589,4 @@ function escapeHtml(str) {
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-}
-
-function renderFeed() {
-  const pack = t();
-  const container = document.getElementById('feedList');
-
-  if (!posts.length) {
-    container.innerHTML = `
-      <div class="glass-card" style="text-align:center">
-        <p style="font-size:14px;opacity:0.8">${pack.
+    .replace(/
