@@ -638,7 +638,7 @@ applyAuthLanguage();
 checkSession();
 </script>
   <script>
-document.querySelectorAll('button').forEach(btn=>{
+document.querySelectorAll('button').forEach(btn=>{if(btn.innerText.includes('লগইন')) return;
   btn.onclick = function(){
     alert(btn.innerText + ' কাজ করে!');
   }
