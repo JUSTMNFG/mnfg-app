@@ -88,7 +88,7 @@ body.dark-body{background:#090312}
 }
 
 .glass-card{
-  background:rgba(255,255,255,0.92);
+  background:rgba(255,255,255,0.94);
   color:#1c0b30;
   border-radius:20px;
   padding:16px;
@@ -106,11 +106,13 @@ body.dark-body{background:#090312}
   width:52px;height:52px;border-radius:50%;
   background:linear-gradient(135deg,#7b1fa2,#e040a8);
   color:#fff;display:flex;align-items:center;justify-content:center;
-  font-size:22px;font-weight:800;flex-shrink:0;
+  font-size:22px;font-weight:800;flex-shrink:0;overflow:hidden;
 }
+.avatar img{width:100%;height:100%;object-fit:cover;display:block}
+
 .hello-title{font-size:18px;font-weight:800;color:#2d0a5e}
 .phone.dark-mode .hello-title{color:#fff}
-.hello-sub{font-size:12px;color:#555;margin-top:2px}
+.hello-sub{font-size:12px;color:#555;margin-top:2px;word-break:break-word}
 .phone.dark-mode .hello-sub{color:#cbbde6}
 
 .post-composer{margin-top:12px}
@@ -229,10 +231,26 @@ body.dark-body{background:#090312}
   cursor:pointer;margin-top:8px;box-shadow:0 6px 16px rgba(229,30,58,0.3);
 }
 
+.modal-backdrop{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);
+  z-index:300;align-items:center;justify-content:center;padding:18px;
+}
+.modal-backdrop.show{display:flex}
+.modal-box{
+  width:100%;max-width:360px;background:#fff;color:#1c0b30;
+  border-radius:20px;padding:20px;box-shadow:0 16px 36px rgba(0,0,0,0.4);
+}
+.phone.dark-mode .modal-box{
+  background:#1d1230;color:#fff;border:1px solid rgba(255,255,255,0.12);
+}
+.modal-title{font-size:17px;font-weight:800;margin-bottom:8px}
+.modal-text{font-size:13px;line-height:1.5;opacity:0.88;margin-bottom:14px}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+
 .toast{
   position:fixed;bottom:18px;left:50%;transform:translateX(-50%);
   background:#1c0b30;color:#fff;padding:10px 16px;border-radius:12px;
-  font-size:12px;font-weight:700;display:none;z-index:200;
+  font-size:12px;font-weight:700;display:none;z-index:400;
   box-shadow:0 8px 20px rgba(0,0,0,0.35);
 }
 
@@ -251,17 +269,17 @@ body.dark-body{background:#090312}
       <div class="brand-title">Bondhu Apps</div>
     </div>
     <div class="top-actions">
-      <button class="icon-btn" onclick="openSecurityInfo()" title="Security">🔒</button>
-      <button class="icon-btn" onclick="location.href='settings.html'" title="Settings">⚙️</button>
+      <button type="button" class="icon-btn" id="securityBtn" onclick="openSecurityModal()" title="Security">🔒</button>
+      <button type="button" class="icon-btn" id="settingsBtn" onclick="location.href='settings.html'" title="Settings">⚙️</button>
     </div>
   </div>
 
   <div class="nav-tabs">
-    <button class="tab-btn active" id="tabHome" onclick="switchTab('home', this)">Home</button>
-    <button class="tab-btn" id="tabFriends" onclick="switchTab('friends', this)">Friends</button>
-    <button class="tab-btn" id="tabChat" onclick="switchTab('chat', this)">Chat</button>
-    <button class="tab-btn" id="tabVideo" onclick="switchTab('video', this)">Video</button>
-    <button class="tab-btn" id="tabProfile" onclick="location.href='profile.html'">Profile</button>
+    <button type="button" class="tab-btn active" id="tabHome" onclick="switchTab('home', this)">Home</button>
+    <button type="button" class="tab-btn" id="tabFriends" onclick="switchTab('friends', this)">Friends</button>
+    <button type="button" class="tab-btn" id="tabChat" onclick="switchTab('chat', this)">Chat</button>
+    <button type="button" class="tab-btn" id="tabVideo" onclick="switchTab('video', this)">Video</button>
+    <button type="button" class="tab-btn" id="tabProfile" onclick="location.href='profile.html'">Profile</button>
   </div>
 
   <!-- HOME SECTION -->
@@ -271,15 +289,15 @@ body.dark-body{background:#090312}
         <div class="avatar" id="userAvatar">B</div>
         <div>
           <div class="hello-title" id="welcomeText">Welcome Bondhu Apps</div>
-          <div class="hello-sub" id="userSubText">Loading account...</div>
+          <div class="hello-sub" id="userSubText">Bondhu</div>
         </div>
       </div>
 
       <div class="post-composer">
-        <textarea class="post-textarea" id="postInput" placeholder="আজ কী ভাবছেন? বন্ধুদের সাথে শেয়ার করুন..."></textarea>
+        <textarea class="post-textarea" id="postInput" placeholder=""></textarea>
         <div class="composer-footer">
-          <span style="font-size:11px;opacity:0.75" id="postHint">লাইভ ফিডে প্রকাশ হবে</span>
-          <button class="post-btn" id="createPostBtn" onclick="addPost()">+ Post</button>
+          <span style="font-size:11px;opacity:0.75" id="postHint"></span>
+          <button type="button" class="post-btn" id="createPostBtn" onclick="addPost()">+ Post</button>
         </div>
       </div>
     </div>
@@ -290,7 +308,7 @@ body.dark-body{background:#090312}
   <!-- FRIENDS SECTION -->
   <div class="section-view" id="view-friends">
     <div class="glass-card">
-      <h3 style="margin-bottom:10px" id="friendsHeading">বন্ধু ও কমিউনিটি</h3>
+      <h3 style="margin-bottom:10px" id="friendsHeading"></h3>
       <div id="friendsContainer"></div>
     </div>
   </div>
@@ -298,11 +316,11 @@ body.dark-body{background:#090312}
   <!-- CHAT SECTION -->
   <div class="section-view" id="view-chat">
     <div class="glass-card">
-      <h3 style="margin-bottom:10px" id="chatHeading">লাইভ চ্যাট</h3>
+      <h3 style="margin-bottom:10px" id="chatHeading"></h3>
       <div class="chat-messages" id="chatMessages"></div>
       <div class="comment-row">
-        <input type="text" class="comment-input" id="chatInput" placeholder="মেসেজ লিখুন...">
-        <button class="comment-send" id="chatSendBtn" onclick="sendChatMessage()">Send</button>
+        <input type="text" class="comment-input" id="chatInput" placeholder="">
+        <button type="button" class="comment-send" id="chatSendBtn" onclick="sendChatMessage()">Send</button>
       </div>
     </div>
   </div>
@@ -310,14 +328,26 @@ body.dark-body{background:#090312}
   <!-- VIDEO SECTION -->
   <div class="section-view" id="view-video">
     <div class="glass-card">
-      <h3 style="margin-bottom:8px" id="videoHeading">ভিডিও ফিড</h3>
-      <p style="font-size:13px;opacity:0.85;margin-bottom:12px" id="videoDesc">কমিউনিটির ভিডিও আপডেট ও ক্লিপসমূহ।</p>
+      <h3 style="margin-bottom:8px" id="videoHeading"></h3>
+      <p style="font-size:13px;opacity:0.85;margin-bottom:12px" id="videoDesc"></p>
       <div id="videoList"></div>
     </div>
   </div>
 
-  <button class="logout-btn" id="logoutBtn" onclick="logout()">Logout</button>
+  <button type="button" class="logout-btn" id="logoutBtn" onclick="logout()">Logout</button>
   <div class="footer-ver">Bondhu Apps • Version 1.1 Trial</div>
+</div>
+
+<!-- SECURITY MODAL -->
+<div class="modal-backdrop" id="securityModal" onclick="closeSecurityModal(event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-title" id="secModalTitle">🔒 Security</div>
+    <div class="modal-text" id="secModalDesc"></div>
+    <div class="modal-actions">
+      <button type="button" class="mini-btn" id="secProfileBtn" onclick="location.href='profile.html'">Profile</button>
+      <button type="button" class="mini-btn" id="secCloseBtn" onclick="closeSecurityModal()">Close</button>
+    </div>
+  </div>
 </div>
 
 <div class="toast" id="toastBox"></div>
@@ -330,6 +360,7 @@ const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const STORAGE_POSTS_KEY = "bondhu_live_posts_v1";
 const STORAGE_CHAT_KEY = "bondhu_live_chat_v1";
 const STORAGE_FRIENDS_KEY = "bondhu_live_friends_v1";
+const PHOTO_STORAGE_PREFIX = "bondhu_profile_photo_";
 
 let currentUser = null;
 let currentDisplayName = "Bondhu";
@@ -348,7 +379,7 @@ const i18n = {
     readySub: 'নতুন বন্ধুদের সাথে যুক্ত হোন ও মুহূর্ত শেয়ার করুন',
     postPh: 'আজ কী ভাবছেন? বন্ধুদের সাথে শেয়ার করুন...',
     postHint: 'লাইভ ফিডে প্রকাশ হবে',
-    postBtn: '+ Post',
+    postBtn: '+ পোস্ট',
     emptyPost: 'দয়া করে পোস্টে কিছু লিখুন।',
     postPublished: 'পোস্ট প্রকাশ হয়েছে!',
     like: 'লাইক',
@@ -366,7 +397,10 @@ const i18n = {
     videoHeading: 'ভিডিও ফিড',
     videoDesc: 'কমিউনিটির ভিডিও আপডেট ও শেয়ারকৃত ক্লিপ।',
     logout: 'লগআউট',
-    securityMsg: 'আপনার সেশন Supabase অথেনটিকেশন দ্বারা সুরক্ষিত।'
+    secTitle: '🔒 সিকিউরিটি স্ট্যাটাস',
+    secDesc: 'আপনার অ্যাকাউন্ট সেশন সক্রিয় ও সুরক্ষিত আছে। পাসওয়ার্ড পরিবর্তন বা রিসেট করতে প্রোফাইল সেকশনে যান।',
+    secProfile: 'প্রোফাইলে যান',
+    close: 'বন্ধ করুন'
   },
   'English': {
     tabHome: 'Home',
@@ -396,7 +430,10 @@ const i18n = {
     videoHeading: 'Video Feed',
     videoDesc: 'Community video updates and shared clips.',
     logout: 'Logout',
-    securityMsg: 'Your session is protected by Supabase Authentication.'
+    secTitle: '🔒 Security Status',
+    secDesc: 'Your account session is active and protected. Go to Profile to manage or reset your password.',
+    secProfile: 'Go to Profile',
+    close: 'Close'
   },
   'Hindi': {
     tabHome: 'होम',
@@ -408,7 +445,7 @@ const i18n = {
     readySub: 'दोस्तों से जुड़ें और अपने पल साझा करें',
     postPh: 'आज क्या सोच रहे हैं? दोस्तों के साथ साझा करें...',
     postHint: 'लाइव फ़ीड में प्रकाशित होगा',
-    postBtn: '+ Post',
+    postBtn: '+ पोस्ट',
     emptyPost: 'कृपया पोस्ट में कुछ लिखें।',
     postPublished: 'पोस्ट प्रकाशित हो गई!',
     like: 'लाइक',
@@ -426,7 +463,10 @@ const i18n = {
     videoHeading: 'वीडियो फ़ीड',
     videoDesc: 'कम्युनिटी वीडियो अपडेट और साझा क्लिप्स।',
     logout: 'लॉगआउट',
-    securityMsg: 'आपका सेशन Supabase ऑथेंटिकेशन से सुरक्षित है।'
+    secTitle: '🔒 सुरक्षा स्थिति',
+    secDesc: 'आपका अकाउंट सेशन सक्रिय और सुरक्षित है। पासवर्ड रीसेट करने के लिए प्रोफ़ाइल में जाएं।',
+    secProfile: 'प्रोफ़ाइल पर जाएं',
+    close: 'बंद करें'
   }
 };
 
@@ -449,6 +489,16 @@ function showToast(text) {
   }, 2200);
 }
 
+function renderAvatarBadge() {
+  const avatarEl = document.getElementById('userAvatar');
+  const savedPhoto = currentUser ? localStorage.getItem(PHOTO_STORAGE_PREFIX + currentUser.id) : null;
+  if (savedPhoto) {
+    avatarEl.innerHTML = `<img src="${savedPhoto}" alt="Avatar">`;
+  } else {
+    avatarEl.textContent = (currentDisplayName || 'B').trim().charAt(0).toUpperCase() || 'B';
+  }
+}
+
 function applyThemeAndLanguage() {
   const isDark = localStorage.getItem('bondhu_darkMode') === 'true';
   document.getElementById('phoneFrame').classList.toggle('dark-mode', isDark);
@@ -461,6 +511,7 @@ function applyThemeAndLanguage() {
   document.getElementById('tabVideo').textContent = pack.tabVideo;
   document.getElementById('tabProfile').textContent = pack.tabProfile;
   document.getElementById('welcomeText').textContent = pack.welcome;
+  document.getElementById('userSubText').textContent = `${currentDisplayName} • ${pack.readySub}`;
   document.getElementById('postInput').placeholder = pack.postPh;
   document.getElementById('postHint').textContent = pack.postHint;
   document.getElementById('createPostBtn').textContent = pack.postBtn;
@@ -471,10 +522,10 @@ function applyThemeAndLanguage() {
   document.getElementById('videoHeading').textContent = pack.videoHeading;
   document.getElementById('videoDesc').textContent = pack.videoDesc;
   document.getElementById('logoutBtn').textContent = pack.logout;
-
-  if (currentUser) {
-    document.getElementById('userSubText').textContent = `${currentDisplayName} • ${pack.readySub}`;
-  }
+  document.getElementById('secModalTitle').textContent = pack.secTitle;
+  document.getElementById('secModalDesc').textContent = pack.secDesc;
+  document.getElementById('secProfileBtn').textContent = pack.secProfile;
+  document.getElementById('secCloseBtn').textContent = pack.close;
 }
 
 function loadState() {
@@ -522,80 +573,4 @@ function renderFeed() {
   if (!posts.length) {
     container.innerHTML = `
       <div class="glass-card" style="text-align:center">
-        <p style="font-size:14px;opacity:0.8">${pack.postPh}</p>
-      </div>`;
-    return;
-  }
-
-  container.innerHTML = posts.map(post => {
-    const isLiked = Array.isArray(post.likedBy) && currentUser && post.likedBy.includes(currentUser.id);
-    const commentsHtml = (post.comments || []).map(c =>
-      `<div class="comment-item"><b>${escapeHtml(c.author)}:</b> ${escapeHtml(c.text)}</div>`
-    ).join('');
-
-    return `
-      <div class="feed-card" id="post-${post.id}">
-        <div class="post-head">
-          <div class="small-avatar">${escapeHtml((post.author || 'B').charAt(0).toUpperCase())}</div>
-          <div>
-            <div class="post-author">${escapeHtml(post.author)}</div>
-            <div class="post-meta">${escapeHtml(post.time)}</div>
-          </div>
-        </div>
-        <div class="post-body">${escapeHtml(post.content)}</div>
-        <div class="post-actions">
-          <button class="act-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike('${post.id}')">
-            ♥ ${pack.like} (${(post.likedBy || []).length})
-          </button>
-          <button class="act-btn" onclick="focusComment('${post.id}')">
-            💬 ${pack.comment} (${(post.comments || []).length})
-          </button>
-          <button class="act-btn" onclick="sharePost('${post.id}')">
-            ↗ ${pack.share}
-          </button>
-        </div>
-        <div class="comment-box">
-          ${commentsHtml}
-          <div class="comment-row">
-            <input type="text" class="comment-input" id="cinput-${post.id}" placeholder="${pack.commentPh}">
-            <button class="comment-send" onclick="addComment('${post.id}')">${pack.send}</button>
-          </div>
-        </div>
-      </div>
-    `;
-  }).join('');
-}
-
-function addPost() {
-  const input = document.getElementById('postInput');
-  const text = input.value.trim();
-  if (!text) {
-    showToast(t().emptyPost);
-    return;
-  }
-
-  const nowLabel = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  posts.unshift({
-    id: 'p_' + Date.now(),
-    author: currentDisplayName,
-    time: nowLabel,
-    content: text,
-    likedBy: [],
-    comments: []
-  });
-
-  savePosts();
-  input.value = '';
-  renderFeed();
-  showToast(t().postPublished);
-}
-
-function toggleLike(postId) {
-  if (!currentUser) return;
-  const target = posts.find(p => p.id === postId);
-  if (!target) return;
-
-  target.likedBy = target.likedBy || [];
-  const idx = target.likedBy.indexOf(currentUser.id);
-  if (idx > -1) {
-    target.likedBy.splice(i
+        <p style="font-size:14px;opacity:0.8">${pack.
