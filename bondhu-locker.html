@@ -4,183 +4,553 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#100824">
-<title>Bondhu Locker Dashboard</title>
+<title>Bondhu Locker</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
 body{
- background:linear-gradient(145deg,#100824,#32105b,#701c78);
- min-height:100vh;color:white;padding:18px;
+  background:linear-gradient(145deg,#100824,#32105b,#701c78);
+  min-height:100vh;color:white;padding:18px;
 }
-.container{max-width:430px;margin:auto}
-header{display:flex;align-items:center;justify-content:space-between;margin:12px 0 25px}
-.logo{font-size:25px;font-weight:bold}
+.container{max-width:440px;margin:auto}
+header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:10px 0 20px}
+.logo{font-size:21px;font-weight:bold}
+.header-right{display:flex;align-items:center;gap:8px}
 select{
- padding:9px;border-radius:9px;border:0;background:white;color:#24103c;
+  padding:8px 10px;border-radius:9px;border:0;background:white;color:#24103c;font-weight:bold;
 }
-.welcome{margin-bottom:22px}
-.welcome h2{font-size:24px;margin-bottom:8px}
-.welcome p{color:#d8c5ed;font-size:14px}
-.status{
- background:#ffffff14;border:1px solid #ffffff30;
- padding:15px;border-radius:15px;margin-bottom:20px;
+.top-mini{
+  padding:8px 11px;border-radius:9px;border:1px solid #ffffff40;
+  background:#ffffff18;color:#fff;font-size:12px;font-weight:bold;cursor:pointer;
 }
-.status p{font-size:14px;color:#d9c9eb;margin-top:6px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+
+.card{
+  background:#ffffff14;border:1px solid #ffffff30;
+  border-radius:16px;padding:16px;margin-bottom:16px;
+}
+.welcome h2{font-size:22px;margin-bottom:6px}
+.welcome p{color:#e2d2f5;font-size:13px;line-height:1.5}
+
+.status-bar{
+  display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
+  background:#ffffff14;border:1px solid #ffffff30;
+  padding:13px 15px;border-radius:15px;margin-bottom:18px;font-size:13px;
+}
+.badge{
+  background:#ffffff24;padding:5px 10px;border-radius:999px;font-size:12px;font-weight:bold;
+}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .item{
- background:#ffffff14;border:1px solid #ffffff30;
- border-radius:17px;padding:22px 12px;text-align:center;
- min-height:130px;display:flex;flex-direction:column;
- justify-content:center;gap:10px;
+  background:#ffffff14;border:1px solid #ffffff30;
+  border-radius:17px;padding:20px 12px;text-align:center;
+  min-height:126px;display:flex;flex-direction:column;
+  justify-content:center;align-items:center;gap:8px;cursor:pointer;
+  transition:transform 0.15s,background 0.2s;
 }
-.item .emoji{font-size:35px}
+.item:hover{background:#ffffff22;transform:translateY(-2px)}
+.item .emoji{font-size:32px}
 .item h3{font-size:15px}
-.item p{font-size:11px;color:#d8c5ed}
-button{
- width:100%;padding:13px;border:0;border-radius:11px;
- background:linear-gradient(90deg,#8c42d5,#d044a0);
- color:white;font-size:15px;font-weight:bold;margin-top:22px;
+.item p{font-size:11px;color:#dfd0f0}
+
+.primary-btn{
+  width:100%;padding:13px;border:0;border-radius:11px;
+  background:linear-gradient(90deg,#8c42d5,#d044a0);
+  color:white;font-size:15px;font-weight:bold;cursor:pointer;margin-top:12px;
 }
+.secondary-btn{
+  width:100%;padding:11px;border-radius:11px;border:1px solid #ffffff45;
+  background:#ffffff14;color:white;font-size:13px;font-weight:bold;cursor:pointer;margin-top:10px;
+}
+.danger-btn{
+  width:100%;padding:12px;border:0;border-radius:11px;
+  background:#d62839;color:white;font-size:14px;font-weight:bold;cursor:pointer;margin-top:14px;
+}
+
+input,textarea{
+  width:100%;padding:11px;border-radius:10px;border:1px solid #ffffff38;
+  background:#160929;color:#fff;font-size:14px;margin-top:8px;outline:none;
+}
+textarea{min-height:80px;resize:vertical}
+
+.vault-panel{display:none}
+.vault-panel.active{display:block}
+
+.entry-list{margin-top:12px;display:flex;flex-direction:column;gap:10px}
+.entry-box{
+  background:#140726;border:1px solid #ffffff28;border-radius:12px;padding:12px;
+  font-size:13px;line-height:1.5;
+}
+.entry-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:4px}
+.del-btn{
+  background:#ff3b5c;color:#fff;border:0;border-radius:7px;
+  padding:4px 9px;font-size:11px;font-weight:bold;cursor:pointer;
+}
+
+.err-msg{color:#ff8fa3;font-size:13px;font-weight:bold;margin-top:8px;min-height:18px}
+.ok-msg{color:#7ef9a9;font-size:13px;font-weight:bold;margin-top:8px;min-height:18px}
+
 .note{
- margin-top:17px;padding:13px;border-radius:12px;
- background:#ffffff10;color:#e5d7f1;font-size:12px;line-height:1.6;
+  margin-top:16px;padding:13px;border-radius:12px;
+  background:#ffffff10;color:#e5d7f1;font-size:12px;line-height:1.6;
 }
-.footer{text-align:center;color:#c9b5dc;font-size:12px;margin:25px 0}
+.footer{text-align:center;color:#c9b5dc;font-size:12px;margin:22px 0}
 .hidden{display:none!important}
 </style>
 </head>
 <body>
 <div class="container">
 
-<header>
- <div class="logo">🔐 BONDHU LOCKER</div>
- <select id="language" aria-label="Language">
-  <option value="bn">বাংলা</option>
-  <option value="en">English</option>
-  <option value="hi">हिन्दी</option>
- </select>
-</header>
+  <header>
+    <div class="logo">🔐 BONDHU LOCKER</div>
+    <div class="header-right">
+      <select id="language" aria-label="Language">
+        <option value="bn">বাংলা</option>
+        <option value="en">English</option>
+        <option value="hi">हिन्दी</option>
+      </select>
+      <button type="button" class="top-mini" id="backAppBtn" onclick="location.href='home.html'">App</button>
+    </div>
+  </header>
 
-<section class="welcome">
- <h2 id="welcome">আপনার নিরাপদ লকার</h2>
- <p id="subtitle">আপনার ব্যক্তিগত ফাইলের কেন্দ্রীয় স্থান।</p>
-</section>
+  <!-- PIN SETUP / UNLOCK SCREEN -->
+  <div class="card" id="pinGateCard">
+    <h2 id="gateTitle" style="margin-bottom:6px">লকার PIN যাচাই</h2>
+    <p id="gateDesc" style="font-size:13px;color:#e2d2f5;line-height:1.5"></p>
 
-<section class="status">
- <strong id="securityTitle">🛡️ নিরাপত্তা অবস্থা</strong>
- <p id="securityText">আপনার অ্যাকাউন্টের সেশন যাচাই করা হয়েছে।</p>
-</section>
+    <div id="setupFields" class="hidden">
+      <input type="password" id="newRealPin" maxlength="6" inputmode="numeric" placeholder="আসল PIN (৪–৬ সংখ্যা)">
+      <input type="password" id="newFakePin" maxlength="6" inputmode="numeric" placeholder="Fake PIN (ঐচ্ছিক, ৪–৬ সংখ্যা)">
+      <button type="button" class="primary-btn" id="savePinsBtn" onclick="saveInitialPins()">PIN সেট করুন</button>
+    </div>
 
-<div class="grid">
- <div class="item">
-  <div class="emoji">🖼️</div>
-  <h3 id="photos">ছবি</h3>
-  <p id="photosDesc">ব্যক্তিগত ছবি</p>
- </div>
+    <div id="unlockFields">
+      <input type="password" id="unlockPinInput" maxlength="6" inputmode="numeric" placeholder="৪–৬ সংখ্যার PIN দিন">
+      <button type="button" class="primary-btn" id="unlockBtn" onclick="unlockLocker()">লকার খুলুন</button>
+    </div>
 
- <div class="item">
-  <div class="emoji">🎬</div>
-  <h3 id="videos">ভিডিও</h3>
-  <p id="videosDesc">ব্যক্তিগত ভিডিও</p>
- </div>
+    <div class="err-msg" id="pinErr"></div>
+    <div class="ok-msg" id="pinOk"></div>
+  </div>
 
- <div class="item">
-  <div class="emoji">📄</div>
-  <h3 id="documents">ডকুমেন্ট</h3>
-  <p id="documentsDesc">গুরুত্বপূর্ণ ফাইল</p>
- </div>
+  <!-- LOCKER DASHBOARD -->
+  <div id="lockerDashboard" class="hidden">
+    <section class="welcome card">
+      <h2 id="welcome">আপনার নিরাপদ লকার</h2>
+      <p id="subtitle">আপনার ব্যক্তিগত ফাইলের কেন্দ্রীয় স্থান।</p>
+    </section>
 
- <div class="item">
-  <div class="emoji">🔑</div>
-  <h3 id="security">নিরাপত্তা</h3>
-  <p id="securityDesc">লকার নিরাপত্তা</p>
- </div>
-</div>
+    <div class="status-bar">
+      <div>
+        <strong id="securityTitle">🛡️ নিরাপত্তা অবস্থা</strong>
+        <p id="securityText" style="font-size:12px;color:#dfd0f0;margin-top:3px">লকার সক্রিয় আছে।</p>
+      </div>
+      <span class="badge" id="modeBadge">REAL VAULT</span>
+      <span class="badge" id="autoLockTimerBadge">30s</span>
+    </div>
 
-<div class="note" id="notice">
-এই Dashboard বর্তমানে প্রাথমিক নকশা। ছবি, ভিডিও ও ডকুমেন্ট আপলোড এবং এনক্রিপ্টেড সংরক্ষণ পরবর্তী ধাপে যুক্ত হবে।
-</div>
+    <div id="mainGridView">
+      <div class="grid">
+        <div class="item" onclick="openCategory('photos')">
+          <div class="emoji">🖼️</div>
+          <h3 id="photos">ছবি</h3>
+          <p id="photosDesc">ব্যক্তিগত ছবি</p>
+        </div>
 
-<button id="logoutBtn" onclick="logout()">লগআউট</button>
+        <div class="item" onclick="openCategory('videos')">
+          <div class="emoji">🎬</div>
+          <h3 id="videos">ভিডিও</h3>
+          <p id="videosDesc">ব্যক্তিগত ভিডিও</p>
+        </div>
 
-<div class="footer">Bondhu Locker • Secure Digital Vault</div>
+        <div class="item" onclick="openCategory('documents')">
+          <div class="emoji">📄</div>
+          <h3 id="documents">ডকুমেন্ট</h3>
+          <p id="documentsDesc">NID, পাসপোর্ট ও দলিল</p>
+        </div>
+
+        <div class="item" onclick="openCategory('passwords')">
+          <div class="emoji">🔑</div>
+          <h3 id="passwords">পাসওয়ার্ড</h3>
+          <p id="passwordsDesc">সংরক্ষিত পাসওয়ার্ড</p>
+        </div>
+
+        <div class="item" style="grid-column:span 2" onclick="openCategory('notes')">
+          <div class="emoji">📝</div>
+          <h3 id="notes">Secret Notes</h3>
+          <p id="notesDesc">গোপন নোট ও তথ্য</p>
+        </div>
+      </div>
+
+      <div class="note" id="notice">
+        ৩০ সেকেন্ড নিষ্ক্রিয় থাকলে Auto-Lock হবে এবং ৩ বার ভুল PIN দিলে ১ ঘণ্টার Lockout চালু হবে।
+      </div>
+
+      <button type="button" class="danger-btn" id="lockNowBtn" onclick="lockLockerNow()">লকার লক করুন</button>
+    </div>
+
+    <!-- CATEGORY DETAIL VIEW -->
+    <div class="card vault-panel" id="categoryPanel">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <h3 id="categoryTitle"></h3>
+        <button type="button" class="top-mini" onclick="backToGrid()">← ফিরে যান</button>
+      </div>
+
+      <input type="text" id="entryLabelInput" placeholder="শিরোনাম বা নাম (যেমন: NID / Gmail / নোট)">
+      <textarea id="entryValueInput" placeholder="তথ্য, লিংক, নোট বা পাসওয়ার্ড লিখুন..."></textarea>
+      <button type="button" class="primary-btn" id="addEntryBtn" onclick="addVaultEntry()">সংরক্ষণ করুন</button>
+
+      <div class="entry-list" id="vaultEntriesList"></div>
+    </div>
+  </div>
+
+  <div class="footer">Bondhu Locker • Secure Digital Vault</div>
 </div>
 
 <script>
-const URL="https://ujhjloihskutkazhaydc.supabase.co";
-const KEY="sb_publishable_EqE3D3fqYSf5C13Ds0wNyQ_ZeDHoJfH";
-const db=window.supabase.createClient(URL,KEY);
+const SUPABASE_URL = "https://ujhjloihskutkazhaydc.supabase.co";
+const SUPABASE_KEY = "sb_publishable_EqE3D3fqYSf5C13Ds0wNyQ_ZeDHoJfH";
+const db = window.supabase && typeof window.supabase.createClient === "function"
+  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+  : null;
 
-const words={
-bn:{
-welcome:"আপনার নিরাপদ লকার",subtitle:"আপনার ব্যক্তিগত ফাইলের কেন্দ্রীয় স্থান।",
-securityTitle:"🛡️ নিরাপত্তা অবস্থা",
-securityText:"আপনার অ্যাকাউন্টের সেশন যাচাই করা হয়েছে।",
-photos:"ছবি",photosDesc:"ব্যক্তিগত ছবি",
-videos:"ভিডিও",videosDesc:"ব্যক্তিগত ভিডিও",
-documents:"ডকুমেন্ট",documentsDesc:"গুরুত্বপূর্ণ ফাইল",
-security:"নিরাপত্তা",securityDesc:"লকার নিরাপত্তা",
-notice:"এই Dashboard বর্তমানে প্রাথমিক নকশা। ছবি, ভিডিও ও ডকুমেন্ট আপলোড এবং এনক্রিপ্টেড সংরক্ষণ পরবর্তী ধাপে যুক্ত হবে।",
-logout:"লগআউট",error:"ত্রুটি: "
-},
-en:{
-welcome:"Your Secure Locker",subtitle:"Your personal file center.",
-securityTitle:"🛡️ Security Status",
-securityText:"Your account session has been checked.",
-photos:"Photos",photosDesc:"Personal photos",
-videos:"Videos",videosDesc:"Personal videos",
-documents:"Documents",documentsDesc:"Important files",
-security:"Security",securityDesc:"Locker security",
-notice:"This dashboard is currently a preliminary design. File uploads and encrypted storage will be added in a later step.",
-logout:"Logout",error:"Error: "
-},
-hi:{
-welcome:"आपका सुरक्षित लॉकर",subtitle:"आपकी निजी फाइलों का केंद्र।",
-securityTitle:"🛡️ सुरक्षा स्थिति",
-securityText:"आपके अकाउंट सत्र की जांच की गई है।",
-photos:"फ़ोटो",photosDesc:"निजी फ़ोटो",
-videos:"वीडियो",videosDesc:"निजी वीडियो",
-documents:"दस्तावेज़",documentsDesc:"महत्वपूर्ण फाइलें",
-security:"सुरक्षा",securityDesc:"लॉकर सुरक्षा",
-notice:"यह डैशबोर्ड अभी प्रारंभिक डिज़ाइन है। फाइल अपलोड और एन्क्रिप्टेड स्टोरेज बाद में जोड़े जाएंगे।",
-logout:"लॉगआउट",error:"त्रुटि: "
-}
+const PIN_CONFIG_KEY = "bondhu_locker_pin_cfg_v1";
+const LOCKOUT_KEY = "bondhu_locker_lockout_until_v1";
+const FAIL_COUNT_KEY = "bondhu_locker_fail_count_v1";
+const REAL_VAULT_KEY = "bondhu_locker_real_vault_v1";
+const FAKE_VAULT_KEY = "bondhu_locker_fake_vault_v1";
+const AUTO_LOCK_MS = 30000;
+
+let currentVaultMode = null; // 'real' or 'fake'
+let currentCategory = null;
+let autoLockTimeout = null;
+let countdownInterval = null;
+let remainingSeconds = 30;
+
+const words = {
+  bn: {
+    welcome: "আপনার নিরাপদ লকার",
+    subtitle: "আপনার ব্যক্তিগত ফাইলের কেন্দ্রীয় স্থান।",
+    securityTitle: "🛡️ নিরাপত্তা অবস্থা",
+    securityText: "লকার সুরক্ষিত অবস্থায় সক্রিয় আছে।",
+    photos: "ছবি", photosDesc: "ব্যক্তিগত ছবি",
+    videos: "ভিডিও", videosDesc: "ব্যক্তিগত ভিডিও",
+    documents: "ডকুমেন্ট", documentsDesc: "NID, পাসপোর্ট ও দলিল",
+    passwords: "পাসওয়ার্ড", passwordsDesc: "সংরক্ষিত পাসওয়ার্ড",
+    notes: "Secret Notes", notesDesc: "গোপন নোট ও তথ্য",
+    notice: "৩০ সেকেন্ড নিষ্ক্রিয় থাকলে Auto-Lock হবে এবং ৩ বার ভুল PIN দিলে ১ ঘণ্টার Lockout চালু হবে।",
+    lockNow: "লকার লক করুন",
+    backApp: "অ্যাপ",
+    setupTitle: "প্রথমবার লকার PIN সেট করুন",
+    setupDesc: "৪–৬ সংখ্যার আসল PIN দিন। চাইলে আলাদা Fake PIN-ও দিতে পারেন।",
+    unlockTitle: "লকার PIN দিন",
+    unlockDesc: "লকারে প্রবেশ করতে ৪–৬ সংখ্যার PIN লিখুন।",
+    pinRequired: "৪ থেকে ৬ সংখ্যার PIN দিন।",
+    pinSaved: "PIN সফলভাবে সেট হয়েছে। এখন লকার খুলুন।",
+    wrongPin: "ভুল PIN! ৩ বার ভুল হলে ১ ঘণ্টা লক থাকবে।",
+    lockedOneHour: "৩ বার ভুল PIN দেওয়ায় লকার ১ ঘণ্টার জন্য লক করা হয়েছে।",
+    emptyEntry: "শিরোনাম ও তথ্য দুটোই দিন।",
+    savedEntry: "সংরক্ষিত হয়েছে!"
+  },
+  en: {
+    welcome: "Your Secure Locker",
+    subtitle: "Your personal file center.",
+    securityTitle: "🛡️ Security Status",
+    securityText: "Locker session is active and protected.",
+    photos: "Photos", photosDesc: "Personal photos",
+    videos: "Videos", videosDesc: "Personal videos",
+    documents: "Documents", documentsDesc: "NID, Passport & Deeds",
+    passwords: "Passwords", passwordsDesc: "Saved passwords",
+    notes: "Secret Notes", notesDesc: "Private notes & info",
+    notice: "Auto-locks after 30s inactivity; 3 wrong PINs trigger a 1-hour lockout.",
+    lockNow: "Lock Locker",
+    backApp: "App",
+    setupTitle: "Set Locker PIN",
+    setupDesc: "Enter a 4–6 digit real PIN. You can optionally set a Fake PIN too.",
+    unlockTitle: "Enter Locker PIN",
+    unlockDesc: "Enter your 4–6 digit PIN to open the vault.",
+    pinRequired: "Enter a 4 to 6 digit PIN.",
+    pinSaved: "PIN set successfully. Now unlock the locker.",
+    wrongPin: "Wrong PIN! 3 wrong attempts lock for 1 hour.",
+    lockedOneHour: "Locker locked for 1 hour after 3 wrong PIN attempts.",
+    emptyEntry: "Please fill both title and details.",
+    savedEntry: "Saved!"
+  },
+  hi: {
+    welcome: "आपका सुरक्षित लॉकर",
+    subtitle: "आपकी निजी फाइलों का केंद्र।",
+    securityTitle: "🛡️ सुरक्षा स्थिति",
+    securityText: "लॉकर सत्र सक्रिय और सुरक्षित है।",
+    photos: "फ़ोटो", photosDesc: "निजी फ़ोटो",
+    videos: "वीडियो", videosDesc: "निजी वीडियो",
+    documents: "दस्तावेज़", documentsDesc: "NID, पासपोर्ट और दस्तावेज़",
+    passwords: "पासवर्ड", passwordsDesc: "सहेजे गए पासवर्ड",
+    notes: "Secret Notes", notesDesc: "गोपनीय नोट्स और जानकारी",
+    notice: "30 सेकंड निष्क्रिय रहने पर Auto-Lock होगा; 3 गलत PIN पर 1 घंटे का लॉकआउट होगा।",
+    lockNow: "लॉकर लॉक करें",
+    backApp: "ऐप",
+    setupTitle: "लॉकर PIN सेट करें",
+    setupDesc: "4–6 अंकों का असली PIN दें। चाहें तो अलग Fake PIN भी सेट कर सकते हैं।",
+    unlockTitle: "लॉकर PIN दर्ज करें",
+    unlockDesc: "लॉकर खोलने के लिए 4–6 अंकों का PIN लिखें।",
+    pinRequired: "4 से 6 अंकों का PIN दर्ज करें।",
+    pinSaved: "PIN सेट हो गया। अब लॉकर खोलें।",
+    wrongPin: "गलत PIN! 3 बार गलत होने पर 1 घंटे के लिए लॉक होगा।",
+    lockedOneHour: "3 गलत PIN प्रयासों के कारण लॉकर 1 घंटे के लिए लॉक है।",
+    emptyEntry: "शीर्षक और विवरण दोनों भरें।",
+    savedEntry: "सहेजा गया!"
+  }
 };
 
-function setLanguage(lang){
- const t=words[lang];
- document.documentElement.lang=lang;
- for(const key in t){
-  const el=document.getElementById(key);
-  if(el)el.textContent=t[key];
- }
- localStorage.setItem("bondhu_locker_language",lang);
-}
-const saved=localStorage.getItem("bondhu_locker_language")||"bn";
-document.getElementById("language").value=saved;
-setLanguage(saved);
-
-document.getElementById("language").addEventListener("change",e=>{
- setLanguage(e.target.value);
-});
-
-async function logout(){
- const {error}=await db.auth.signOut();
- if(error){
-  alert(words[document.getElementById("language").value].error+error.message);
-  return;
- }
- location.href="bondhu-locker.html";
+function getLang() {
+  const l = localStorage.getItem("bondhu_locker_language") || localStorage.getItem("bondhu_lang") || "bn";
+  if (l === "en" || l === "English") return "en";
+  if (l === "hi" || l === "Hindi" || l === "हिन्दी") return "hi";
+  return "bn";
 }
 
-async function checkUser(){
- const {data,error}=await db.auth.getSession();
- if(error||!data.session){
-  location.replace("bondhu-locker.html");
- }
+function tr() {
+  return words[getLang()] || words.bn;
 }
-checkUser();
-</script>
-</body>
-</html>
+
+function setLanguage(lang) {
+  localStorage.setItem("bondhu_locker_language", lang);
+  document.documentElement.lang = lang;
+  const w = words[lang] || words.bn;
+
+  ["welcome","subtitle","securityTitle","securityText","photos","photosDesc","videos","videosDesc","documents","documentsDesc","passwords","passwordsDesc","notes","notesDesc","notice"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el && w[id]) el.textContent = w[id];
+  });
+
+  document.getElementById("lockNowBtn").textContent = w.lockNow;
+  document.getElementById("backAppBtn").textContent = w.backApp;
+  refreshPinScreenText();
+}
+
+function getPinConfig() {
+  try {
+    return JSON.parse(localStorage.getItem(PIN_CONFIG_KEY) || "null");
+  } catch (e) {
+    return null;
+  }
+}
+
+function getLockoutRemainingMs() {
+  const until = Number(localStorage.getItem(LOCKOUT_KEY) || 0);
+  const diff = until - Date.now();
+  return diff > 0 ? diff : 0;
+}
+
+function refreshPinScreenText() {
+  const w = tr();
+  const cfg = getPinConfig();
+  const lockLeft = getLockoutRemainingMs();
+
+  if (lockLeft > 0) {
+    const mins = Math.ceil(lockLeft / 60000);
+    document.getElementById("gateTitle").textContent = w.lockedOneHour;
+    document.getElementById("gateDesc").textContent = `${mins} min remaining`;
+    document.getElementById("setupFields").classList.add("hidden");
+    document.getElementById("unlockFields").classList.add("hidden");
+    return;
+  }
+
+  if (!cfg || !cfg.realPin) {
+    document.getElementById("gateTitle").textContent = w.setupTitle;
+    document.getElementById("gateDesc").textContent = w.setupDesc;
+    document.getElementById("setupFields").classList.remove("hidden");
+    document.getElementById("unlockFields").classList.add("hidden");
+  } else {
+    document.getElementById("gateTitle").textContent = w.unlockTitle;
+    document.getElementById("gateDesc").textContent = w.unlockDesc;
+    document.getElementById("setupFields").classList.add("hidden");
+    document.getElementById("unlockFields").classList.remove("hidden");
+  }
+}
+
+function isValidPin(pin) {
+  return /^\d{4,6}$/.test(pin);
+}
+
+function saveInitialPins() {
+  const w = tr();
+  const realPin = document.getElementById("newRealPin").value.trim();
+  const fakePin = document.getElementById("newFakePin").value.trim();
+  const errEl = document.getElementById("pinErr");
+  const okEl = document.getElementById("pinOk");
+  errEl.textContent = "";
+  okEl.textContent = "";
+
+  if (!isValidPin(realPin)) {
+    errEl.textContent = w.pinRequired;
+    return;
+  }
+  if (fakePin && (!isValidPin(fakePin) || fakePin === realPin)) {
+    errEl.textContent = w.pinRequired;
+    return;
+  }
+
+  localStorage.setItem(PIN_CONFIG_KEY, JSON.stringify({ realPin, fakePin: fakePin || null }));
+  document.getElementById("newRealPin").value = "";
+  document.getElementById("newFakePin").value = "";
+  okEl.textContent = w.pinSaved;
+  refreshPinScreenText();
+}
+
+function unlockLocker() {
+  const w = tr();
+  const errEl = document.getElementById("pinErr");
+  errEl.textContent = "";
+
+  if (getLockoutRemainingMs() > 0) {
+    refreshPinScreenText();
+    return;
+  }
+
+  const cfg = getPinConfig();
+  const entered = document.getElementById("unlockPinInput").value.trim();
+  document.getElementById("unlockPinInput").value = "";
+
+  if (!cfg || !isValidPin(entered)) {
+    errEl.textContent = w.pinRequired;
+    return;
+  }
+
+  if (entered === cfg.realPin) {
+    localStorage.setItem(FAIL_COUNT_KEY, "0");
+    openVaultSession("real");
+    return;
+  }
+
+  if (cfg.fakePin && entered === cfg.fakePin) {
+    localStorage.setItem(FAIL_COUNT_KEY, "0");
+    openVaultSession("fake");
+    return;
+  }
+
+  const fails = Number(localStorage.getItem(FAIL_COUNT_KEY) || 0) + 1;
+  if (fails >= 3) {
+    localStorage.setItem(FAIL_COUNT_KEY, "0");
+    localStorage.setItem(LOCKOUT_KEY, String(Date.now() + 60 * 60 * 1000));
+    refreshPinScreenText();
+  } else {
+    localStorage.setItem(FAIL_COUNT_KEY, String(fails));
+    errEl.textContent = `${w.wrongPin} (${fails}/3)`;
+  }
+}
+
+function openVaultSession(mode) {
+  currentVaultMode = mode;
+  document.getElementById("pinGateCard").classList.add("hidden");
+  document.getElementById("lockerDashboard").classList.remove("hidden");
+  document.getElementById("modeBadge").textContent = mode === "fake" ? "FAKE VAULT" : "REAL VAULT";
+  backToGrid();
+  resetAutoLockTimer();
+}
+
+function lockLockerNow() {
+  clearTimeout(autoLockTimeout);
+  clearInterval(countdownInterval);
+  currentVaultMode = null;
+  currentCategory = null;
+  document.getElementById("lockerDashboard").classList.add("hidden");
+  document.getElementById("pinGateCard").classList.remove("hidden");
+  document.getElementById("pinErr").textContent = "";
+  document.getElementById("pinOk").textContent = "";
+  refreshPinScreenText();
+}
+
+function resetAutoLockTimer() {
+  if (!currentVaultMode) return;
+  clearTimeout(autoLockTimeout);
+  clearInterval(countdownInterval);
+  remainingSeconds = 30;
+  const badge = document.getElementById("autoLockTimerBadge");
+  if (badge) badge.textContent = remainingSeconds + "s";
+
+  countdownInterval = setInterval(() => {
+    remainingSeconds -= 1;
+    if (badge) badge.textContent = Math.max(0, remainingSeconds) + "s";
+  }, 1000);
+
+  autoLockTimeout = setTimeout(() => {
+    lockLockerNow();
+  }, AUTO_LOCK_MS);
+}
+
+function getVaultData() {
+  const key = currentVaultMode === "fake" ? FAKE_VAULT_KEY : REAL_VAULT_KEY;
+  try {
+    return JSON.parse(localStorage.getItem(key) || "{}");
+  } catch (e) {
+    return {};
+  }
+}
+
+function saveVaultData(data) {
+  const key = currentVaultMode === "fake" ? FAKE_VAULT_KEY : REAL_VAULT_KEY;
+  localStorage.setItem(key, JSON.stringify(data));
+}
+
+function openCategory(cat) {
+  currentCategory = cat;
+  document.getElementById("mainGridView").classList.add("hidden");
+  const panel = document.getElementById("categoryPanel");
+  panel.classList.add("active");
+  const w = tr();
+  document.getElementById("categoryTitle").textContent = w[cat] || cat;
+  renderCategoryEntries();
+  resetAutoLockTimer();
+}
+
+function backToGrid() {
+  currentCategory = null;
+  document.getElementById("categoryPanel").classList.remove("active");
+  document.getElementById("mainGridView").classList.remove("hidden");
+}
+
+function addVaultEntry() {
+  const w = tr();
+  const label = document.getElementById("entryLabelInput").value.trim();
+  const val = document.getElementById("entryValueInput").value.trim();
+  if (!label || !val || !currentCategory) {
+    alert(w.emptyEntry);
+    return;
+  }
+
+  const all = getVaultData();
+  all[currentCategory] = all[currentCategory] || [];
+  all[currentCategory].unshift({
+    id: "e_" + Date.now(),
+    label,
+    val
+  });
+  saveVaultData(all);
+  document.getElementById("entryLabelInput").value = "";
+  document.getElementById("entryValueInput").value = "";
+  renderCategoryEntries();
+  resetAutoLockTimer();
+}
+
+function deleteVaultEntry(id) {
+  if (!currentCategory) return;
+  const all = getVaultData();
+  all[currentCategory] = (all[currentCategory] || []).filter(item => item.id !== id);
+  saveVaultData(all);
+  renderCategoryEntries();
+  resetAutoLockTimer();
+}
+
+function renderCategoryEntries() {
+  const listEl = document.getElementById("vaultEntriesList");
+  const all = getVaultData();
+  const items = all[currentCategory] || [];
+
+  if (!items.length) {
+    listEl.innerHTML = `<div class="entry-box" style="opacity:0.75">Empty</div>`;
+    return;
+  }
+
+  listEl.innerHTML = items.map(item => `
+ 
