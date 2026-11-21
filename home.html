@@ -597,3 +597,12 @@ function applyThemeAndLanguage() {
   document.getElementById('lockerCardSub').textContent = pack.lockerSub;
   document.getElementById('openLockerBtn').textContent = pack.lockerBtn;
   document.getElementById('welcomeText').textContent = pack.welcome
+<script>
+  document.getElementById('logoutBtn').addEventListener('click', function() {
+    localStorage.clear();
+    sessionStorage.clear();
+    window.location.href = 'login.html';
+  });
+</script>
+</body>
+</html>
