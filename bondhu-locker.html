@@ -5,359 +5,183 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#100824">
-<title>Bondhu Locker</title>
-
+<title>Bondhu Locker Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
 body{
- min-height:100vh;background:linear-gradient(145deg,#100824,#32105b,#701c78);
- display:flex;justify-content:center;align-items:center;padding:18px;color:white
+ background:linear-gradient(145deg,#100824,#32105b,#701c78);
+ min-height:100vh;color:white;padding:18px;
 }
-.container{width:100%;max-width:400px;text-align:center}
-.logo{
- width:82px;height:82px;margin:0 auto 15px;border-radius:23px;
- background:linear-gradient(135deg,#d9a7ff,#8c42d5);
- display:flex;align-items:center;justify-content:center;font-size:42px
+.container{max-width:430px;margin:auto}
+header{display:flex;align-items:center;justify-content:space-between;margin:12px 0 25px}
+.logo{font-size:25px;font-weight:bold}
+select{
+ padding:9px;border-radius:9px;border:0;background:white;color:#24103c;
 }
-h1{font-size:27px;margin-bottom:7px}
-.subtitle{color:#d8c5ed;font-size:13px;margin-bottom:22px}
-.card{
- background:#ffffff12;border:1px solid #ffffff30;
- border-radius:22px;padding:22px 18px
+.welcome{margin-bottom:22px}
+.welcome h2{font-size:24px;margin-bottom:8px}
+.welcome p{color:#d8c5ed;font-size:14px}
+.status{
+ background:#ffffff14;border:1px solid #ffffff30;
+ padding:15px;border-radius:15px;margin-bottom:20px;
 }
-select,input{
- width:100%;padding:13px;border-radius:11px;
- border:1px solid #b78ce0;margin-bottom:13px;
- font-size:15px;background:white;color:#24103c;outline:none
+.status p{font-size:14px;color:#d9c9eb;margin-top:6px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.item{
+ background:#ffffff14;border:1px solid #ffffff30;
+ border-radius:17px;padding:22px 12px;text-align:center;
+ min-height:130px;display:flex;flex-direction:column;
+ justify-content:center;gap:10px;
 }
-label{display:block;text-align:left;font-size:13px;margin-bottom:7px}
+.item .emoji{font-size:35px}
+.item h3{font-size:15px}
+.item p{font-size:11px;color:#d8c5ed}
 button{
  width:100%;padding:13px;border:0;border-radius:11px;
  background:linear-gradient(90deg,#8c42d5,#d044a0);
- color:white;font-size:15px;font-weight:bold;margin-bottom:10px;
- cursor:pointer
+ color:white;font-size:15px;font-weight:bold;margin-top:22px;
 }
-button:disabled{opacity:.6}
-.secondary{background:#ffffff20;border:1px solid #ffffff55}
-.switch{
- color:#e4c8ff;text-decoration:underline;cursor:pointer;
- font-size:14px;margin-top:9px
+.note{
+ margin-top:17px;padding:13px;border-radius:12px;
+ background:#ffffff10;color:#e5d7f1;font-size:12px;line-height:1.6;
 }
-.msg{font-size:13px;line-height:1.6;min-height:20px;margin-top:9px;overflow-wrap:anywhere}
-.ok{color:#75f5a1}
-.err{color:#ff9da5}
-.footer{margin-top:20px;color:#c9b5dc;font-size:12px}
-.hidden{display:none}
+.footer{text-align:center;color:#c9b5dc;font-size:12px;margin:25px 0}
+.hidden{display:none!important}
 </style>
 </head>
-
 <body>
 <div class="container">
 
-<div class="logo">🔐</div>
-<h1>BONDHU LOCKER</h1>
-<p class="subtitle">Personal Secure Digital Locker</p>
+<header>
+ <div class="logo">🔐 BONDHU LOCKER</div>
+ <select id="language" aria-label="Language">
+  <option value="bn">বাংলা</option>
+  <option value="en">English</option>
+  <option value="hi">हिन्दी</option>
+ </select>
+</header>
 
-<div class="card">
+<section class="welcome">
+ <h2 id="welcome">আপনার নিরাপদ লকার</h2>
+ <p id="subtitle">আপনার ব্যক্তিগত ফাইলের কেন্দ্রীয় স্থান।</p>
+</section>
 
-<label id="languageLabel">ভাষা নির্বাচন করুন</label>
-<select id="language">
-<option value="bn">🇧🇩 বাংলা</option>
-<option value="en">🇬🇧 English</option>
-<option value="hi">🇮🇳 हिन्दी</option>
-</select>
+<section class="status">
+ <strong id="securityTitle">🛡️ নিরাপত্তা অবস্থা</strong>
+ <p id="securityText">আপনার অ্যাকাউন্টের সেশন যাচাই করা হয়েছে।</p>
+</section>
 
-<div id="authSection">
-<h2 id="formTitle" style="margin-bottom:18px">Locker Login</h2>
+<div class="grid">
+ <div class="item">
+  <div class="emoji">🖼️</div>
+  <h3 id="photos">ছবি</h3>
+  <p id="photosDesc">ব্যক্তিগত ছবি</p>
+ </div>
 
-<label id="emailLabel">ইমেইল ঠিকানা</label>
-<input id="email" type="email" autocomplete="email"
-placeholder="Enter your Gmail">
+ <div class="item">
+  <div class="emoji">🎬</div>
+  <h3 id="videos">ভিডিও</h3>
+  <p id="videosDesc">ব্যক্তিগত ভিডিও</p>
+ </div>
 
-<label id="passwordLabel">পাসওয়ার্ড</label>
-<input id="password" type="password"
-autocomplete="current-password" placeholder="Password">
+ <div class="item">
+  <div class="emoji">📄</div>
+  <h3 id="documents">ডকুমেন্ট</h3>
+  <p id="documentsDesc">গুরুত্বপূর্ণ ফাইল</p>
+ </div>
 
-<button id="mainBtn" onclick="handleAuth()">Login</button>
-
-<button class="secondary" id="resetBtn"
-onclick="resetPassword()">পাসওয়ার্ড ভুলে গেছেন?</button>
-
-<p class="switch" id="switchText" onclick="toggleMode()">
-নতুন অ্যাকাউন্ট তৈরি করুন
-</p>
+ <div class="item">
+  <div class="emoji">🔑</div>
+  <h3 id="security">নিরাপত্তা</h3>
+  <p id="securityDesc">লকার নিরাপত্তা</p>
+ </div>
 </div>
 
-<div id="accountSection" class="hidden">
-<h2 id="accountTitle">Locker Account</h2>
-<p id="accountEmail" style="margin:15px 0;overflow-wrap:anywhere"></p>
-<p id="accountDescription">আপনি লগইন করেছেন।</p>
-<button id="logoutBtn" onclick="logout()">Logout</button>
+<div class="note" id="notice">
+এই Dashboard বর্তমানে প্রাথমিক নকশা। ছবি, ভিডিও ও ডকুমেন্ট আপলোড এবং এনক্রিপ্টেড সংরক্ষণ পরবর্তী ধাপে যুক্ত হবে।
 </div>
 
-<div class="msg" id="message"></div>
-
-</div>
+<button id="logoutBtn" onclick="logout()">লগআউট</button>
 
 <div class="footer">Bondhu Locker • Secure Digital Vault</div>
 </div>
 
 <script>
-const SUPABASE_URL =
-"https://ujhjloihskutkazhaydc.supabase.co";
+const URL="https://ujhjloihskutkazhaydc.supabase.co";
+const KEY="sb_publishable_EqE3D3fqYSf5C13Ds0wNyQ_ZeDHoJfH";
+const db=window.supabase.createClient(URL,KEY);
 
-const SUPABASE_KEY =
-"sb_publishable_EqE3D3fqYSf5C13Ds0wNyQ_ZeDHoJfH";
-
-const db = window.supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
-);
-
-let mode = "login";
-
-const translations = {
+const words={
 bn:{
-language:"ভাষা নির্বাচন করুন",
-login:"লগইন করুন",
-signup:"নতুন অ্যাকাউন্ট তৈরি করুন",
-email:"ইমেইল ঠিকানা",
-password:"পাসওয়ার্ড",
-emailPh:"আপনার Gmail লিখুন",
-passwordPh:"পাসওয়ার্ড লিখুন",
-forgot:"পাসওয়ার্ড ভুলে গেছেন?",
-create:"নতুন অ্যাকাউন্ট তৈরি করুন",
-existing:"আগে থেকেই অ্যাকাউন্ট আছে? লগইন করুন",
-account:"আপনার Locker Account",
-logged:"আপনি লগইন করেছেন।",
-logout:"লগআউট",
-empty:"ইমেইল ও পাসওয়ার্ড লিখুন।",
-short:"পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে।",
-working:"অপেক্ষা করুন...",
-loginOk:"লগইন সফল হয়েছে!",
-signupOk:"অ্যাকাউন্ট তৈরি হয়েছে। ইমেইল যাচাই করুন।",
-resetOk:"পাসওয়ার্ড রিসেটের ইমেইল পাঠানো হয়েছে।",
-logoutOk:"লগআউট সফল হয়েছে।",
-error:"ত্রুটি: "
+welcome:"আপনার নিরাপদ লকার",subtitle:"আপনার ব্যক্তিগত ফাইলের কেন্দ্রীয় স্থান।",
+securityTitle:"🛡️ নিরাপত্তা অবস্থা",
+securityText:"আপনার অ্যাকাউন্টের সেশন যাচাই করা হয়েছে।",
+photos:"ছবি",photosDesc:"ব্যক্তিগত ছবি",
+videos:"ভিডিও",videosDesc:"ব্যক্তিগত ভিডিও",
+documents:"ডকুমেন্ট",documentsDesc:"গুরুত্বপূর্ণ ফাইল",
+security:"নিরাপত্তা",securityDesc:"লকার নিরাপত্তা",
+notice:"এই Dashboard বর্তমানে প্রাথমিক নকশা। ছবি, ভিডিও ও ডকুমেন্ট আপলোড এবং এনক্রিপ্টেড সংরক্ষণ পরবর্তী ধাপে যুক্ত হবে।",
+logout:"লগআউট",error:"ত্রুটি: "
 },
 en:{
-language:"Select Language",
-login:"Login",
-signup:"Create New Account",
-email:"Email Address",
-password:"Password",
-emailPh:"Enter your Gmail",
-passwordPh:"Enter password",
-forgot:"Forgot Password?",
-create:"Create New Account",
-existing:"Already have an account? Login",
-account:"Your Locker Account",
-logged:"You are logged in.",
-logout:"Logout",
-empty:"Enter email and password.",
-short:"Password must be at least 8 characters.",
-working:"Please wait...",
-loginOk:"Login successful!",
-signupOk:"Account created. Please check your email.",
-resetOk:"Password reset email has been sent.",
-logoutOk:"Logged out successfully.",
-error:"Error: "
+welcome:"Your Secure Locker",subtitle:"Your personal file center.",
+securityTitle:"🛡️ Security Status",
+securityText:"Your account session has been checked.",
+photos:"Photos",photosDesc:"Personal photos",
+videos:"Videos",videosDesc:"Personal videos",
+documents:"Documents",documentsDesc:"Important files",
+security:"Security",securityDesc:"Locker security",
+notice:"This dashboard is currently a preliminary design. File uploads and encrypted storage will be added in a later step.",
+logout:"Logout",error:"Error: "
 },
 hi:{
-language:"भाषा चुनें",
-login:"लॉगिन करें",
-signup:"नया अकाउंट बनाएं",
-email:"ईमेल पता",
-password:"पासवर्ड",
-emailPh:"अपना Gmail लिखें",
-passwordPh:"पासवर्ड लिखें",
-forgot:"पासवर्ड भूल गए?",
-create:"नया अकाउंट बनाएं",
-existing:"पहले से अकाउंट है? लॉगिन करें",
-account:"आपका Locker Account",
-logged:"आप लॉगिन हैं।",
-logout:"लॉगआउट",
-empty:"ईमेल और पासवर्ड दर्ज करें।",
-short:"पासवर्ड कम से कम 8 अक्षरों का होना चाहिए।",
-working:"कृपया प्रतीक्षा करें...",
-loginOk:"लॉगिन सफल हुआ!",
-signupOk:"अकाउंट बन गया। कृपया ईमेल जांचें।",
-resetOk:"पासवर्ड रीसेट ईमेल भेजा गया।",
-logoutOk:"लॉगआउट सफल हुआ।",
-error:"त्रुटि: "
+welcome:"आपका सुरक्षित लॉकर",subtitle:"आपकी निजी फाइलों का केंद्र।",
+securityTitle:"🛡️ सुरक्षा स्थिति",
+securityText:"आपके अकाउंट सत्र की जांच की गई है।",
+photos:"फ़ोटो",photosDesc:"निजी फ़ोटो",
+videos:"वीडियो",videosDesc:"निजी वीडियो",
+documents:"दस्तावेज़",documentsDesc:"महत्वपूर्ण फाइलें",
+security:"सुरक्षा",securityDesc:"लॉकर सुरक्षा",
+notice:"यह डैशबोर्ड अभी प्रारंभिक डिज़ाइन है। फाइल अपलोड और एन्क्रिप्टेड स्टोरेज बाद में जोड़े जाएंगे।",
+logout:"लॉगआउट",error:"त्रुटि: "
 }
 };
 
-function lang(){
-return translations[
-document.getElementById("language").value
-];
+function setLanguage(lang){
+ const t=words[lang];
+ document.documentElement.lang=lang;
+ for(const key in t){
+  const el=document.getElementById(key);
+  if(el)el.textContent=t[key];
+ }
+ localStorage.setItem("bondhu_locker_language",lang);
 }
-
-function showMessage(message,type){
-const el=document.getElementById("message");
-el.textContent=message;
-el.className="msg "+(type||"");
-}
-
-function changeLanguage(value){
-localStorage.setItem("bondhu_locker_language",value);
-const t=lang();
-
-document.documentElement.lang=value;
-document.getElementById("languageLabel").textContent=t.language;
-document.getElementById("emailLabel").textContent=t.email;
-document.getElementById("passwordLabel").textContent=t.password;
-document.getElementById("email").placeholder=t.emailPh;
-document.getElementById("password").placeholder=t.passwordPh;
-document.getElementById("resetBtn").textContent=t.forgot;
-document.getElementById("logoutBtn").textContent=t.logout;
-document.getElementById("accountTitle").textContent=t.account;
-document.getElementById("accountDescription").textContent=t.logged;
-
-updateModeText();
-}
-
-function updateModeText(){
-const t=lang();
-
-document.getElementById("formTitle").textContent=
-mode==="login"?t.login:t.signup;
-
-document.getElementById("mainBtn").textContent=
-mode==="login"?t.login:t.signup;
-
-document.getElementById("switchText").textContent=
-mode==="login"?t.create:t.existing;
-
-document.getElementById("resetBtn").style.display=
-mode==="login"?"block":"none";
-}
-
-function toggleMode(){
-mode=mode==="login"?"signup":"login";
-showMessage("");
-updateModeText();
-}
-
-async function handleAuth(){
-const t=lang();
-const email=document.getElementById("email").value.trim();
-const password=document.getElementById("password").value;
-const btn=document.getElementById("mainBtn");
-
-if(!email||!password){
-showMessage(t.empty,"err");
-return;
-}
-
-if(mode==="signup"&&password.length<8){
-showMessage(t.short,"err");
-return;
-}
-
-btn.disabled=true;
-showMessage(t.working,"");
-
-try{
-let result;
-
-if(mode==="signup"){
-result=await db.auth.signUp({
-email:email,
-password:password
-});
-}else{
-result=await db.auth.signInWithPassword({
-email:email,
-password:password
-});
-}
-
-if(result.error)throw result.error;
-
-if(mode==="signup"&&!result.data.session){
-showMessage(t.signupOk,"ok");
-}else{
-showMessage(t.loginOk,"ok");
-await checkSession();
-}
-
-}catch(error){
-showMessage(t.error+error.message,"err");
-}finally{
-btn.disabled=false;
-}
-}
-
-async function resetPassword(){
-const t=lang();
-const email=document.getElementById("email").value.trim();
-
-if(!email){
-showMessage(t.empty,"err");
-return;
-}
-
-try{
-const {error}=await db.auth.resetPasswordForEmail(email);
-
-if(error)throw error;
-
-showMessage(t.resetOk,"ok");
-}catch(error){
-showMessage(t.error+error.message,"err");
-}
-}
-
-async function logout(){
-const {error}=await db.auth.signOut();
-
-if(error){
-showMessage(lang().error+error.message,"err");
-return;
-}
-
-showMessage(lang().logoutOk,"ok");
-await checkSession();
-}
-
-async function checkSession(){
-const {data,error}=await db.auth.getSession();
-
-if(error){
-showMessage(lang().error+error.message,"err");
-return;
-}
-
-const loggedIn=!!data.session;
-
-document.getElementById("authSection").classList.toggle(
-"hidden",loggedIn
-);
-
-document.getElementById("accountSection").classList.toggle(
-"hidden",!loggedIn
-);
-
-if(loggedIn){
-document.getElementById("accountEmail").textContent=
-data.session.user.email;
-}
-}
-
-document.getElementById("language").addEventListener(
-"change",function(){
-changeLanguage(this.value);
-}
-);
-
 const saved=localStorage.getItem("bondhu_locker_language")||"bn";
 document.getElementById("language").value=saved;
-changeLanguage(saved);
-checkSession();
+setLanguage(saved);
+
+document.getElementById("language").addEventListener("change",e=>{
+ setLanguage(e.target.value);
+});
+
+async function logout(){
+ const {error}=await db.auth.signOut();
+ if(error){
+  alert(words[document.getElementById("language").value].error+error.message);
+  return;
+ }
+ location.href="bondhu-locker.html";
+}
+
+async function checkUser(){
+ const {data,error}=await db.auth.getSession();
+ if(error||!data.session){
+  location.replace("bondhu-locker.html");
+ }
+}
+checkUser();
 </script>
 </body>
 </html>
