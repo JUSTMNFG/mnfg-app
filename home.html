@@ -731,6 +731,76 @@ function applyThemeAndLanguage() {
   });
   loadProfile();
 })();
+  (function() {
+  const messagesEl = document.getElementById('chatMessages');
+  const inputEl = document.getElementById('chatInput');
+  const sendBtn = document.getElementById('chatSendBtn');
+  if (!messagesEl || !inputEl || !sendBtn) return;
+
+  const CHAT_KEY = 'bondhu_chat_messages';
+
+  function getMessages() {
+    try {
+      return JSON.parse(localStorage.getItem(CHAT_KEY)) || [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveMessages(msgs) {
+    localStorage.setItem(CHAT_KEY, JSON.stringify(msgs));
+  }
+
+  function escapeHtml(text) {
+    return String(text)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  function renderMessages() {
+    const msgs = getMessages();
+    if (msgs.length === 0) {
+      messagesEl.innerHTML = '<p style="font-size:13px; opacity:0.7;">এখনো কোনো মেসেজ নেই। নিচে লিখে Send চাপুন।</p>';
+      return;
+    }
+
+    messagesEl.innerHTML = msgs.map(function(item) {
+      return (
+        '<div style="padding:8px 10px; margin-bottom:8px; border-radius:8px; background:rgba(255,255,255,0.08);">' +
+          '<div style="font-size:14px;">' + escapeHtml(item.text) + '</div>' +
+          '<div style="font-size:11px; opacity:0.65; margin-top:3px;">' + escapeHtml(item.time || '') + '</div>' +
+        '</div>'
+      );
+    }).join('');
+
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  function sendMessage() {
+    const text = inputEl.value.trim();
+    if (!text) return;
+
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    const msgs = getMessages();
+    msgs.push({ text: text, time: timeStr });
+    saveMessages(msgs);
+    
+    inputEl.value = '';
+    renderMessages();
+  }
+  sendBtn.addEventListener('click', sendMessage);
+
+  inputEl.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+  renderMessages();
+})();
 </script>
   <div id="settingsModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); justify-content:center; align-items:center; z-index:9999; padding:20px;">
   <div style="background:#2b1055; color:#fff; width:100%; max-width:360px; padding:20px; border-radius:20px; border:1px solid rgba(255,255,255,0.25);">
