@@ -356,6 +356,10 @@ body.dark-body{background:#090312}
     <div class="glass-card">
       <h3 style="margin-bottom:10px" id="friendsHeading"></h3>
       <div id="friendsContainer"></div>
+      <div style="display:flex; gap:8px; margin-bottom:12px;">
+  <input type="text" id="friendNameInput" placeholder="বন্ধুর নাম লিখুন..." style="flex:1; padding:8px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.2); background:rgba(255,255,255,0.08); color:#fff;">
+  <button type="button" id="addFriendBtn" style="padding:8px 14px; border-radius:8px; border:none; background:#6c5ce7; color:#fff; cursor:pointer;">Add</button>
+      </div>
     </div>
   </div>
 
@@ -628,6 +632,64 @@ function applyThemeAndLanguage() {
     }
   });
 });
+  (function() {
+  const inputEl = document.getElementById('friendNameInput');
+  const addBtn = document.getElementById('addFriendBtn');
+  const listEl = document.getElementById('friendsContainer');
+  if (!inputEl || !addBtn || !listEl) return;
+
+  const STORAGE_KEY = 'bondhu_friends_list';
+
+  function getFriends() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveFriends(friends) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(friends));
+  }
+
+  function renderFriends() {
+    const friends = getFriends();
+    if (friends.length === 0) {
+      listEl.innerHTML = '<p style="font-size:13px; opacity:0.75;">এখনো কোনো বন্ধু যোগ করা হয়নি।</p>';
+      return;
+    }
+
+    listEl.innerHTML = friends.map(function(name, index) {
+      const safeName = String(name).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      return (
+        '<div style="display:flex; justify-content:space-between; align-items:center; padding:8px 10px; margin-bottom:8px; border-radius:8px; background:rgba(255,255,255,0.06);">' +
+          '<span>' + safeName + '</span>' +
+          '<button type="button" data-remove-index="' + index + '" style="padding:4px 8px; border-radius:6px; border:none; background:rgba(255,80,80,0.25); color:#ffb3b3; cursor:pointer; font-size:12px;">Remove</button>' +
+        '</div>'
+      );
+    }).join('');
+  }
+
+  addBtn.addEventListener('click', function() {
+    const name = inputEl.value.trim();
+    if (!name) return;
+    const friends = getFriends();
+    friends.push(name);
+    saveFriends(friends);
+    inputEl.value = '';
+    renderFriends();
+  });
+  listEl.addEventListener('click', function(e) {
+    const btn = e.target.closest('[data-remove-index]');
+    if (!btn) return;
+    const idx = Number(btn.getAttribute('data-remove-index'));
+    const friends = getFriends();
+    friends.splice(idx, 1);
+    saveFriends(friends);
+    renderFriends();
+  });
+  renderFriends();
+})();
 </script>
   <div id="settingsModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); justify-content:center; align-items:center; z-index:9999; padding:20px;">
   <div style="background:#2b1055; color:#fff; width:100%; max-width:360px; padding:20px; border-radius:20px; border:1px solid rgba(255,255,255,0.25);">
