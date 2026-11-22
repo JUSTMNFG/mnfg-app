@@ -603,6 +603,24 @@ function applyThemeAndLanguage() {
     sessionStorage.clear();
     window.location.href = 'index.html';
   });
+  document.querySelectorAll('.nav-tabs .tab-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.nav-tabs .tab-btn').forEach(function(b) {
+      b.classList.remove('active');
+    });
+    btn.classList.add('active');
+
+    const target = btn.getAttribute('data-tab');
+    document.querySelectorAll('.section-view').forEach(function(sec) {
+      sec.classList.remove('active');
+    });
+
+    const targetView = document.getElementById('view-' + target);
+    if (targetView) {
+      targetView.classList.add('active');
+    }
+  });
+});
 </script>
   <div id="settingsModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); justify-content:center; align-items:center; z-index:9999; padding:20px;">
   <div style="background:#2b1055; color:#fff; width:100%; max-width:360px; padding:20px; border-radius:20px; border:1px solid rgba(255,255,255,0.25);">
