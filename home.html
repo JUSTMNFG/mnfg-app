@@ -381,13 +381,19 @@ body.dark-body{background:#090312}
       <h3 style="margin-bottom:8px" id="videoHeading"></h3>
       <p style="font-size:13px;opacity:0.85;margin-bottom:12px" id="videoDesc"></p>
       <div id="videoList"></div>
+      
+      <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:12px;">
+  <input type="text" id="videoTitleInput" placeholder="ভিডিওর শিরোনাম লিখুন..." style="padding:8px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.2); background:rgba(255,255,255,0.08); color:#fff;">
+  <input type="url" id="videoUrlInput" placeholder="ভিডিওর লিংক (https://...) দিন..." style="padding:8px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.2); background:rgba(255,255,255,0.08); color:#fff;">
+  <button type="button" id="addVideoBtn" style="padding:8px 14px; border-radius:8px; border:none; background:#6c5ce7; color:#fff; cursor:pointer; align-self:flex-start;">Add Video</button>
+      </div>
     </div>
   </div>
 <!-- PROFILE SECTION -->
 <div class="section-view" id="view-profile">
   <div class="glass-card">
     <h3 style="margin-bottom:8px;" id="profileHeading">Profile</h3>
-    <p style="font-size:13px; opacity:0.85;">আপনার প্রোফাইল তথ্য এখানে দেখা যাবে।</p>
+    style="font-size:13px; opacity:0.85;">আপনার প্রোফাইল তথ্য এখানে দেখা যাবে।</p>
         <p style="font-size:13px; opacity:0.85; margin-bottom:12px;">আপনার প্রোফাইল ও পোর্টফোলিও তথ্য এখানে সংরক্ষণ করুন।</p>
     <div style="display:flex; flex-direction:column; gap:8px;">
       <input type="text" id="profileNameInput" placeholder="আপনার নাম..." style="padding:8px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.2); background:rgba(255,255,255,0.08); color:#fff;">
@@ -800,6 +806,90 @@ function applyThemeAndLanguage() {
     }
   });
   renderMessages();
+})();
+  (function() {
+  const titleEl = document.getElementById('videoTitleInput');
+  const urlEl = document.getElementById('videoUrlInput');
+  const addBtn = document.getElementById('addVideoBtn');
+  const listEl = document.getElementById('videoList');
+  if (!titleEl || !urlEl || !addBtn || !listEl) return;
+
+  const VIDEO_KEY = 'bondhu_video_list';
+
+  function getVideos() {
+    try {
+      return JSON.parse(localStorage.getItem(VIDEO_KEY)) || [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveVideos(videos) {
+    localStorage.setItem(VIDEO_KEY, JSON.stringify(videos));
+  }
+
+  function escapeHtml(text) {
+    return String(text)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function isSafeUrl(rawUrl) {
+    try {
+      const parsed = new URL(rawUrl);
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:';
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function renderVideos() {
+    const videos = getVideos();
+    if (videos.length === 0) {
+      listEl.innerHTML = '<p style="font-size:13px; opacity:0.75;">এখনো কোনো ভিডিও যোগ করা হয়নি।</p>';
+      return;
+    }
+
+    listEl.innerHTML = videos.map(function(item, index) {
+      const safeTitle = escapeHtml(item.title);
+      const safeUrl = isSafeUrl(item.url) ? escapeHtml(item.url) : '#';
+      return (
+        '<div style="display:flex; justify-content:space-between; align-items:center; gap:8px; padding:8px 10px; margin-bottom:8px; border-radius:8px; background:rgba(255,255,255,0.06);">' +
+          '<div style="min-width:0;">' +
+            '<div style="font-size:14px; font-weight:600; word-break:break-word;">' + safeTitle + '</div>' +
+            '<a href="' + safeUrl + '" target="_blank" rel="noopener noreferrer" style="font-size:12px; color:#a29bfe; word-break:break-all;">ভিডিও দেখুন</a>' +
+          '</div>' +
+          '<button type="button" data-remove-video="' + index + '" style="padding:4px 8px; border-radius:6px; border:none; background:rgba(255,80,80,0.25); color:#ffb3b3; cursor:pointer; font-size:12px; flex-shrink:0;">Remove</button>' +
+        '</div>'
+      );
+    }).join('');
+  }
+
+  addBtn.addEventListener('click', function() {
+    const title = titleEl.value.trim();
+    const url = urlEl.value.trim();
+    if (!title || !url || !isSafeUrl(url)) return;
+
+    const videos = getVideos();
+    videos.unshift({ title: title, url: url });
+    saveVideos(videos);
+
+    titleEl.value = '';
+    urlEl.value = '';
+    renderVideos();
+  });
+  listEl.addEventListener('click', function(e) {
+    const btn = e.target.closest('[data-remove-video]');
+    if (!btn) return;
+    const idx = Number(btn.getAttribute('data-remove-video'));
+    const videos = getVideos();
+    videos.splice(idx, 1);
+    saveVideos(videos);
+    renderVideos();
+  });
+  renderVideos();
 })();
 </script>
   <div id="settingsModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); justify-content:center; align-items:center; z-index:9999; padding:20px;">
