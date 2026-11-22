@@ -388,6 +388,16 @@ body.dark-body{background:#090312}
   <div class="glass-card">
     <h3 style="margin-bottom:8px;" id="profileHeading">Profile</h3>
     <p style="font-size:13px; opacity:0.85;">আপনার প্রোফাইল তথ্য এখানে দেখা যাবে।</p>
+        <p style="font-size:13px; opacity:0.85; margin-bottom:12px;">আপনার প্রোফাইল ও পোর্টফোলিও তথ্য এখানে সংরক্ষণ করুন।</p>
+    <div style="display:flex; flex-direction:column; gap:8px;">
+      <input type="text" id="profileNameInput" placeholder="আপনার নাম..." style="padding:8px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.2); background:rgba(255,255,255,0.08); color:#fff;">
+      <textarea id="profileBioInput" rows="3" placeholder="বায়ো / পোর্টফোলিও তথ্য লিখুন..." style="padding:8px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.2); background:rgba(255,255,255,0.08); color:#fff;"></textarea>
+      <button type="button" id="saveProfileBtn" style="padding:8px 14px; border-radius:8px; border:none; background:#6c5ce7; color:#fff; cursor:pointer; align-self:flex-start;">Save Profile</button>
+    </div>
+    <div id="profilePreviewCard" style="margin-top:14px; padding:10px; border-radius:8px; background:rgba(255,255,255,0.06);">
+      <div id="displayProfileName" style="font-weight:600; font-size:15px;">Bondhu User</div>
+      <div id="displayProfileBio" style="font-size:13px; opacity:0.85; margin-top:4px;">এখনো কোনো বায়ো বা পোর্টফোলিও তথ্য যুক্ত করা হয়নি।</div>
+    </div>
   </div>
 </div>
   <button type="button" class="logout-btn" id="logoutBtn">Logout</button>
@@ -689,6 +699,37 @@ function applyThemeAndLanguage() {
     renderFriends();
   });
   renderFriends();
+})();
+  (function() {
+  const nameInput = document.getElementById('profileNameInput');
+  const bioInput = document.getElementById('profileBioInput');
+  const saveBtn = document.getElementById('saveProfileBtn');
+  const nameDisplay = document.getElementById('displayProfileName');
+  const bioDisplay = document.getElementById('displayProfileBio');
+  if (!nameInput || !bioInput || !saveBtn || !nameDisplay || !bioDisplay) return;
+
+  const PROFILE_KEY = 'bondhu_profile_data';
+
+  function loadProfile() {
+    try {
+      const data = JSON.parse(localStorage.getItem(PROFILE_KEY)) || {};
+      const savedName = data.name || 'Bondhu User';
+      const savedBio = data.bio || 'এখনো কোনো বায়ো বা পোর্টফোলিও তথ্য যুক্ত করা হয়নি।';
+      nameInput.value = data.name || '';
+      bioInput.value = data.bio || '';
+      nameDisplay.textContent = savedName;
+      bioDisplay.textContent = savedBio;
+    } catch (e) {
+      nameDisplay.textContent = 'Bondhu User';
+    }
+  }
+  saveBtn.addEventListener('click', function() {
+    const nameVal = nameInput.value.trim() || 'Bondhu User';
+    const bioVal = bioInput.value.trim() || 'এখনো কোনো বায়ো বা পোর্টফোলিও তথ্য যুক্ত করা হয়নি।';
+    localStorage.setItem(PROFILE_KEY, JSON.stringify({ name: nameVal, bio: bioVal }));
+    loadProfile();
+  });
+  loadProfile();
 })();
 </script>
   <div id="settingsModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); justify-content:center; align-items:center; z-index:9999; padding:20px;">
