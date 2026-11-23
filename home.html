@@ -369,6 +369,12 @@ body.dark-body{background:#090312}
   <input type="text" id="videoTitleInput" placeholder="ভিডিওর শিরোনাম লিখুন..." style="padding:8px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.2); background:rgba(255,255,255,0.08); color:#fff;">
   <input type="url" id="videoUrlInput" placeholder="ভিডিওর লিংক (https://...) দিন..." style="padding:8px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.2); background:rgba(255,255,255,0.08); color:#fff;">
   <button type="button" id="addVideoBtn" style="padding:8px 14px; border-radius:8px; border:none; background:#6c5ce7; color:#fff; cursor:pointer; align-self:flex-start;">Add Video</button>
+     <div id="videoUploadBox" style="margin-top:12px;">
+  <input type="file" id="videoFileInput" accept="video/*">
+  <button type="button" id="videoUploadBtn">ভিডিও আপলোড দিন</button>
+  <p id="videoUploadStatus"></p>
+  <video id="videoPreviewPlayer" controls style="width:100%; max-height:240px; margin-top:10px; display:none;"></video>
+     </div>
       </div>
     </div>
   </div>
