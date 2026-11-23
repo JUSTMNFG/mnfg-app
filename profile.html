@@ -498,6 +498,23 @@ body.dark-body{background:#090312}
 
   initProfile();
 </script>
+  <div class="locker-entry-card" style="margin-top: 16px; padding: 14px; border-radius: 14px; background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.15);">
+  <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+    <div>
+      <h4 style="margin: 0; font-size: 15px;">ব্যক্তিগত লকার</h4>
+      <p style="margin: 4px 0 0; font-size: 12px; opacity: 0.75;">প্রোফাইলের ভেতর থেকে সুরক্ষিত লকার খুলুন</p>
+    </div>
+    <button type="button" onclick="openBondhuLocker()" style="padding: 8px 14px; border-radius: 10px; border: none; cursor: pointer;">
+      খুলুন
+    </button>
+  </div>
+</div>
+
+<script>
+  function openBondhuLocker() {
+    window.location.href = "bondhu-locker.html";
+  }
+</script>
 </body>
       </html>
       
