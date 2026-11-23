@@ -382,7 +382,7 @@ body.dark-body{background:#090312}
 <div class="section-view" id="view-profile">
   <div class="glass-card">
     <h3 style="margin-bottom:8px;" id="profileHeading">Profile</h3>
-    style="font-size:13px; opacity:0.85;">আপনার প্রোফাইল তথ্য এখানে দেখা যাবে।</p>
+    
         <p style="font-size:13px; opacity:0.85; margin-bottom:12px;">আপনার প্রোফাইল ও পোর্টফোলিও তথ্য এখানে সংরক্ষণ করুন।</p>
     <div style="display:flex; flex-direction:column; gap:8px;">
       <input type="text" id="profileNameInput" placeholder="আপনার নাম..." style="padding:8px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.2); background:rgba(255,255,255,0.08); color:#fff;">
@@ -393,6 +393,7 @@ body.dark-body{background:#090312}
       <div id="displayProfileName" style="font-weight:600; font-size:15px;">Bondhu User</div>
       <div id="displayProfileBio" style="font-size:13px; opacity:0.85; margin-top:4px;">এখনো কোনো বায়ো বা পোর্টফোলিও তথ্য যুক্ত করা হয়নি।</div>
     </div>
+    <button type="button" id="bondhuLockerBtn" style="width:100%; margin-top:10px; padding:10px; border-radius:10px; border:none; font-weight:600; cursor:pointer;">বন্ধু লকার</button>
   </div>
 </div>
   <button type="button" class="logout-btn" id="logoutBtn">Logout</button>
@@ -932,6 +933,55 @@ function applyThemeAndLanguage() {
       closeSecurityModal();
     }
   });
+})();
+  (function () {
+  const videoInput = document.getElementById('videoFileInput');
+  const videoBtn = document.getElementById('videoUploadBtn');
+  const videoStatus = document.getElementById('videoUploadStatus');
+  const videoPlayer = document.getElementById('videoPreviewPlayer');
+
+  let selectedVideoFile = null;
+
+  if (videoInput) {
+    videoInput.addEventListener('change', function (e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      if (!file.type.startsWith('video/')) {
+        if (videoStatus) videoStatus.textContent = 'দয়া করে একটি বৈধ ভিডিও ফাইল সিলেক্ট করুন।';
+        return;
+      }
+
+      selectedVideoFile = file;
+      if (videoPlayer) {
+        videoPlayer.src = URL.createObjectURL(file);
+        videoPlayer.style.display = 'block';
+      }
+      if (videoStatus) videoStatus.textContent = 'সিলেক্ট হয়েছে: ' + file.name;
+    });
+  }
+
+  if (videoBtn) {
+    videoBtn.addEventListener('click', function () {
+      if (!selectedVideoFile) {
+        if (videoStatus) videoStatus.textContent = 'আগে একটি ভিডিও ফাইল বেছে নিন।';
+        return;
+      }
+      if (videoStatus) videoStatus.textContent = 'আপলোড প্রস্তুত: ' + selectedVideoFile.name;
+    });
+  }
+
+  const lockerBtn = document.getElementById('bondhuLockerBtn');
+  if (lockerBtn) {
+    lockerBtn.addEventListener('click', function () {
+      const secModal = document.getElementById('securityModal');
+      if (secModal) {
+        secModal.style.display = 'flex';
+      } else {
+        alert('বন্ধু লকার চালু হচ্ছে...');
+      }
+    });
+  }
 })();
 </script>
   <div id="settingsModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); justify-content:center; align-items:center; z-index:9999; padding:20px;">
