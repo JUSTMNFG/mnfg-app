@@ -338,8 +338,11 @@ const authTexts = {
 };
 
 function getAuthLang() {
-  const saved = localStorage.getItem('bondhu_lang');
-  return authTexts[saved] ? authTexts[saved] : authTexts['বাংলা'];
+  const saved = localStorage.getItem('bondhuAuthLang');
+  if (saved && authTexts[saved]) {
+    return authTexts[saved];
+  }
+  return authTexts['English'];
 }
 
 function applyAuthLanguage() {
