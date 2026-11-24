@@ -1067,6 +1067,420 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 </script>
+  <!-- Bondhu Locker (Profile সেকশনের ভেতরে যুক্ত করার অংশ) -->
+<div id="bondhuLockerSection" class="bondhu-locker-wrap">
+  <style>
+    .bondhu-locker-wrap {
+      max-width: 420px;
+      margin: 14px auto 0;
+      color: #fff;
+      font-family: Arial, sans-serif;
+    }
+    .bondhu-locker-wrap .bl-card {
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 14px;
+    }
+    .bondhu-locker-wrap h3 {
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+    .bondhu-locker-wrap h4 {
+      font-size: 17px;
+      margin-bottom: 8px;
+    }
+    .bondhu-locker-wrap .bl-sub {
+      font-size: 14px;
+      color: #eadcf7;
+      line-height: 1.5;
+    }
+    .bondhu-locker-wrap input,
+    .bondhu-locker-wrap textarea,
+    .bondhu-locker-wrap select {
+      width: 100%;
+      padding: 11px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      background: #18092e;
+      color: #fff;
+      font-size: 14px;
+      margin-top: 10px;
+      box-sizing: border-box;
+    }
+    .bondhu-locker-wrap textarea {
+      min-height: 76px;
+    }
+    .bondhu-locker-wrap .bl-btn {
+      width: 100%;
+      padding: 12px;
+      border: 0;
+      border-radius: 10px;
+      background: linear-gradient(90deg, #8c42d5, #d044a0);
+      color: #fff;
+      font-size: 14px;
+      font-weight: bold;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+    .bondhu-locker-wrap .bl-lock-btn {
+      background: #d62839;
+    }
+    .bondhu-locker-wrap .bl-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .bondhu-locker-wrap .bl-tile {
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: 14px;
+      padding: 15px 10px;
+      text-align: center;
+      cursor: pointer;
+    }
+    .bondhu-locker-wrap .bl-tile span {
+      display: block;
+      font-size: 24px;
+      margin-bottom: 5px;
+    }
+    .bondhu-locker-wrap .bl-msg {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #9ef7b8;
+      min-height: 16px;
+    }
+    .bondhu-locker-wrap .bl-err {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #ff94a8;
+      min-height: 16px;
+    }
+    .bondhu-locker-wrap .bl-item {
+      background: #160829;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 10px;
+      padding: 11px;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    .bondhu-locker-wrap .bl-hidden {
+      display: none;
+    }
+  </style>
+
+  <div class="bl-card" id="blPinScreen">
+    <h3 id="blPinHeading">🔐 বন্ধু লকার</h3>
+    <p class="bl-sub" id="blPinSub">প্রথমবার ঢুকলে ৪–৬ সংখ্যার একটি PIN সেট করুন।</p>
+    <select id="blLangSelect" aria-label="Locker Language">
+      <option value="bn">বাংলা</option>
+      <option value="en">English</option>
+      <option value="hi">हिन्दी</option>
+    </select>
+    <input type="password" id="blPinInput" maxlength="6" inputmode="numeric" placeholder="৪–৬ সংখ্যার PIN লিখুন">
+    <button type="button" class="bl-btn" id="blPinActionBtn">PIN সেট করুন</button>
+    <div class="bl-err" id="blErrText"></div>
+    <div class="bl-msg" id="blOkText"></div>
+  </div>
+
+  <div id="blVaultScreen" class="bl-hidden">
+    <div class="bl-card">
+      <h3 id="blVaultHeading">🔓 বন্ধু লকার খোলা আছে</h3>
+      <p class="bl-sub" id="blVaultSub">নিচের যেকোনো বক্সে চাপ দিয়ে তথ্য যোগ করতে বা দেখতে পারেন।</p>
+
+      <div class="bl-grid" id="blMenuGrid">
+        <div class="bl-tile" data-cat="photo"><span>🖼️</span><strong id="blCatPhoto">ছবি</strong></div>
+        <div class="bl-tile" data-cat="video"><span>🎬</span><strong id="blCatVideo">ভিডিও</strong></div>
+        <div class="bl-tile" data-cat="doc"><span>📄</span><strong id="blCatDoc">ডকুমেন্ট</strong></div>
+        <div class="bl-tile" data-cat="pass"><span>🔑</span><strong id="blCatPass">পাসওয়ার্ড</strong></div>
+        <div class="bl-tile" style="grid-column:span 2" data-cat="note"><span>📝</span><strong id="blCatNote">Secret Notes</strong></div>
+      </div>
+
+      <button type="button" class="bl-btn bl-lock-btn" id="blLockBtn">লকার বন্ধ করুন</button>
+    </div>
+
+    <div class="bl-card bl-hidden" id="blDetailBox">
+      <h4 id="blCatName"></h4>
+      <input type="text" id="blTitleInput" placeholder="নাম বা শিরোনাম লিখুন">
+      <textarea id="blNoteInput" placeholder="তথ্য বা পাসওয়ার্ড লিখুন"></textarea>
+      <button type="button" class="bl-btn" id="blSaveItemBtn">সেভ করুন</button>
+      <button type="button" class="bl-btn" id="blBackMenuBtn">সব বক্সে ফিরে যান</button>
+      <div id="blSavedList"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  const BL_PIN_KEY = "simple_locker_pin_v1";
+  const BL_DATA_KEY = "simple_locker_data_v1";
+  const BL_LANG_KEY = "bondhuLockerLang";
+
+  const blTexts = {
+    bn: {
+      setTitle: "🔐 নতুন PIN সেট করুন",
+      setSub: "লকারে ঢোকার জন্য ৪ থেকে ৬ সংখ্যার একটি PIN দিন।",
+      setBtn: "PIN সেট করুন",
+      unlockTitle: "🔓 লকার খুলুন",
+      unlockSub: "আপনার সেট করা PIN লিখে লকার খুলুন।",
+      unlockBtn: "লকার খুলুন",
+      pinPlaceholder: "৪–৬ সংখ্যার PIN লিখুন",
+      invalidPin: "দয়া করে ৪ থেকে ৬ সংখ্যার নম্বর দিন।",
+      pinSaved: "PIN সেট হয়েছে! এখন লকার খুলছে...",
+      wrongPin: "PIN ঠিক হয়নি, আবার চেষ্টা করুন।",
+      vaultTitle: "🔓 বন্ধু লকার খোলা আছে",
+      vaultSub: "নিচের যেকোনো বক্সে চাপ দিয়ে তথ্য যোগ করতে বা দেখতে পারেন।",
+      cats: {
+        photo: "ছবি",
+        video: "ভিডিও",
+        doc: "ডকুমেন্ট",
+        pass: "পাসওয়ার্ড",
+        note: "Secret Notes"
+      },
+      lockBtn: "লকার বন্ধ করুন",
+      titlePlaceholder: "নাম বা শিরোনাম লিখুন",
+      notePlaceholder: "তথ্য বা পাসওয়ার্ড লিখুন",
+      saveBtn: "সেভ করুন",
+      backBtn: "সব বক্সে ফিরে যান",
+      needBoth: "নাম এবং তথ্য দুটোই লিখুন।",
+      emptyList: "এখনো কিছু সেভ করা হয়নি।"
+    },
+    en: {
+      setTitle: "🔐 Set a New PIN",
+      setSub: "Enter a 4 to 6 digit PIN to access the locker.",
+      setBtn: "Set PIN",
+      unlockTitle: "🔓 Unlock Locker",
+      unlockSub: "Enter your saved PIN to open the locker.",
+      unlockBtn: "Unlock Locker",
+      pinPlaceholder: "Enter 4–6 digit PIN",
+      invalidPin: "Please enter a 4 to 6 digit number.",
+      pinSaved: "PIN set! Opening locker...",
+      wrongPin: "Incorrect PIN, please try again.",
+      vaultTitle: "🔓 Bondhu Locker Unlocked",
+      vaultSub: "Tap any box below to add or view saved items.",
+      cats: {
+        photo: "Photos",
+        video: "Videos",
+        doc: "Documents",
+        pass: "Passwords",
+        note: "Secret Notes"
+      },
+      lockBtn: "Lock Locker",
+      titlePlaceholder: "Enter name or title",
+      notePlaceholder: "Enter details or password",
+      saveBtn: "Save",
+      backBtn: "Back to All Boxes",
+      needBoth: "Please enter both name and details.",
+      emptyList: "Nothing saved yet."
+    },
+    hi: {
+      setTitle: "🔐 नया PIN सेट करें",
+      setSub: "लॉकर खोलने के लिए 4 से 6 अंकों का PIN दर्ज करें।",
+      setBtn: "PIN सेट करें",
+      unlockTitle: "🔓 लॉकर खोलें",
+      unlockSub: "लॉकर खोलने के लिए अपना सेट किया हुआ PIN लिखें।",
+      unlockBtn: "लॉकर खोलें",
+      pinPlaceholder: "4–6 अंकों का PIN लिखें",
+      invalidPin: "कृपया 4 से 6 अंकों की संख्या डालें।",
+      pinSaved: "PIN सेट हो गया! लॉकर खुल रहा है...",
+      wrongPin: "PIN सही नहीं है, फिर से कोशिश करें।",
+      vaultTitle: "🔓 बंधु लॉकर खुला है",
+      vaultSub: "जानकारी जोड़ने या देखने के लिए नीचे किसी भी बॉक्स पर टैप करें।",
+      cats: {
+        photo: "फ़ोटो",
+        video: "वीडियो",
+        doc: "दस्तावेज़",
+        pass: "पासवर्ड",
+        note: "Secret Notes"
+      },
+      lockBtn: "लॉकर बंद करें",
+      titlePlaceholder: "नाम या शीर्षक लिखें",
+      notePlaceholder: "जानकारी या पासवर्ड लिखें",
+      saveBtn: "सेव करें",
+      backBtn: "सभी बॉक्स पर वापस जाएं",
+      needBoth: "कृपया नाम और जानकारी दोनों लिखें।",
+      emptyList: "अभी तक कुछ भी सेव नहीं किया गया है।"
+    }
+  };
+
+  function detectBlLang() {
+    const saved = localStorage.getItem(BL_LANG_KEY);
+    if (saved && blTexts[saved]) return saved;
+
+    const authLang = (localStorage.getItem("bondhuAuthLang") || "").toLowerCase();
+    if (authLang.includes("hindi") || authLang === "hi") return "hi";
+    if (authLang.includes("english") || authLang === "en") return "en";
+    return "bn";
+  }
+
+  let activeCat = "";
+  let currentLang = detectBlLang();
+
+  const blPinScreen = document.getElementById("blPinScreen");
+  const blVaultScreen = document.getElementById("blVaultScreen");
+  const blPinHeading = document.getElementById("blPinHeading");
+  const blPinSub = document.getElementById("blPinSub");
+  const blLangSelect = document.getElementById("blLangSelect");
+  const blPinInput = document.getElementById("blPinInput");
+  const blPinActionBtn = document.getElementById("blPinActionBtn");
+  const blErrText = document.getElementById("blErrText");
+  const blOkText = document.getElementById("blOkText");
+  const blVaultHeading = document.getElementById("blVaultHeading");
+  const blVaultSub = document.getElementById("blVaultSub");
+  const blMenuGrid = document.getElementById("blMenuGrid");
+  const blDetailBox = document.getElementById("blDetailBox");
+  const blCatName = document.getElementById("blCatName");
+  const blTitleInput = document.getElementById("blTitleInput");
+  const blNoteInput = document.getElementById("blNoteInput");
+  const blSaveItemBtn = document.getElementById("blSaveItemBtn");
+  const blBackMenuBtn = document.getElementById("blBackMenuBtn");
+  const blSavedList = document.getElementById("blSavedList");
+  const blLockBtn = document.getElementById("blLockBtn");
+
+  function getT() {
+    return blTexts[currentLang] || blTexts.bn;
+  }
+
+  function applyBlLanguage() {
+    const t = getT();
+    const hasPin = !!localStorage.getItem(BL_PIN_KEY);
+
+    blLangSelect.value = currentLang;
+    blPinInput.placeholder = t.pinPlaceholder;
+    blVaultHeading.textContent = t.vaultTitle;
+    blVaultSub.textContent = t.vaultSub;
+
+    document.getElementById("blCatPhoto").textContent = t.cats.photo;
+    document.getElementById("blCatVideo").textContent = t.cats.video;
+    document.getElementById("blCatDoc").textContent = t.cats.doc;
+    document.getElementById("blCatPass").textContent = t.cats.pass;
+    document.getElementById("blCatNote").textContent = t.cats.note;
+
+    blLockBtn.textContent = t.lockBtn;
+    blTitleInput.placeholder = t.titlePlaceholder;
+    blNoteInput.placeholder = t.notePlaceholder;
+    blSaveItemBtn.textContent = t.saveBtn;
+    blBackMenuBtn.textContent = t.backBtn;
+
+    if (!hasPin) {
+      blPinHeading.textContent = t.setTitle;
+      blPinSub.textContent = t.setSub;
+      blPinActionBtn.textContent = t.setBtn;
+    } else {
+      blPinHeading.textContent = t.unlockTitle;
+      blPinSub.textContent = t.unlockSub;
+      blPinActionBtn.textContent = t.unlockBtn;
+    }
+
+    if (activeCat && !blDetailBox.classList.contains("bl-hidden")) {
+      blCatName.textContent = t.cats[activeCat] || activeCat;
+      renderBlItems();
+    }
+  }
+
+  blLangSelect.addEventListener("change", function () {
+    currentLang = blLangSelect.value;
+    localStorage.setItem(BL_LANG_KEY, currentLang);
+    blErrText.textContent = "";
+    blOkText.textContent = "";
+    applyBlLanguage();
+  });
+
+  blPinActionBtn.addEventListener("click", function () {
+    const t = getT();
+    blErrText.textContent = "";
+    blOkText.textContent = "";
+    const val = blPinInput.value.trim();
+
+    if (!/^\d{4,6}$/.test(val)) {
+      blErrText.textContent = t.invalidPin;
+      return;
+    }
+
+    const savedPin = localStorage.getItem(BL_PIN_KEY);
+    if (!savedPin) {
+      localStorage.setItem(BL_PIN_KEY, val);
+      blPinInput.value = "";
+      blOkText.textContent = t.pinSaved;
+      setTimeout(openBlVault, 300);
+      return;
+    }
+
+    if (val === savedPin) {
+      blPinInput.value = "";
+      openBlVault();
+    } else {
+      blErrText.textContent = t.wrongPin;
+    }
+  });
+
+  function openBlVault() {
+    blPinScreen.classList.add("bl-hidden");
+    blVaultScreen.classList.remove("bl-hidden");
+    blDetailBox.classList.add("bl-hidden");
+    blMenuGrid.classList.remove("bl-hidden");
+    applyBlLanguage();
+  }
+
+  blLockBtn.addEventListener("click", function () {
+    blVaultScreen.classList.add("bl-hidden");
+    blPinScreen.classList.remove("bl-hidden");
+    blPinInput.value = "";
+    blErrText.textContent = "";
+    blOkText.textContent = "";
+    applyBlLanguage();
+  });
+
+  blMenuGrid.addEventListener("click", function (e) {
+    const tile = e.target.closest(".bl-tile");
+    if (!tile) return;
+    const t = getT();
+    activeCat = tile.getAttribute("data-cat");
+    blCatName.textContent = t.cats[activeCat] || activeCat;
+    blMenuGrid.classList.add("bl-hidden");
+    blDetailBox.classList.remove("bl-hidden");
+    renderBlItems();
+  });
+
+  blBackMenuBtn.addEventListener("click", function () {
+    blDetailBox.classList.add("bl-hidden");
+    blMenuGrid.classList.remove("bl-hidden");
+  });
+
+  blSaveItemBtn.addEventListener("click", function () {
+    const t = getT();
+    const titleVal = blTitleInput.value.trim();
+    const noteVal = blNoteInput.value.trim();
+    if (!titleVal || !noteVal) {
+      alert(t.needBoth);
+      return;
+    }
+    const all = JSON.parse(localStorage.getItem(BL_DATA_KEY) || "{}");
+    all[activeCat] = all[activeCat] || [];
+    all[activeCat].unshift({ title: titleVal, note: noteVal });
+    localStorage.setItem(BL_DATA_KEY, JSON.stringify(all));
+    blTitleInput.value = "";
+    blNoteInput.value = "";
+    renderBlItems();
+  });
+
+  function renderBlItems() {
+    const t = getT();
+    const all = JSON.parse(localStorage.getItem(BL_DATA_KEY) || "{}");
+    const list = all[activeCat] || [];
+    if (!list.length) {
+      blSavedList.innerHTML = "<p class='bl-sub' style='margin-top:12px'>" + t.emptyList + "</p>";
+      return;
+    }
+    blSavedList.innerHTML = list.map(function (row) {
+      return "<div class='bl-item'><strong>" + row.title + "</strong><br>" + row.note + "</div>";
+    }).join("");
+  }
+  applyBlLanguage();
+})();
+</script>
   <div id="settingsModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); justify-content:center; align-items:center; z-index:9999; padding:20px;">
   <div style="background:#2b1055; color:#fff; width:100%; max-width:360px; padding:20px; border-radius:20px; border:1px solid rgba(255,255,255,0.25);">
     <h3 style="margin-bottom:12px;">Settings</h3>
