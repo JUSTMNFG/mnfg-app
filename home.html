@@ -983,6 +983,89 @@ function applyThemeAndLanguage() {
     });
   }
 })();
+  // Security মডাল বন্ধ করার ফাংশন (ওভারলে/ক্লিক ব্লক দূর করাসহ)
+function closeSecurityModal() {
+  const possibleModalIds = ["securityModal", "securityOverlay", "securityPopup"];
+  let closed = false;
+
+  possibleModalIds.forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.style.display = "none";
+      el.style.pointerEvents = "none";
+      el.classList.remove("active", "open", "show");
+      el.classList.add("hidden");
+      closed = true;
+    }
+  });
+
+  // যদি নির্দিষ্ট ID না মিলে, স্ক্রিনে দৃশ্যমান Security মডাল খুঁজে বন্ধ করা
+  if (!closed) {
+    document.querySelectorAll("div, section").forEach((el) => {
+      const text = (el.innerText || "").trim();
+      const style = window.getComputedStyle(el);
+      const isOverlay =
+        (style.position === "fixed" || style.position === "absolute") &&
+        parseFloat(style.zIndex || 0) >= 10 &&
+        style.display !== "none";
+
+      if (isOverlay && text.includes("Security") && text.includes("Close")) {
+        el.style.display = "none";
+        el.style.pointerEvents = "none";
+        el.classList.remove("active", "open", "show");
+        el.classList.add("hidden");
+      }
+    });
+  }
+}
+
+// Security মডাল থেকে Profile সেকশনে যাওয়ার ফাংশন
+function goToProfileFromSecurity() {
+  closeSecurityModal();
+
+  // আপনার ফাইলে আগে থেকে প্রোফাইল ট্যাব খোলার কোনো ফাংশন থাকলে সেটি কল হবে
+  if (typeof openProfile === "function") {
+    openProfile();
+    return;
+  }
+  if (typeof switchTab === "function") {
+    switchTab("profile");
+    return;
+  }
+  if (typeof showSection === "function") {
+    showSection("profile");
+    return;
+  }
+
+  // fallback: ট্যাব বা সেকশনগুলোর মধ্যে 'Profile' খুঁজে সক্রিয় করা
+  const profileTab = Array.from(document.querySelectorAll("button, a, div")).find(
+    (el) => (el.innerText || "").trim() === "Profile"
+  );
+  if (profileTab) {
+    profileTab.click();
+  }
+}
+// Close ও Profile বাটনে ইভেন্ট যুক্ত করা
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll("button").forEach((btn) => {
+    const label = (btn.innerText || "").trim();
+    if (label === "Close") {
+      btn.onclick = (e) => {
+        e.preventDefault();
+        closeSecurityModal();
+      };
+    } else if (label === "Profile") {
+      // শুধু মডালের ভেতরের Profile বাটনের জন্য
+      const parentModalText = btn.closest("div")?.parentElement?.innerText || "";
+      if (parentModalText.includes("Security")) {
+        btn.onclick = (e) => {
+          e.preventDefault();
+          goToProfileFromSecurity();
+        };
+      }
+    }
+  });
+});
 </script>
   <div id="settingsModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); justify-content:center; align-items:center; z-index:9999; padding:20px;">
   <div style="background:#2b1055; color:#fff; width:100%; max-width:360px; padding:20px; border-radius:20px; border:1px solid rgba(255,255,255,0.25);">
