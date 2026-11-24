@@ -396,11 +396,9 @@ body.dark-body{background:#090312}
     <button type="button" id="bondhuLockerBtn" style="width:100%; margin-top:10px; padding:10px; border-radius:10px; border:none; font-weight:600; cursor:pointer;">বন্ধু লকার</button>
   </div>
 </div>
-  <button type="button" class="logout-btn" id="logoutBtn">Logout</button>
-  
   <div class="footer-ver">Bondhu Apps • Version 1.1 Trial</div>
+<button type="button" class="logout-btn" id="logoutBtn">Logout</button>
 </div>
-
 <!-- SECURITY MODAL -->
 <div class="modal-backdrop" id="securityModal">
   <div class="modal-box" id="securityModalBox">
@@ -1168,6 +1166,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     .bondhu-locker-wrap .bl-hidden {
       display: none;
+    }
+    const lockerTriggerBtn = document.getElementById("bondhuLockerBtn");
+const lockerBox = document.getElementById("bondhuLockerSection");
+if (lockerTriggerBtn && lockerBox) {
+  lockerBox.style.display = "none"; // শুরুতে প্রোফাইলের ভেতরে লুকানো থাকবে
+  lockerTriggerBtn.onclick = function () {
+    lockerBox.style.display = lockerBox.style.display === "none" ? "block" : "none";
+  };
     }
   </style>
 
