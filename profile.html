@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Profile - Bondhu Apps</title>
+<title>Profile - MNFG </title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif}
 body{
@@ -203,7 +203,7 @@ body.dark-body{background:#090312}
     </div>
   </div>
   <div class="back" id="backHomeBtn" onclick="location.href='home.html'">Back to Home</div>
-  <div class="ver">Bondhu Apps • Version 1.1 Trial</div>
+  <div class="ver">MNFG • Version 0.0 Trial</div>
 </div>
     <div class="msg" id="passMsg"></div>
   <button type="button" onclick="window.location.href='bondhu-locker.html'" style="width:100%;margin-top:12px;padding:12px 16px;background:#1e1b4b;color:#ffffff;border:none;border-radius:10px;font-weight:600;cursor:pointer;">ব্যক্তিগত লকার খুলুন</button>
@@ -213,7 +213,7 @@ body.dark-body{background:#090312}
   const SUPABASE_KEY = "sb_publishable_EqE3D3fqYSf5C13Ds0wNyQ_ZeDHoJfH";
   const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  const PHOTO_STORAGE_PREFIX = "bondhu_profile_photo_";
+  const PHOTO_STORAGE_PREFIX = "MNFG_profile_photo_";
   let activeUser = null;
 
   const texts = {
@@ -295,7 +295,7 @@ body.dark-body{background:#090312}
   };
 
   function getLangPack() {
-    const lang = localStorage.getItem('bondhu_lang') || 'বাংলা';
+    const lang = localStorage.getItem('MNFG_lang') || 'বাংলা';
     return texts[lang] || texts['বাংলা'];
   }
 
