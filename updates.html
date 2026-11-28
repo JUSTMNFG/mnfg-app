@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Updates - Bondhu Apps</title>
+<title>Updates - MNFG </title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif}
 body{background:#e8c8e8;display:flex;justify-content:center;min-height:100vh}
@@ -32,13 +32,13 @@ body{background:#e8c8e8;display:flex;justify-content:center;min-height:100vh}
   <div class="top">
     <a href="home.html">‹</a>
     <h1>Updates</h1>
-    <div class="logo">B</div>
+    <div class="logo">M</div>
   </div>
 
   <div class="card">
     <span class="badge">Current: Version 1.1 (Trial)</span>
-    <h2>Bondhu Apps Status</h2>
-    <p>আপনি বর্তমানে <strong>Bondhu Apps</strong>-এর সর্বশেষ ভার্সন ব্যবহার করছেন। নতুন কোনো বাধ্যতামূলক আপডেট নেই।</p>
+    <h2>MNFG Status</h2>
+    <p>আপনি বর্তমানে <strong>MNFG</strong>-এর সর্বশেষ ভার্সন ব্যবহার করছেন। নতুন কোনো বাধ্যতামূলক আপডেট নেই।</p>
     <button class="btn" onclick="checkNow()">🔄 এখনই আপডেট চেক করুন</button>
     <div class="status" id="updateStatus"></div>
   </div>
@@ -51,7 +51,7 @@ body{background:#e8c8e8;display:flex;justify-content:center;min-height:100vh}
   </div>
 
   <div class="back" onclick="location.href='home.html'">Back to Home</div>
-  <div class="ver">Bondhu Apps • Version 1.1 Trial</div>
+  <div class="ver">MNFG • Version 0.0 Trial</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -69,7 +69,7 @@ body{background:#e8c8e8;display:flex;justify-content:center;min-height:100vh}
 
   function checkNow() {
     const el = document.getElementById('updateStatus');
-    el.textContent = '✅ সর্বশেষ ভার্সন (Version 1.1 Trial) ইনস্টল করা আছে।';
+    el.textContent = '✅ সর্বশেষ ভার্সন (Version 0.0 Trial) ইনস্টল করা আছে।';
   }
 
   checkAuth();
