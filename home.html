@@ -348,16 +348,32 @@ body.dark-body{background:#090312}
     </div>
   </div>
   <!-- CHAT SECTION -->
-  <div class="section-view" id="view-chat">
-    <div class="glass-card">
-      <h3 style="margin-bottom:10px" id="chatHeading"></h3>
-      <div class="chat-messages" id="chatMessages"></div>
-      <div class="comment-row">
-        <input type="text" class="comment-input" id="chatInput" placeholder="">
-        <button type="button" class="comment-send" id="chatSendBtn">Send</button>
+<div class="section-view" id="view-chat">
+  <div class="glass-card">
+    <h3 style="margin-bottom:10px">💬 প্রফেশনাল চ্যাট</h3>
+    
+    <!-- বন্ধুর লিস্ট -->
+    <div id="chatFriendList" style="margin-bottom:12px"></div>
+
+    <!-- যার লগে কথা হইতেছে -->
+    <div id="chatHeader" style="display:none;align-items:center;gap:10px;padding:10px;background:#f3e8ff;border-radius:12px;margin-bottom:10px">
+      <div id="chatWithAvatar" style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#4b0082,#c94b8a);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700">B</div>
+      <div style="flex:1">
+        <div id="chatWithName" style="font-weight:700;font-size:14px;color:#2d0a5e">বন্ধু</div>
+        <div style="font-size:11px;color:green">● অনলাইন</div>
       </div>
+      <button onclick="closeChat()" style="border:none;background:none;font-size:18px;cursor:pointer">✕</button>
+    </div>
+
+    <div class="chat-messages" id="chatMessages" style="min-height:200px;max-height:320px"></div>
+    <p id="chatEmptyMsg" style="font-size:12px;opacity:0.7;text-align:center">উপর থেকে একজন বন্ধু সিলেক্ট করো 👆</p>
+
+    <div class="comment-row">
+      <input type="text" class="comment-input" id="chatInput" placeholder="মেসেজ লিখুন...">
+      <button type="button" class="comment-send" id="chatSendBtn">Send ➤</button>
     </div>
   </div>
+</div>
   <!-- VIDEO SECTION -->
   <div class="section-view" id="view-video">
     <div class="glass-card">
@@ -1500,6 +1516,102 @@ if (lockerTriggerBtn && lockerBox) {
   max-width: 100%;
   box-sizing: border-box;
 }
+  // ===== PROFESSIONAL CHAT - START =====
+let activeChatFriend = null;
+let allChatMessages = JSON.parse(localStorage.getItem('bondhu_pro_chat_v1') || '[]');
+
+function renderChatFriendList(){
+  const box = document.getElementById('chatFriendList');
+  if(!friendsList || friendsList.length===0){
+    box.innerHTML = '<p style="font-size:12px;opacity:0.7">এখনো কোনো বন্ধু নাই। Friends থেকে Add করো!</p>';
+    return;
+  }
+  box.innerHTML = friendsList.map((f,i)=>{
+    let name = typeof f==='string' ? f : (f.name || 'Bondhu');
+    let initial = name.charAt(0).toUpperCase();
+    return `<div onclick="openChat(${i})" style="display:flex;align-items:center;gap:10px;padding:9px;border-radius:12px;background:${activeChatFriend===i?'#7b1fa2':'#f3e8ff'};color:${activeChatFriend===i?'#fff':'#1c0b30'};margin-bottom:6px;cursor:pointer">
+      <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#4b0082,#e040a8);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700">${initial}</div>
+      <div style="flex:1"><b style="font-size:13px">${name}</b><div style="font-size:11px;opacity:0.7">চ্যাট করতে ক্লিক করো</div></div>
+      <span>💬</span>
+    </div>`;
+  }).join('');
+}
+
+function openChat(index){
+  activeChatFriend = index;
+  let f = friendsList[index];
+  let name = typeof f==='string' ? f : (f.name || 'Bondhu');
+  document.getElementById('chatHeader').style.display='flex';
+  document.getElementById('chatWithName').textContent = name;
+  document.getElementById('chatWithAvatar').textContent = name.charAt(0).toUpperCase();
+  document.getElementById('chatEmptyMsg').style.display='none';
+  renderChatFriendList();
+  renderProChat();
+}
+
+function closeChat(){
+  activeChatFriend = null;
+  document.getElementById('chatHeader').style.display='none';
+  document.getElementById('chatEmptyMsg').style.display='block';
+  document.getElementById('chatMessages').innerHTML='';
+  renderChatFriendList();
+}
+
+function renderProChat(){
+  const box = document.getElementById('chatMessages');
+  if(activeChatFriend===null) return;
+  let f = friendsList[activeChatFriend];
+  let friendName = typeof f==='string' ? f : (f.name || 'Bondhu');
+  let msgs = allChatMessages.filter(m=>m.friend===friendName);
+  if(msgs.length===0){
+    box.innerHTML = `<div style="text-align:center;font-size:12px;opacity:0.7;padding:20px">👋 ${friendName} এর সাথে কথা শুরু করো!</div>`;
+    return;
+  }
+  box.innerHTML = msgs.map(m=>{
+    if(m.from==='me'){
+      return `<div class="msg-bubble me">${m.text}<div style="font-size:10px;opacity:0.8;text-align:right;margin-top:3px">${m.time} ✓✓</div></div>`;
+    } else {
+      return `<div class="msg-bubble">${m.text}<div style="font-size:10px;opacity:0.7;margin-top:3px">${m.time}</div></div>`;
+    }
+  }).join('');
+  box.scrollTop = box.scrollHeight;
+}
+
+function sendProChat(){
+  const input = document.getElementById('chatInput');
+  let text = input.value.trim();
+  if(!text) return;
+  if(activeChatFriend===null){ alert('আগে একজন বন্ধু সিলেক্ট করো ভাই!'); return; }
+  let f = friendsList[activeChatFriend];
+  let friendName = typeof f==='string' ? f : (f.name || 'Bondhu');
+  let time = new Date().toLocaleTimeString('bn-BD',{hour:'2-digit',minute:'2-digit'});
+  allChatMessages.push({friend:friendName, from:'me', text:text, time:time});
+  localStorage.setItem('bondhu_pro_chat_v1', JSON.stringify(allChatMessages));
+  input.value='';
+  renderProChat();
+  // ডেমো রিপ্লাই - বন্ধুর পক্ষ থেকে, যাতে নিজের লেখা নিজে না লাগে
+  setTimeout(()=>{
+    let replies = ['হ্যাঁ ভাই, বুঝছি 👍','আচ্ছা, ভালো লাগলো 😊','তুমি কেমন আছো ভাই?','হুম, ঠিক কইছো!'];
+    let r = replies[Math.floor(Math.random()*replies.length)];
+    let t2 = new Date().toLocaleTimeString('bn-BD',{hour:'2-digit',minute:'2-digit'});
+    allChatMessages.push({friend:friendName, from:'friend', text:r, time:t2});
+    localStorage.setItem('bondhu_pro_chat_v1', JSON.stringify(allChatMessages));
+    renderProChat();
+  }, 1200);
+}
+
+// পুরান Send বাটনকে নতুনটার লগে যুক্ত করা
+document.getElementById('chatSendBtn').onclick = sendProChat;
+document.getElementById('chatInput').onkeypress = function(e){ if(e.key==='Enter') sendProChat(); };
+
+// Friends লোড হইলে লিস্ট দেখানো
+let oldRenderFriends = typeof renderFriends === 'function' ? renderFriends : null;
+if(oldRenderFriends){
+  // Friends render হইলেই Chat লিস্ট আপডেট হইবো
+  setTimeout(renderChatFriendList, 500);
+}
+setTimeout(renderChatFriendList, 1000);
+// ===== PROFESSIONAL CHAT - END =====
 </script>
   <div id="settingsModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); justify-content:center; align-items:center; z-index:9999; padding:20px;">
   <div style="background:#2b1055; color:#fff; width:100%; max-width:360px; padding:20px; border-radius:20px; border:1px solid rgba(255,255,255,0.25);">
