@@ -337,14 +337,26 @@ body.dark-body{background:#090312}
     <div id="feedList"></div>
   </div>
   <!-- FRIENDS SECTION -->
-  <div class="section-view" id="view-friends">
-    <div class="glass-card">
-      <h3 style="margin-bottom:10px" id="friendsHeading"></h3>
-      <div id="friendsContainer"></div>
-      <div style="display:flex; gap:8px; margin-top:10px;">
-  <input type="text" id="friendNameInput" placeholder="বন্ধুর নাম লিখুন" style="flex:1; padding:12px; border:2px solid #ddd; border-radius:12px; color:#000; background:#f8f8f8; font-size:15px;">
-  <button type="button" id="addFriendBtn" style="background:#7c3aed; color:#fff; border:none; padding:0 20px; border-radius:12px; font-weight:800;">Add</button>
-      </div>
+<div class="section-view" id="view-friends">
+  <div class="glass-card">
+    <h3 style="margin-bottom:10px" id="friendsHeading">বন্ধু তালিকা</h3>
+    <div id="friendsContainer"></div>
+    <div style="display:flex; gap:8px; margin-top:10px;">
+      <input
+        type="text"
+        id="friendNameInput"
+        placeholder="বন্ধুর নাম লিখুন"
+        autocomplete="off"
+        style="flex:1; min-width:0; padding:12px; border:2px solid #ddd; border-radius:12px; color:#000; background:#f8f8f8; font-size:15px;"
+      >
+      <button
+        type="button"
+        id="addFriendBtn"
+        style="background:#7c3aed; color:#fff; border:none; padding:0 20px; border-radius:12px; font-weight:800; cursor:pointer;"
+      >
+        Add
+      </button>
+    </div>
   <!-- CHAT SECTION -->
 <div class="section-view" id="view-chat">
   <div class="glass-card">
