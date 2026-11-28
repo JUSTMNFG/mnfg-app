@@ -299,7 +299,7 @@ body.dark-body{background:#090312}
 <div class="phone" id="phoneFrame">
   <div class="topbar">
     <div class="brand">
-      <div class="logo"><b>B</b></div>
+      <div class="logo"><b>M</b></div>
       <div class="brand-title">MNFG</div>
     </div>
     <div class="top-actions">
@@ -320,10 +320,10 @@ body.dark-body{background:#090312}
   <div class="section-view active" id="view-home">
     <div class="glass-card">
       <div class="hello-row">
-        <div class="avatar" id="userAvatar">B</div>
+        <div class="avatar" id="userAvatar">M</div>
         <div>
-          <div class="hello-title" id="welcomeText">Welcome Bondhu Apps</div>
-          <div class="hello-sub" id="userSubText">Bondhu</div>
+          <div class="hello-title" id="welcomeText">Welcome MNFG </div>
+          <div class="hello-sub" id="userSubText">MNFG</div>
         </div>
       </div>
       <div class="post-composer">
@@ -350,7 +350,7 @@ body.dark-body{background:#090312}
   <!-- CHAT SECTION -->
 <div class="section-view" id="view-chat">
   <div class="glass-card">
-    <h3 style="margin-bottom:10px">💬 লাইভ চ্যাট</h3>
+    <h3 style="margin-bottom:10px">💬 </h3>
     
     <!-- বন্ধুর লিস্ট -->
     <div id="chatFriendList" style="margin-bottom:12px"></div>
@@ -406,13 +406,13 @@ body.dark-body{background:#090312}
       <button type="button" id="saveProfileBtn" style="padding:8px 14px; border-radius:8px; border:none; background:#6c5ce7; color:#fff; cursor:pointer; align-self:flex-start;">Save Profile</button>
     </div>
     <div id="profilePreviewCard" style="margin-top:14px; padding:10px; border-radius:8px; background:rgba(255,255,255,0.06);">
-      <div id="displayProfileName" style="font-weight:600; font-size:15px;">Bondhu User</div>
+      <div id="displayProfileName" style="font-weight:600; font-size:15px;">MNFG User</div>
       <div id="displayProfileBio" style="font-size:13px; opacity:0.85; margin-top:4px;">এখনো কোনো বায়ো বা পোর্টফোলিও তথ্য যুক্ত করা হয়নি।</div>
     </div>
 </div>
   <button type="button" id="bondhuLockerBtn" style="width:100%; margin-top:10px; padding:10px; border-radius:10px; border:none; font-weight:600; cursor:pointer;">বন্ধু লকার</button>
 </div>
-  <div class="footer-ver">Bondhu Apps • Version 1.1 Trial</div>
+  <div class="footer-ver">MNFG • Version 0.0 Trial</div>
 <button type="button" class="logout-btn" id="logoutBtn">Logout</button>
 <div id="bondhuLockerSection" ...>
 </div>
@@ -443,14 +443,14 @@ try {
   supabaseClient = null;
 }
 
-const STORAGE_POSTS_KEY = "bondhu_live_posts_v1";
-const STORAGE_CHAT_KEY = "bondhu_live_chat_v1";
-const STORAGE_FRIENDS_KEY = "bondhu_live_friends_v1";
-const PHOTO_STORAGE_PREFIX = "bondhu_profile_photo_";
+const STORAGE_POSTS_KEY = "MNFG_live_posts_v1";
+const STORAGE_CHAT_KEY = "MNFG_live_chat_v1";
+const STORAGE_FRIENDS_KEY = "MNFG_live_friends_v1";
+const PHOTO_STORAGE_PREFIX = "MNFG_profile_photo_";
 const LOCKER_PAGE_URL = "bondhu-locker.html";
 
 let currentUser = null;
-let currentDisplayName = "Bondhu";
+let currentDisplayName = "MNFG";
 let posts = [];
 let chatMessages = [];
 let friendsList = [];
@@ -465,7 +465,7 @@ const i18n = {
     lockerTitle: 'Bondhu Locker',
     lockerSub: 'ব্যক্তিগত ভল্টে প্রবেশ করুন',
     lockerBtn: 'খুলুন',
-    welcome: 'Welcome Bondhu Apps',
+    welcome: 'Welcome MNFG',
     readySub: 'নতুন বন্ধুদের সাথে যুক্ত হোন ও মুহূর্ত শেয়ার করুন',
     postPh: 'আজ কী ভাবছেন? বন্ধুদের সাথে শেয়ার করুন...',
     postHint: 'লাইভ ফিডে প্রকাশ হবে',
@@ -501,7 +501,7 @@ const i18n = {
     lockerTitle: 'Bondhu Locker',
     lockerSub: 'Open your private vault',
     lockerBtn: 'Open',
-    welcome: 'Welcome Bondhu Apps',
+    welcome: 'Welcome MNFG',
     readySub: 'Connect with friends and share moments today',
     postPh: "What's on your mind? Share with friends...",
     postHint: 'Published to live feed',
@@ -537,7 +537,7 @@ const i18n = {
     lockerTitle: 'Bondhu Locker',
     lockerSub: 'अपने निजी वॉल्ट में जाएं',
     lockerBtn: 'खोलें',
-    welcome: 'Welcome Bondhu Apps',
+    welcome: 'Welcome MNFG',
     readySub: 'दोस्तों से जुड़ें और अपने पल साझा करें',
     postPh: 'आज क्या सोच रहे हैं? दोस्तों के साथ साझा करें...',
     postHint: 'लाइव फ़ीड में प्रकाशित होगा',
@@ -659,7 +659,7 @@ function applyThemeAndLanguage() {
   const listEl = document.getElementById('friendsContainer');
   if (!inputEl || !addBtn || !listEl) return;
 
-  const STORAGE_KEY = 'bondhu_friends_list';
+  const STORAGE_KEY = 'MNFG_friends_list';
 
   function getFriends() {
     try {
@@ -724,18 +724,18 @@ function applyThemeAndLanguage() {
   function loadProfile() {
     try {
       const data = JSON.parse(localStorage.getItem(PROFILE_KEY)) || {};
-      const savedName = data.name || 'Bondhu User';
+      const savedName = data.name || 'MNFG User';
       const savedBio = data.bio || 'এখনো কোনো বায়ো বা পোর্টফোলিও তথ্য যুক্ত করা হয়নি।';
       nameInput.value = data.name || '';
       bioInput.value = data.bio || '';
       nameDisplay.textContent = savedName;
       bioDisplay.textContent = savedBio;
     } catch (e) {
-      nameDisplay.textContent = 'Bondhu User';
+      nameDisplay.textContent = 'MNFG User';
     }
   }
   saveBtn.addEventListener('click', function() {
-    const nameVal = nameInput.value.trim() || 'Bondhu User';
+    const nameVal = nameInput.value.trim() || 'MNFG User';
     const bioVal = bioInput.value.trim() || 'এখনো কোনো বায়ো বা পোর্টফোলিও তথ্য যুক্ত করা হয়নি।';
     localStorage.setItem(PROFILE_KEY, JSON.stringify({ name: nameVal, bio: bioVal }));
     loadProfile();
@@ -748,7 +748,7 @@ function applyThemeAndLanguage() {
   const sendBtn = document.getElementById('chatSendBtn');
   if (!messagesEl || !inputEl || !sendBtn) return;
 
-  const CHAT_KEY = 'bondhu_chat_messages';
+  const CHAT_KEY = 'MNFG_chat_messages';
 
   function getMessages() {
     try {
@@ -819,7 +819,7 @@ function applyThemeAndLanguage() {
   const listEl = document.getElementById('videoList');
   if (!titleEl || !urlEl || !addBtn || !listEl) return;
 
-  const VIDEO_KEY = 'bondhu_video_list';
+  const VIDEO_KEY = 'MNFG_video_list';
 
   function getVideos() {
     try {
